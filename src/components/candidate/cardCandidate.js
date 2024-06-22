@@ -5,11 +5,12 @@ export default function CardCandidate() {
   return (
     <div>
       {" "}
-      <div
-        data-aos="slide-down"
-        className="w-[100%] flex justify-between items-center  text-2xl font-semibold  p-2 py-6 rounded-xl"
-      >
-        <div className="flex  card flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-red-500 rounded-md  hover:bg-slate-800 shadow-xl">
+      <div className="w-[100%] flex justify-between items-center  text-2xl font-semibold  p-2 py-6 rounded-xl">
+        <div
+          data-aos="fade-down"
+          data-aos-delay="50"
+          className="flex  card flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-red-500 rounded-md  hover:bg-slate-800 shadow-xl"
+        >
           <div className="content flex flex-col absolute justify-center items-start gap-1 w-[25rem] h-[15rem] opacity-75 bg-slate-800 overflow-hidden rounded-md shadow-lg "></div>
           <div className="w-[8rem] h-[8rem] opacity-35 rounded-full blur-2xl bg-red-400 absolute right-[5%] top-[5%]"></div>
 
@@ -65,7 +66,11 @@ export default function CardCandidate() {
           </div>
         </div>
 
-        <div className="flex card flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-blue-500 rounded-md shadow-lg ">
+        <div
+          data-aos="fade-down"
+          data-aos-delay="150"
+          className="flex card flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-blue-500 rounded-md shadow-lg "
+        >
           <div className="content flex flex-col absolute justify-center items-start gap-1 w-[25rem] h-[15rem] opacity-75 bg-slate-800 overflow-hidden rounded-md shadow-lg "></div>
           <div className="w-[8rem] h-[8rem] opacity-35 rounded-full blur-2xl bg-blue-400 absolute right-[5%] top-[5%]"></div>
 
@@ -121,7 +126,11 @@ export default function CardCandidate() {
           </div>
         </div>
 
-        <div className="flex card  flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-yellow-500 rounded-md shadow-lg ">
+        <div
+          data-aos="fade-down"
+          data-aos-delay="250 "
+          className="flex card  flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-yellow-500 rounded-md shadow-lg "
+        >
           <div className=" content flex flex-col absolute justify-center items-start gap-1 w-[25rem] h-[15rem] opacity-75 bg-slate-800 overflow-hidden rounded-md shadow-lg "></div>
           <div className="w-[8rem] h-[8rem] opacity-35 rounded-full blur-2xl bg-yellow-400 absolute right-[5%] top-[5%]"></div>
 
@@ -176,7 +185,11 @@ export default function CardCandidate() {
             </div>
           </div>
         </div>
-        <div className=" card flex  flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-emerald-500 rounded-md shadow-lg ">
+        <div
+          data-aos="fade-down"
+          data-aos-delay="350"
+          className=" card flex  flex-col relative justify-center items-start gap-1 w-[25rem] h-[15rem]  bg-transparent overflow-hidden border-l-8 border-l-emerald-500 rounded-md shadow-lg "
+        >
           <div className="content flex flex-col absolute justify-center items-start gap-1 w-[25rem] h-[15rem] opacity-75 bg-slate-800 overflow-hidden rounded-md shadow-lg "></div>
 
           <div className="w-[8rem] h-[8rem] opacity-35 rounded-full blur-2xl bg-emerald-400 absolute right-[5%] top-[5%]"></div>

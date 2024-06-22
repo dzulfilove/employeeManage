@@ -3,8 +3,9 @@ import swal from "sweetalert2";
 import { Tabs, Tab } from "react-bootstrap";
 import dayjs from "dayjs";
 import "../../styles/tab.css";
-import Select from "react-tailwindcss-select";
+import "../../styles/button.css";
 import "dayjs/locale/id";
+import Select from "react-tailwindcss-select";
 const data = [
   { id: 1, name: "John Doe", age: 25 },
   { id: 2, name: "Jane Doe", age: 30 },
@@ -18,11 +19,12 @@ const data = [
   { id: 10, name: "Joan White", age: 70 },
 ];
 
-function TableCandidate(props) {
+function TableEmployeeDetail(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(5);
   const [dataPerPageDetail] = useState(5);
   const [tab, setTab] = useState("tab1");
+  const [select, setSelect] = useState(false);
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const indexOfLastDataDetail = currentPage * dataPerPageDetail;
@@ -96,6 +98,7 @@ function TableCandidate(props) {
   const handleTab = (key) => {
     setTab(key);
   };
+
   const options = [
     { value: "Programmer", label: "Programmer" },
     { value: "Komersial", label: "Komersial" },
@@ -104,19 +107,19 @@ function TableCandidate(props) {
     <div
       data-aos="fade-down"
       data-aos-delay="450"
-      className="p-4 bg-slate-800 w-[70%] rounded-xl shadow-lg mb-[4rem] mt-16"
+      className="p-4 bg-slate-800 w-[80%] rounded-xl shadow-lg mb-[4rem] mt-16"
     >
-      <div className="mt-2 flex justify-start items-center mb-10 gap-8">
+      <div className="mt-2 flex justify-start items-center mb-10 gap-10">
         <Tabs
           id="controlled-tab-example"
           activeKey={tab}
           onSelect={handleTab}
           className={"custom-tab-bar"}
         >
-          <Tab eventKey="tab1" title="Semua"></Tab>
-          <Tab eventKey="tab2" title="Administrasi"></Tab>
-          <Tab eventKey="tab3" title="Interview"></Tab>
-          <Tab eventKey="tab4" title="Pelatihan"></Tab>
+          <Tab eventKey="tab1" title="Semua Karyawan"></Tab>
+          <Tab eventKey="tab2" title="Divisi"></Tab>
+          <Tab eventKey="tab3" title="Akan Berakhir"></Tab>
+          <Tab eventKey="tab4" title="Baru"></Tab>
         </Tabs>
         <div className="search">
           <div className="search-box">
@@ -185,15 +188,20 @@ function TableCandidate(props) {
             <th className="px-4 py-4 font-medium ">Divisi</th>
 
             <th className="px-4 py-4 font-medium">Posisi</th>
-            <th className="px-4 py-4 font-medium ">Tanggal Melamar</th>
+            <th className="px-4 py-4 font-medium">Lokasi Kerja</th>
+            <th className="px-4 py-4 font-medium ">Awal Kontrak</th>
+            <th className="px-4 py-4 font-medium ">Akhir Kontrak</th>
 
-            <th className="px-4 py-4 font-medium rounded-r-xl">
-              Tahap Seleksi
-            </th>
+            <th className="px-4 py-4 font-medium rounded-r-xl">Masa Kerja </th>
           </tr>
         </thead>
         <tbody>
-          <tr onClick={() => {}} className="hover:cursor-pointer">
+          <tr
+            onClick={() => {
+              window.location.href = "/employee-detail";
+            }}
+            className="hover:cursor-pointer"
+          >
             <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
               gggg
             </td>
@@ -211,6 +219,17 @@ function TableCandidate(props) {
             </td>
             <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
               ggg
+            </td>
+
+            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+              gggg
+            </td>
+            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+              ggg
+            </td>
+
+            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+              gggg
             </td>
           </tr>
         </tbody>
@@ -238,4 +257,4 @@ function TableCandidate(props) {
   );
 }
 
-export default TableCandidate;
+export default TableEmployeeDetail;

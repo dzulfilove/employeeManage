@@ -96,12 +96,16 @@ function TableDashboardDivision(props) {
     setTab(key);
   };
   return (
-    <div className="p-4 bg-slate-800 w-[30%] rounded-xl shadow-lg mb-[4rem] mt-16">
+    <div
+      data-aos="fade-down"
+      data-aos-delay="450"
+      className="p-4 bg-slate-800 w-[30%] rounded-xl shadow-lg mb-[4rem] mt-16"
+    >
       <table className="w-[100%] text-left text-base font-normal">
         <thead>
           <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
             <th className="px-4 py-4 font-medium rounded-l-xl">Nama Divisi</th>
-            <th className="px-4 py-4 font-medium ">Karyawan</th>
+            <th className="px-4 py-4 font-medium ">Jumlah Karyawan</th>
           </tr>
         </thead>
         <tbody>

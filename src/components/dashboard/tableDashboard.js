@@ -96,7 +96,11 @@ function TableDashboard(props) {
     setTab(key);
   };
   return (
-    <div className="p-4 bg-slate-800 w-[70%] rounded-xl shadow-lg mb-[4rem] mt-16">
+    <div
+      data-aos="fade-down"
+      data-aos-delay="350"
+      className="p-4 bg-slate-800 w-[70%] rounded-xl shadow-lg mb-[4rem] mt-16"
+    >
       <div className="mt-2 flex justify-start items-center mb-6">
         <Tabs
           id="controlled-tab-example"
@@ -113,7 +117,8 @@ function TableDashboard(props) {
           <table className="w-[100%] text-left text-base font-normal">
             <thead>
               <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
-                <th className="px-4 py-4 font-medium rounded-l-xl">Nama</th>
+                <th className="px-4 py-4 font-medium rounded-l-xl">Foto</th>
+                <th className="px-4 py-4 font-medium ">Nama</th>
                 <th className="px-4 py-4 font-medium ">Divisi</th>
 
                 <th className="px-4 py-4 font-medium">Posisi</th>
