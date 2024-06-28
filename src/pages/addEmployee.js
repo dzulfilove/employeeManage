@@ -1,55 +1,35 @@
 import React, { Component } from "react";
-
-import CardDetailEmployee from "../components/employee/cardDetailEmployee";
-import TableEmployeeDetail from "../components/employee/tableEmployeeDetail";
-import withRouter from "../components/features/withRouter";
 import {
-  doc,
-  getDoc,
-  getDocs,
   collection,
+  doc,
+  getDocs,
   query,
   where,
+  addDoc,
+  writeBatch,
 } from "firebase/firestore";
-import { db } from "../config/firebase";
-class EmployeeDetail extends Component {
+import { db, dbImage } from "../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import FormAddEmployee from "../components/employee/formAddEmployee";
+import Swal from "sweetalert2";
+import { generateRandomString } from "../components/features/utils";
+
+class AddEmployee extends Component {
   constructor(props) {
     super(props);
-    const { id } = this.props.params;
-
     this.state = {
-      idEmployee: id,
       dataDivisi: [],
+      dataKosong: [],
       dataLokasi: [],
-      dataEmployee: {},
     };
   }
 
   componentDidMount() {
-    this.getEmployee(this.state.idEmployee);
-    this.getAllCabang();
     this.getTimData();
+    this.getAllCabang();
   }
 
-  // Get data
-  getEmployee = async (id) => {
-    try {
-      const docRef = doc(db, "employees", id);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        console.log("Dokumen data:", docSnap.data());
-        this.setState({ dataEmployee: docSnap.data() });
-      } else {
-        console.log("Tidak ada dokumen yang cocok!");
-        this.setState({ dataEmployee: {} });
-      }
-    } catch (error) {
-      console.error("Error mengambil dokumen: ", error);
-      this.setState({ dataEmployee: {} });
-    }
-  };
-
+  // getData
   getTimData = async () => {
     try {
       const timCollection = collection(db, "Tim");
@@ -59,8 +39,7 @@ class EmployeeDetail extends Component {
         ...doc.data(),
       }));
       const dataOption = timList.map((item) => ({
-        value: item.Nama,
-
+        value: item.id,
         text: item.Nama,
       }));
 
@@ -90,8 +69,7 @@ class EmployeeDetail extends Component {
       }));
 
       const dataOption = cabangList.map((item) => ({
-        value: item.nama,
-
+        value: item.id,
         text: item.nama,
       }));
 
@@ -101,26 +79,24 @@ class EmployeeDetail extends Component {
     }
   };
 
+  // handle Data
+
   render() {
     return (
-      <div className="flex flex-col justify-start items-center">
-        <div className="flex w-[97%] justify-start p-4 pl-0  items-center text-white text-3xl mb-6 border-b border-b-teal-500 pb-10">
-          Data Detail Karyawan
+      <div>
+        <div className="flex w-full justify-start p-4 items-center text-white text-3xl mb-6">
+          Input Data Karyawan
         </div>
 
-        <CardDetailEmployee
-          data={this.state.dataEmployee}
+        <FormAddEmployee
           dataDivisi={this.state.dataDivisi}
           dataLokasi={this.state.dataLokasi}
-          id={this.state.idEmployee}
         />
 
-        <div className="flex justify-center w-full items-start gap-16">
-          <TableEmployeeDetail />
-        </div>
+        <div className="flex justify-center w-full items-start gap-16"></div>
       </div>
     );
   }
 }
 
-export default withRouter(EmployeeDetail);
+export default AddEmployee;

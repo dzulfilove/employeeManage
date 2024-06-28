@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import "../../styles/tab.css";
 import Select from "react-tailwindcss-select";
 import "dayjs/locale/id";
+import DropdownSearch from "../features/dropdown";
 const data = [
   { id: 1, name: "John Doe", age: 25 },
   { id: 2, name: "Jane Doe", age: 30 },
@@ -96,15 +97,13 @@ function TableCandidate(props) {
   const handleTab = (key) => {
     setTab(key);
   };
-  const options = [
-    { value: "Programmer", label: "Programmer" },
-    { value: "Komersial", label: "Komersial" },
-  ];
+
+  console.log(props.dataDivisi,"dataDivisi")
   return (
     <div
       data-aos="fade-down"
       data-aos-delay="450"
-      className="p-4 bg-slate-800 w-[70%] rounded-xl shadow-lg mb-[4rem] mt-16"
+      className="p-4 bg-slate-800 w-[97%] rounded-xl shadow-lg mb-[4rem] mt-16"
     >
       <div className="mt-2 flex justify-start items-center mb-10 gap-8">
         <Tabs
@@ -146,29 +145,8 @@ function TableCandidate(props) {
           </div>
         </div>
         <div className="w-auto flex z-[999] justify-start gap-3 items-center p-1 border border-slate-400 rounded-md">
-          <div className="flex items-center justify-center z-[999] w-[10rem]">
-            <Select
-              options={options}
-              name="Lokasi"
-              placeholder="Pilih Divisi"
-              // value={kas}
-              // onChange={(data) => {
-              //   setKas(data);
-              // }}
-              classNames={{
-                menuButton: ({ isDisabled }) =>
-                  `ps-3 text-[15px] flex w-[10rem] text-md hover:cursor-pointer z-[999] text-white rounded-lg  transition-all duration-300 focus:outline-none ${
-                    isDisabled ? "" : " focus:ring focus:ring-slate-700/20"
-                  }`,
-                menu: "  bg-white absolute w-full bg-slate-50  z-[999] w-[10rem] border rounded py-1 mt-1.5 text-base text-gray-700",
-                listItem: ({ isSelected }) =>
-                  `block transition duration-200 px-2 py-2 cursor-pointer z-[999] select-none truncate rounded-lg ${
-                    isSelected
-                      ? "text-slate-500 bg-slate-50"
-                      : "text-slate-500 hover:bg-blue-100 hover:text-slate-500"
-                  }`,
-              }}
-            />
+          <div className="flex items-center justify-center z-[999] w-[15rem]">
+            <DropdownSearch options={props.dataDivisi} />
           </div>
         </div>
       </div>
@@ -186,10 +164,9 @@ function TableCandidate(props) {
 
             <th className="px-4 py-4 font-medium">Posisi</th>
             <th className="px-4 py-4 font-medium ">Tanggal Melamar</th>
+            <th className="px-4 py-4 font-medium ">Tahap Seleksi</th>
 
-            <th className="px-4 py-4 font-medium rounded-r-xl">
-              Tahap Seleksi
-            </th>
+            <th className="px-4 py-4 font-medium rounded-r-xl">Status</th>
           </tr>
         </thead>
         <tbody>

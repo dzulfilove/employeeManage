@@ -2,17 +2,42 @@ import React, { Component } from "react";
 
 import CardCandidate from "../components/candidate/cardCandidate";
 import TableCandidate from "../components/candidate/tableCandidate";
-
+import { db } from "../config/firebase";
+import { collection, getDocs } from "firebase/firestore";
 class Candidate extends Component {
   constructor(props) {
     super(props);
     this.state = {
       dataKosong: [],
+      dataDivisi: [],
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getTimData();
+  }
 
+  // Get Data
+
+  getTimData = async () => {
+    try {
+      const timCollection = collection(db, "Tim");
+      const timSnapshot = await getDocs(timCollection);
+      const timList = timSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const dataOption = timList.map((item) => ({
+        text: item.Nama,
+        value: item.id,
+      }));
+
+      this.setState({ dataDivisi: dataOption });
+    } catch (error) {
+      console.error("Error fetching Tim data: ", error);
+      return [];
+    }
+  };
   render() {
     return (
       <div>
@@ -21,7 +46,7 @@ class Candidate extends Component {
         </div>
         <CardCandidate />
         <div className="flex justify-center w-full items-start gap-16">
-          <TableCandidate />
+          <TableCandidate dataDivisi={this.state.dataDivisi} />
         </div>
       </div>
     );

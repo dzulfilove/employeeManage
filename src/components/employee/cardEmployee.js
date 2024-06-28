@@ -1,7 +1,7 @@
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
 import "../../styles/card.css";
-export default function CardEmployee() {
+export default function CardEmployee(props) {
   return (
     <div>
       {" "}
@@ -40,7 +40,9 @@ export default function CardEmployee() {
 
           <div className="flex gap-5 justify-between  mt-6 w-full border-t border-t-red-500 pt-4 p-4 z-[99]">
             <div className="flex gap-2 whitespace-nowrap">
-              <div className="grow text-4xl font-bold text-white">45</div>
+              <div className="grow text-4xl font-bold text-white">
+                {props.totalKaryawan}
+              </div>
               <div className="ml-6 flex items-end text-base text-slate-300">
                 Karyawan
               </div>

@@ -60,7 +60,7 @@
   --input-border-color: #7b8ba5;
   --input-border-hover-color: #999999;
   --input-bg-color: #333333;
-  --search-max-width: 19rem;
+  --search-max-width: 13rem;
   --search-min-width: 150px;
   --border-radius: 5px;
   --transition-cubic-bezier: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -92,7 +92,7 @@
 }
 
 .input-search {
-  width: 18rem;
+  width: 12rem;
   height: 2rem;
   border: 0;
   border-color: transparent;
@@ -169,4 +169,75 @@
 .box:hover {
   box-shadow: 0px 0px 20px 1px #35b9a5b6;
   border: 1px solid #9ee4d9;
+}
+
+/* button Add */
+.button-add {
+  cursor: pointer;
+  --c: #a3b1c4;
+  padding: 14px 28px;
+
+  position: relative;
+  min-width: 12em;
+  background: transparent;
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: sans-serif;
+  letter-spacing: 0.1em;
+  border: 1px solid #a3b1c4;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1;
+  transition: 0.5s;
+}
+
+.button-add span {
+  position: absolute;
+  width: 25%;
+  height: 100%;
+  background-color: var(--c);
+  transform: translateY(150%);
+  border-radius: 50%;
+  left: calc((var(--n) - 1) * 25%);
+  transition: 0.5s;
+  transition-delay: calc((var(--n) - 1) * 0.1s);
+  z-index: -1;
+}
+
+.button-add:hover {
+  color: black;
+}
+
+.button-add:hover span {
+  transform: translateY(0) scale(2);
+}
+
+.button-add span:nth-child(1) {
+  --n: 1;
+}
+
+.button-add span:nth-child(2) {
+  --n: 2;
+}
+
+.button-add span:nth-child(3) {
+  --n: 3;
+}
+
+.button-add span:nth-child(4) {
+  --n: 4;
+}
+
+/* blur glasss */
+
+.glass-effect {
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.17);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10.6px);
+  -webkit-backdrop-filter: blur(10.6px);
+  border: 1px solid rgba(255, 255, 255, 0.347);
 }

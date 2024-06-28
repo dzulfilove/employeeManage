@@ -1,40 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import swal from "sweetalert2";
 import { Tabs, Tab } from "react-bootstrap";
-import dayjs from "dayjs";
 import "../../styles/tab.css";
 import "../../styles/button.css";
 import "dayjs/locale/id";
-import Select from "react-tailwindcss-select";
-const data = [
-  { id: 1, name: "John Doe", age: 25 },
-  { id: 2, name: "Jane Doe", age: 30 },
-  { id: 3, name: "Jim Smith", age: 35 },
-  { id: 4, name: "Jill Smith", age: 40 },
-  { id: 5, name: "Jake Brown", age: 45 },
-  { id: 6, name: "Jessica Brown", age: 50 },
-  { id: 7, name: "Jay Green", age: 55 },
-  { id: 8, name: "Jill Green", age: 60 },
-  { id: 9, name: "Joe White", age: 65 },
-  { id: 10, name: "Joan White", age: 70 },
-];
+import { TESelect } from "tw-elements-react";
+import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+import DropdownSearch from "../features/dropdown";
 
 function TableEmployee(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(5);
-  const [dataPerPageDetail] = useState(5);
+  const [lengthData, setLengthData] = useState(props.data.length);
   const [tab, setTab] = useState("tab1");
   const [select, setSelect] = useState(false);
+  const [filter, setIsFilter] = useState(false);
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
-  const indexOfLastDataDetail = currentPage * dataPerPageDetail;
-  const indexOfFirstDataDetail = indexOfLastDataDetail - dataPerPageDetail;
-  const currentData = data.slice(indexOfFirstData, indexOfLastData);
 
+  const currentData = props.data.slice(indexOfFirstData, indexOfLastData);
+  const [search, setSearch] = useState("");
+  const [data, setData] = useState(props.data);
+  const [tanggal, setTanggal] = useState(
+    dayjs().locale("id").format("YYYY/MM/DD")
+  );
+
+  useEffect(() => {
+    setLengthData(props.data.length);
+    setData(props.data);
+    // setData();
+    // you can use the userData here, or set it to state using setUser
+  }, []);
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  // handle data
+  const handleTab = (key) => {
+    setTab(key);
+    props.changeData(key);
+  };
+
+  const handleFilter = (item) => {
+    const dataFilter = data.filter((a) => a.divisi == item.text);
+    setData(dataFilter);
+    setIsFilter(true);
+  };
+
+  // Format data
   const formatRupiah = (angka) => {
     const nilai = parseFloat(angka);
     return nilai.toLocaleString("id-ID", {
@@ -61,11 +76,18 @@ function TableEmployee(props) {
   };
 
   const formatTanggal = (tanggal) => {
-    const hari = dayjs(tanggal).locale("id").format("dddd");
-    const bulan = dayjs(tanggal).locale("id").format("MMMM");
+    // Parsing tanggal dengan format "DD-MM-YYYY"
+    const parsedDate = dayjs(tanggal, "YYYY/MM/DD");
+
+    // Ambil nama hari dan bulan dalam bahasa Indonesia
+    const hari = parsedDate.locale("id").format("dddd");
+    const bulan = parsedDate.locale("id").format("MMMM");
+
+    // Format ulang tanggal sesuai keinginan
     const hasil =
-      tanggal.substring(8, 10) + " " + bulan + " " + tanggal.substring(0, 4);
-    console.log("tanggal", dayjs(tanggal).locale("id").format("MMMM"));
+      parsedDate.format("DD") + " " + bulan + " " + parsedDate.format("YYYY");
+
+    console.log("tanggal", bulan);
 
     return hasil;
   };
@@ -95,19 +117,42 @@ function TableEmployee(props) {
     });
   };
 
-  const handleTab = (key) => {
-    setTab(key);
+  const sisaMasaKontrak = (startDate, endDate) => {
+    const start = dayjs(startDate, "YYYY/MM/DD");
+    const end = dayjs(endDate, "YYYY/MM/DD");
+
+    let yearDiff = end.year() - start.year();
+    let monthDiff = end.month() - start.month();
+    let dayDiff = end.date() - start.date();
+
+    // Adjust the monthDiff if dayDiff is negative
+    if (dayDiff < 0) {
+      monthDiff--;
+      dayDiff += start.daysInMonth();
+    }
+
+    // Adjust the yearDiff and monthDiff if monthDiff is negative
+    if (monthDiff < 0) {
+      yearDiff--;
+      monthDiff += 12;
+    }
+
+    const totalMonths = yearDiff * 12 + monthDiff;
+
+    if (totalMonths < 3) {
+      return `${totalMonths} bulan ${dayDiff} hari`;
+    } else {
+      return `${totalMonths} bulan`;
+    }
   };
 
-  const options = [
-    { value: "Programmer", label: "Programmer" },
-    { value: "Komersial", label: "Komersial" },
-  ];
+  const options = props.dataDivisi;
+  console.log(props.data, "dataaa");
   return (
     <div
       data-aos="fade-down"
       data-aos-delay="450"
-      className="p-4 bg-slate-800 w-[90%] rounded-xl shadow-lg mb-[4rem] mt-16"
+      className="p-4 bg-slate-800 w-[900%] rounded-xl shadow-lg mb-[4rem] mt-16"
     >
       <div className="mt-2 flex justify-start items-center mb-10 gap-10">
         <Tabs
@@ -117,9 +162,9 @@ function TableEmployee(props) {
           className={"custom-tab-bar"}
         >
           <Tab eventKey="tab1" title="Semua Karyawan"></Tab>
-          <Tab eventKey="tab2" title="Divisi"></Tab>
-          <Tab eventKey="tab3" title="Akan Berakhir"></Tab>
-          <Tab eventKey="tab4" title="Baru"></Tab>
+
+          <Tab eventKey="tab2" title="Akan Berakhir"></Tab>
+          <Tab eventKey="tab3" title="Baru"></Tab>
         </Tabs>
         <div className="search">
           <div className="search-box">
@@ -149,31 +194,21 @@ function TableEmployee(props) {
           </div>
         </div>
         <div className="w-auto flex z-[999] justify-start gap-3 items-center p-1 border border-slate-400 rounded-md">
-          <div className="flex items-center justify-center z-[999] w-[10rem]">
-            <Select
-              options={options}
-              name="Lokasi"
-              placeholder="Pilih Divisi"
-              // value={kas}
-              // onChange={(data) => {
-              //   setKas(data);
-              // }}
-              classNames={{
-                menuButton: ({ isDisabled }) =>
-                  `ps-3 text-[15px] flex w-[10rem] text-md hover:cursor-pointer z-[999] text-white rounded-lg  transition-all duration-300 focus:outline-none ${
-                    isDisabled ? "" : " focus:ring focus:ring-slate-700/20"
-                  }`,
-                menu: "  bg-white absolute w-full bg-slate-50  z-[999] w-[10rem] border rounded py-1 mt-1.5 text-base text-gray-700",
-                listItem: ({ isSelected }) =>
-                  `block transition duration-200 px-2 py-2 cursor-pointer z-[999] select-none truncate rounded-lg ${
-                    isSelected
-                      ? "text-slate-500 bg-slate-50"
-                      : "text-slate-500 hover:bg-blue-100 hover:text-slate-500"
-                  }`,
-              }}
+          <div className="flex items-center justify-center z-[999] w-[15rem]">
+            <DropdownSearch
+              options={props.dataDivisi}
+              change={(item) => handleFilter(item)}
             />
           </div>
         </div>
+
+        <Link to="/add-employee" className="button-add">
+          Tambah
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </Link>
       </div>
 
       <table
@@ -191,53 +226,132 @@ function TableEmployee(props) {
             <th className="px-4 py-4 font-medium">Lokasi Kerja</th>
             <th className="px-4 py-4 font-medium ">Awal Kontrak</th>
             <th className="px-4 py-4 font-medium ">Akhir Kontrak</th>
-
-            <th className="px-4 py-4 font-medium rounded-r-xl">Masa Kerja </th>
+            <th className="px-4 py-4 font-medium ">Sisa Masa Kerja</th>
+            <th className="px-4 py-4 font-medium rounded-r-xl">Status </th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            onClick={() => {
-              window.location.href = "/employee-detail";
-            }}
-            className="hover:cursor-pointer"
-          >
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
-
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
-
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
-
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
-
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
-
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
-          </tr>
+          {filter ? (
+            <>
+              {data.map((data) => (
+                <tr className="hover:cursor-pointer py-6">
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      <img
+                        src={data.fotoTerbaru}
+                        className="object-cover w-[4rem] h-[4rem] rounded-full"
+                      />
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white capitalize">
+                    <Link to={`/employee-detail/${data.id}`}>{data.nama}</Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.divisi ? data.divisi : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.posisi}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.cabang ? data.cabang : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.tanggalAwalKontrak
+                        ? formatTanggal(data.tanggalAwalKontrak)
+                        : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.tanggalAkhirKontrak
+                        ? formatTanggal(data.tanggalAkhirKontrak)
+                        : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
+                    </Link>
+                  </td>{" "}
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.statusKaryawan ? data.statusKaryawan : ""}
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </>
+          ) : (
+            <>
+              {currentData.map((data) => (
+                <tr className="hover:cursor-pointer py-6">
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      <img
+                        src={data.fotoTerbaru}
+                        className="object-cover w-[4rem] h-[4rem] rounded-full"
+                      />
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white capitalize">
+                    <Link to={`/employee-detail/${data.id}`}>{data.nama}</Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.divisi ? data.divisi : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.posisi}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.cabang ? data.cabang : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.tanggalAwalKontrak
+                        ? formatTanggal(data.tanggalAwalKontrak)
+                        : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.tanggalAkhirKontrak
+                        ? formatTanggal(data.tanggalAkhirKontrak)
+                        : ""}
+                    </Link>
+                  </td>
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
+                    </Link>
+                  </td>{" "}
+                  <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                    <Link to={`/employee-detail/${data.id}`}>
+                      {data.statusKaryawan ? data.statusKaryawan : ""}
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </>
+          )}
         </tbody>
       </table>
 
       <div className="mt-10">
         {Array.from(
-          { length: Math.ceil(data.length / dataPerPage) },
+          { length: Math.ceil(lengthData / dataPerPage) },
           (_, i) => i + 1
         ).map((page) => (
           <button

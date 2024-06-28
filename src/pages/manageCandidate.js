@@ -270,9 +270,9 @@ class ManageCandidate extends Component {
             <div
               data-aos="fade-down"
               data-aos-delay="50"
-              className="w-[25rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
+              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
             >
-              <div className="w-[25rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[22rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg  border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                 <h4>Tahap Awal Seleksi</h4>
@@ -287,9 +287,9 @@ class ManageCandidate extends Component {
             <div
               data-aos="fade-down"
               data-aos-delay="150"
-              className="w-[25rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
             >
-              <div className="w-[25rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[22rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl  text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                 <h4>Tahap Administrasi</h4>
@@ -304,9 +304,9 @@ class ManageCandidate extends Component {
             <div
               data-aos="fade-down"
               data-aos-delay="250"
-              className="w-[25rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
             >
-              <div className="w-[25rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[22rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                 <h4>Tahap Interview</h4>
@@ -321,9 +321,9 @@ class ManageCandidate extends Component {
             <div
               data-aos="fade-down"
               data-aos-delay="350"
-              className="w-[25rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
             >
-              <div className="w-[25rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[22rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                 <h4>Tahap Training</h4>

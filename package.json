@@ -18,6 +18,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "antd": "^5.18.3",
     "aos": "^2.3.4",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
@@ -46,6 +47,7 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.8",
     "sweetalert2": "^11.10.8",
+    "tw-elements-react": "^1.0.0-alpha-end",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
