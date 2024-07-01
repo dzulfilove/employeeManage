@@ -17,22 +17,24 @@ function TableEmployee(props) {
   const [tab, setTab] = useState("tab1");
   const [select, setSelect] = useState(false);
   const [filter, setIsFilter] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
 
   const currentData = props.data.slice(indexOfFirstData, indexOfLastData);
   const [search, setSearch] = useState("");
-  const [data, setData] = useState(props.data);
+  const [data, setData] = useState([]);
+  const [dataAwal, setDataAwal] = useState(props.data);
   const [tanggal, setTanggal] = useState(
     dayjs().locale("id").format("YYYY/MM/DD")
   );
 
   useEffect(() => {
     setLengthData(props.data.length);
-    setData(props.data);
-    // setData();
+
+    setDataAwal(props.data);
     // you can use the userData here, or set it to state using setUser
-  }, []);
+  }, [dataAwal, lengthData]);
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -40,41 +42,56 @@ function TableEmployee(props) {
   // handle data
   const handleTab = (key) => {
     setTab(key);
+    setIsFilter(false);
+    setLengthData(props.data.length);
     props.changeData(key);
   };
 
   const handleFilter = (item) => {
-    const dataFilter = data.filter((a) => a.divisi == item.text);
-    setData(dataFilter);
-    setIsFilter(true);
-  };
-
-  // Format data
-  const formatRupiah = (angka) => {
-    const nilai = parseFloat(angka);
-    return nilai.toLocaleString("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  };
-  const formatDurasi = (durasi) => {
-    if (durasi < 60) {
-      return durasi + " menit";
-    } else if (durasi === 60) {
-      return "1 jam";
+    if (isSearch == true) {
+      const dataFilter = props.data.filter((a) => a.divisi == item.text);
+      const results = dataFilter.filter((item) =>
+        item.nama.toLowerCase().includes(search.toLowerCase())
+      );
+      setData(results);
+      setLengthData(dataFilter.length);
+      setIsFilter(true);
+      setSelect(item);
     } else {
-      const jam = Math.floor(durasi / 60);
-      const menit = durasi % 60;
-      if (menit === 0) {
-        return jam + " jam";
-      } else {
-        return jam + " jam " + menit + " menit";
-      }
+      const dataFilter = props.data.filter((a) => a.divisi == item.text);
+      setData(dataFilter);
+      setLengthData(dataFilter.length);
+      setIsFilter(true);
+      setSelect(item);
     }
   };
 
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    if (filter == true) {
+      const dataFilter = props.data.filter((a) => a.divisi == select.text);
+      const results = dataFilter.filter((item) =>
+        item.nama.toLowerCase().includes(value.toLowerCase())
+      );
+
+      console.log(dataFilter, "filter");
+      setData(results);
+    } else {
+      const results = props.data.filter((item) =>
+        item.nama.toLowerCase().includes(value.toLowerCase())
+      );
+      setData(results);
+
+      console.log(dataAwal, "dataAwal");
+      console.log(value, "search");
+      console.log(results, "data Hasil");
+    }
+    setIsSearch(true);
+  };
+
+  // Format data
   const formatTanggal = (tanggal) => {
     // Parsing tanggal dengan format "DD-MM-YYYY"
     const parsedDate = dayjs(tanggal, "YYYY/MM/DD");
@@ -87,34 +104,7 @@ function TableEmployee(props) {
     const hasil =
       parsedDate.format("DD") + " " + bulan + " " + parsedDate.format("YYYY");
 
-    console.log("tanggal", bulan);
-
     return hasil;
-  };
-
-  const sortByDateAndTimeDescending = (arrayObjek) => {
-    return arrayObjek.sort((a, b) => {
-      const dateA = new Date(a.tanggal);
-      const dateB = new Date(b.tanggal);
-
-      if (dateB - dateA !== 0) {
-        return dateB - dateA;
-      }
-
-      // Menggunakan metode sortir jam keluar dari user
-      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-
-      if (jamAInt !== jamBInt) {
-        return jamBInt - jamAInt;
-      } else {
-        return menitBInt - menitAInt;
-      }
-    });
   };
 
   const sisaMasaKontrak = (startDate, endDate) => {
@@ -147,6 +137,7 @@ function TableEmployee(props) {
   };
 
   const options = props.dataDivisi;
+  const currentDataFilter = data.slice(indexOfFirstData, indexOfLastData);
   console.log(props.data, "dataaa");
   return (
     <div
@@ -173,6 +164,8 @@ function TableEmployee(props) {
                 placeholder="Search..."
                 className="input-search"
                 type="text"
+                value={search}
+                onChange={handleSearch}
               />
               <div className="search-box-icon">
                 <button className="btn-icon-content">
@@ -198,6 +191,7 @@ function TableEmployee(props) {
             <DropdownSearch
               options={props.dataDivisi}
               change={(item) => handleFilter(item)}
+              name={"Divisi"}
             />
           </div>
         </div>
@@ -231,9 +225,9 @@ function TableEmployee(props) {
           </tr>
         </thead>
         <tbody>
-          {filter ? (
+          {filter || isSearch ? (
             <>
-              {data.map((data) => (
+              {currentDataFilter.map((data) => (
                 <tr className="hover:cursor-pointer py-6">
                   <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                     <Link to={`/employee-detail/${data.id}`}>
@@ -348,25 +342,49 @@ function TableEmployee(props) {
           )}
         </tbody>
       </table>
-
-      <div className="mt-10">
-        {Array.from(
-          { length: Math.ceil(lengthData / dataPerPage) },
-          (_, i) => i + 1
-        ).map((page) => (
-          <button
-            key={page}
-            className={`mx-1 rounded-md border h-12 w-12 py-2 px-2 ${
-              currentPage === page
-                ? "bg-teal-500 text-white border-none"
-                : "bg-slate-700 text-slate-400 border-none"
-            }`}
-            onClick={() => paginate(page)}
-          >
-            {page}
-          </button>
-        ))}
-      </div>
+      {filter == false ? (
+        <>
+          <div className="mt-10">
+            {Array.from(
+              { length: Math.ceil(props.data.length / dataPerPage) },
+              (_, i) => i + 1
+            ).map((page) => (
+              <button
+                key={page}
+                className={`mx-1 rounded-md border h-12 w-12 py-2 px-2 ${
+                  currentPage === page
+                    ? "bg-teal-500 text-white border-none"
+                    : "bg-slate-700 text-slate-400 border-none"
+                }`}
+                onClick={() => paginate(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mt-10">
+            {Array.from(
+              { length: Math.ceil(data.length / dataPerPage) },
+              (_, i) => i + 1
+            ).map((page) => (
+              <button
+                key={page}
+                className={`mx-1 rounded-md border h-12 w-12 py-2 px-2 ${
+                  currentPage === page
+                    ? "bg-teal-500 text-white border-none"
+                    : "bg-slate-700 text-slate-400 border-none"
+                }`}
+                onClick={() => paginate(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

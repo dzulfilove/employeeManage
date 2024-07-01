@@ -252,3 +252,15 @@
     transform: translateY(0px);
   }
 }
+
+.background-form {
+  background: rgb(254, 102, 0);
+  background: linear-gradient(
+    356deg,
+    rgba(254, 102, 0, 1) 27%,
+    rgba(52, 255, 102, 1) 75%
+  );
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10.6px);
+  -webkit-backdrop-filter: blur(10.6px);
+}

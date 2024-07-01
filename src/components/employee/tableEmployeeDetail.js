@@ -1,118 +1,179 @@
 import React, { useState } from "react";
-import swal from "sweetalert2";
 import { Tabs, Tab } from "react-bootstrap";
 import dayjs from "dayjs";
 import "../../styles/tab.css";
 import "../../styles/button.css";
 import "dayjs/locale/id";
-import Select from "react-tailwindcss-select";
-const data = [
-  { id: 1, name: "John Doe", age: 25 },
-  { id: 2, name: "Jane Doe", age: 30 },
-  { id: 3, name: "Jim Smith", age: 35 },
-  { id: 4, name: "Jill Smith", age: 40 },
-  { id: 5, name: "Jake Brown", age: 45 },
-  { id: 6, name: "Jessica Brown", age: 50 },
-  { id: 7, name: "Jay Green", age: 55 },
-  { id: 8, name: "Jill Green", age: 60 },
-  { id: 9, name: "Joe White", age: 65 },
-  { id: 10, name: "Joan White", age: 70 },
-];
+import { DatePicker, Space } from "antd";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  setDoc,
+} from "firebase/firestore";
+import { db } from "../../config/firebase";
+import Swal from "sweetalert2";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { generateRandomString } from "../features/utils";
+import DropdownSearch from "../features/dropdown";
+import { Link } from "react-router-dom";
+const dateFormatList = ["YYYY/MM/DD", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
 function TableEmployeeDetail(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(5);
   const [dataPerPageDetail] = useState(5);
   const [tab, setTab] = useState("tab1");
+  const [namaDokumen, setNamaDokumen] = useState("");
+  const [kategoriDokumen, setKategoriDokumen] = useState("");
+  const [tanggalTerbitDokumen, setTanggalTerbitDokumen] = useState(
+    dayjs().locale("id").format("YYYY/MM/DD")
+  );
+  const [tanggal, setTanggal] = useState(
+    dayjs().locale("id").format("YYYY/MM/DD")
+  );
+  const [statusDokumen, setStatusDokumen] = useState(null);
+  const [fileDokumen, setFileDokumen] = useState(null);
   const [select, setSelect] = useState(false);
+  const [data, setData] = useState(null);
+  const [idData, setIdData] = useState("");
+  const [tanggalTerbit, setTanggalTerbit] = useState(dayjs().locale("id"));
   const [isAddData, setIsAddData] = useState(false);
+  const [isEditData, setIsEditData] = useState(false);
   const indexOfLastData = currentPage * dataPerPage;
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const indexOfLastDataDetail = currentPage * dataPerPageDetail;
   const indexOfFirstDataDetail = indexOfLastDataDetail - dataPerPageDetail;
-  const currentData = data.slice(indexOfFirstData, indexOfLastData);
-
+  const currentData = props.data.slice(indexOfFirstData, indexOfLastData);
+  const optionStatus = [
+    { text: "Aktif", value: "Aktif" },
+    { text: "Tidak Aktif", value: "Tidak Aktif" },
+  ];
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const formatRupiah = (angka) => {
-    const nilai = parseFloat(angka);
-    return nilai.toLocaleString("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  };
-  const formatDurasi = (durasi) => {
-    if (durasi < 60) {
-      return durasi + " menit";
-    } else if (durasi === 60) {
-      return "1 jam";
-    } else {
-      const jam = Math.floor(durasi / 60);
-      const menit = durasi % 60;
-      if (menit === 0) {
-        return jam + " jam";
-      } else {
-        return jam + " jam " + menit + " menit";
-      }
+  // handle data
+  const handleChangeDate = (name, date) => {
+    const dayjsDate = dayjs(date);
+
+    if (!dayjsDate.isValid()) {
+      return;
     }
+
+    const formattedDate = dayjsDate.format("YYYY/MM/DD");
+    setTanggalTerbitDokumen(formattedDate);
+    setTanggalTerbit(dayjsDate);
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setFileDokumen(file);
+  };
+
+  const handleAdd = () => {
+    if (isEditData) {
+      setIsEditData(false);
+    } else {
+      setIsAddData(!isAddData);
+    }
+    setData({});
+    setIdData("");
+    setNamaDokumen("");
+    setKategoriDokumen("");
+    setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
+    setStatusDokumen(null);
+    setFileDokumen(null);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    props.simpanDocument(
+      namaDokumen,
+      kategoriDokumen,
+      tanggalTerbitDokumen,
+      tanggal,
+      statusDokumen,
+      fileDokumen
+    );
+    setIsAddData(false);
+    setIsEditData(false);
+    setData({});
+    setIdData("");
+    setNamaDokumen("");
+    setKategoriDokumen("");
+    setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
+    setStatusDokumen(null);
+    setFileDokumen(null);
+  };
+
+  const handleEdit = (data) => {
+    setData(data);
+    setIsAddData(true);
+    setIsEditData(true);
+    setIdData(data.id);
+    setNamaDokumen(data.namaDokumen);
+    setKategoriDokumen(data.kategoriDokumen);
+    setTanggalTerbitDokumen(data.tanggalTerbitDokumen);
+    setStatusDokumen(data.statusDokumen);
+    setFileDokumen(data.url);
+  };
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    props.updateDocument(
+      data,
+      idData,
+      namaDokumen,
+      kategoriDokumen,
+      tanggalTerbitDokumen,
+      tanggal,
+      statusDokumen,
+      fileDokumen
+    );
+    setIsAddData(false);
+    setIsEditData(false);
+    setData({});
+    setIdData("");
+    setNamaDokumen("");
+    setKategoriDokumen("");
+    setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
+    setStatusDokumen(null);
+    setFileDokumen(null);
+  };
+  const handleDelete = (data) => {
+    props.deleteDocument(data);
+  };
+
+  // Format data
   const formatTanggal = (tanggal) => {
-    const hari = dayjs(tanggal).locale("id").format("dddd");
-    const bulan = dayjs(tanggal).locale("id").format("MMMM");
+    // Parsing tanggal dengan format "DD-MM-YYYY"
+    const parsedDate = dayjs(tanggal, "YYYY/MM/DD");
+
+    // Ambil nama hari dan bulan dalam bahasa Indonesia
+    const hari = parsedDate.locale("id").format("dddd");
+    const bulan = parsedDate.locale("id").format("MMMM");
+
+    // Format ulang tanggal sesuai keinginan
     const hasil =
-      tanggal.substring(8, 10) + " " + bulan + " " + tanggal.substring(0, 4);
-    console.log("tanggal", dayjs(tanggal).locale("id").format("MMMM"));
+      parsedDate.format("DD") + " " + bulan + " " + parsedDate.format("YYYY");
 
     return hasil;
   };
-
-  const sortByDateAndTimeDescending = (arrayObjek) => {
-    return arrayObjek.sort((a, b) => {
-      const dateA = new Date(a.tanggal);
-      const dateB = new Date(b.tanggal);
-
-      if (dateB - dateA !== 0) {
-        return dateB - dateA;
-      }
-
-      // Menggunakan metode sortir jam keluar dari user
-      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-
-      if (jamAInt !== jamBInt) {
-        return jamBInt - jamAInt;
-      } else {
-        return menitBInt - menitAInt;
-      }
-    });
-  };
-
-  const handleTab = (key) => {
-    setTab(key);
-  };
-
-  const options = [
-    { value: "Programmer", label: "Programmer" },
-    { value: "Komersial", label: "Komersial" },
-  ];
+  console.log(data);
   return (
     <div className="p-4 bg-slate-800 w-[90%] rounded-xl shadow-lg mb-[8rem] mt-16">
       <div className="mt-2 flex justify-start items-center mb-10 gap-10">
-        <button
-          class="button-add"
-          onClick={() => {
-            setIsAddData(!isAddData);
-          }}
-        >
+        <button className="button-add" onClick={handleAdd}>
           Tambah Dokumen
           <span></span>
           <span></span>
@@ -122,7 +183,7 @@ function TableEmployeeDetail(props) {
       </div>
       <div
         className={` ${
-          isAddData ? "h-[12rem] mb-6 p-6" : "h-[0rem] "
+          isAddData ? "h-[16rem] mb-6 p-6" : "h-[0rem] "
         } duration-500 flex w-full flex-col justify-between items-start border border-slate-400 rounded-lg `}
       >
         <div
@@ -130,23 +191,83 @@ function TableEmployeeDetail(props) {
             isAddData ? "" : "hidden "
           }`}
         >
-          <div className="w-[15rem] flex p-2 bg-slate-700 border-slate-500 border rounded-lg justify-start items-center h-[3rem] text-white">
-            Nama Dokumen
+          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-base">Nama Dokumen</h4>
+            <input
+              type="text"
+              className="w-[15rem] flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+              value={namaDokumen}
+              onChange={(e) => {
+                setNamaDokumen(e.target.value);
+              }}
+            />
           </div>
-          <div className="w-[15rem] flex p-2 bg-slate-700 border-slate-500 border rounded-lg justify-start items-center h-[3rem] text-white">
-            kategori Dokumenn
+          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-base"> Kategori Dokumen</h4>
+            <input
+              type="text"
+              className="w-[15rem] flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+              value={kategoriDokumen}
+              onChange={(e) => {
+                setKategoriDokumen(e.target.value);
+              }}
+            />
           </div>
-          <div className="w-[15rem] flex p-2 bg-slate-700 border-slate-500 border rounded-lg justify-start items-center h-[3rem] text-white">
-            Tanggal Terbit
+          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-base">Tanggal Terbit</h4>
+
+            <Space direction="vertical" size={12}>
+              <DatePicker
+                defaultValue={dayjs(
+                  data !== null
+                    ? data.tanggalTerbitDokumen
+                    : tanggalTerbitDokumen,
+                  dateFormatList[0]
+                )}
+                format={dateFormatList}
+                onChange={(date) => {
+                  handleChangeDate("startKontrak", date);
+                }}
+                className="bg-slate-700 text-white border border-slate-500 w-[15rem] p-3 hover:text-slate-800 active:text-slate-800"
+              />
+            </Space>
           </div>
-          <div className="w-[15rem] flex p-2 bg-slate-700 border-slate-500 border rounded-lg justify-start items-center h-[3rem] text-white">
-            Status
+
+          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-base">Status</h4>
+            <div className="flex w-full justify-center items-center p-2 border border-slate-500 bg-slate-700 rounded-lg">
+              <DropdownSearch
+                options={optionStatus}
+                change={(data) => {
+                  setStatusDokumen(data.text);
+                }}
+              />
+            </div>
+          </div>
+          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-base"> File Dokumen</h4>
+            <input
+              type="file"
+              className="w-[15rem] flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+              onChange={handleFileChange}
+            />
           </div>
         </div>
-        {isAddData && (
+        {isAddData && isEditData == false && (
           <>
-            <button class="button-add">
+            <button className="button-add" onClick={handleSubmit}>
               Simpan dokumen
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </>
+        )}
+        {isAddData == true && isEditData == true && (
+          <>
+            <button className="button-add" onClick={handleUpdate}>
+              Update dokumen
               <span></span>
               <span></span>
               <span></span>
@@ -161,52 +282,113 @@ function TableEmployeeDetail(props) {
           <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
             <th className="px-4 py-4 font-medium rounded-l-xl">Nama Dokumen</th>
             <th className="px-4 py-4 font-medium ">Kategori Dokumen</th>
-            <th className="px-4 py-4 font-medium ">Tanggal Dibuat</th>
+            <th className="px-4 py-4 font-medium ">Tanggal Terbit</th>
 
             <th className="px-4 py-4 font-medium">Tanggal Diunggah</th>
-            <th className="px-4 py-4 font-medium">Link Dokumen</th>
+            <th className="px-4 py-4 font-medium ">Status</th>
 
-            <th className="px-4 py-4 font-medium rounded-r-xl">
-              Lihat Dokumen
-            </th>
+            <th className="px-4 py-4 font-medium rounded-r-xl">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            onClick={() => {
-              window.location.href = "/employee-detail";
-            }}
-            className="hover:cursor-pointer"
-          >
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
+          {props.data.map((data) => (
+            <tr className="hover:cursor-pointer">
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white capitalize">
+                {data.namaDokumen}
+              </td>
 
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white capitalize">
+                {data.kategoriDokumen}
+              </td>
 
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
+                {formatTanggal(data.tanggalTerbitDokumen)}
+              </td>
 
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
-
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
-          </tr>
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
+                {formatTanggal(data.tanggalUpload)}
+              </td>
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
+                {data.statusDokumen}
+              </td>
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] max-w-[15rem] px-4 py-4 text-white">
+                <div className="flex w-full justify-between items-center">
+                  <div className="h-[3.2rem] w-[3.2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                    <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
+                    <button
+                      className="btnCloud"
+                      onClick={() => handleEdit(data)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="none"
+                          stroke="white"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 20h4L18.5 9.5a2.828 2.828 0 1 0-4-4L4 16zm9.5-13.5l4 4"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="h-[3.2rem] w-[3.2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                    <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
+                    <button
+                      className="btnCloud-delete"
+                      onClick={() => handleDelete(data)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="white"
+                          fill-rule="evenodd"
+                          d="M8.106 2.553A1 1 0 0 1 9 2h6a1 1 0 0 1 .894.553L17.618 6H20a1 1 0 1 1 0 2h-1v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8H4a1 1 0 0 1 0-2h2.382zM14.382 4l1 2H8.618l1-2zM11 11a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm4 0a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href={data.url}
+                    className="animated-button-doc"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="arr-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+                    </svg>
+                    <span className="text">Lihat Dokumen</span>
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="arr-1"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+                    </svg>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <div className="mt-10">
         {Array.from(
-          { length: Math.ceil(data.length / dataPerPage) },
+          { length: Math.ceil(props.data.length / dataPerPage) },
           (_, i) => i + 1
         ).map((page) => (
           <button

@@ -1,6 +1,13 @@
 import "./App.css";
 import "../src/styles/button.css";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  Redirect,
+  Navigate,
+} from "react-router-dom";
 
 import React, { useEffect, useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
@@ -21,8 +28,12 @@ import ManageCandidate from "./pages/manageCandidate";
 import EmployeeDetail from "./pages/employeeDetail";
 import AddEmployee from "./pages/addEmployee";
 import Auth from "./pages/auth";
+import FormLamaran from "./pages/lamaranKerja";
+import SendedForm from "./pages/sendedForm";
+import CandidateDetail from "./pages/candidateDetail";
 const App = () => {
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+  const isLamaran = sessionStorage.getItem("isLamaran");
   // const isLoggedIn = true;
   const menus = [
     { name: "Dashboard", link: "", icon: MdOutlineDashboard },
@@ -50,7 +61,7 @@ const App = () => {
       {isLoggedIn ? (
         <>
           <Router>
-            <section className={`flex w-full gap-6 bg-slate-900 h-full`}>
+            <section className={` flex w-full gap-6 bg-slate-900 h-full p-0`}>
               <div
                 className={`bg-slate-800 min-h-screen pl-8 z-[999] ${
                   open ? "w-[17rem]" : "w-[6rem]"
@@ -252,20 +263,20 @@ const App = () => {
                           >
                             <ul>
                               <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
-                                <a
-                                  href="/all-candidate"
+                                <Link
+                                  to={"/all-candidate"}
                                   className=" button-content  text-slate-300 "
                                 >
                                   Semua Kandidat
-                                </a>
+                                </Link>
                               </li>
                               <li className=" mt-4  py-2 button  text-slate-300 flex items-center justify-start pl-10">
-                                <a
-                                  href="/manage-candidate"
+                                <Link
+                                  to="/manage-candidate"
                                   className=" button-content text-slate-300 "
                                 >
                                   Kelola kandidat
-                                </a>
+                                </Link>
                               </li>
                             </ul>
                           </div>
@@ -315,9 +326,14 @@ const App = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/all-candidate" element={<Candidate />} />
                     <Route path="/employee" element={<Employee />} />
+                    <Route path="/lamar-kerja" element={<FormLamaran />} />
                     <Route
                       path="/employee-detail/:id"
                       element={<EmployeeDetail />}
+                    />
+                    <Route
+                      path="/candidate-detail/:id"
+                      element={<CandidateDetail />}
                     />
                     <Route path="/add-employee" element={<AddEmployee />} />
                     <Route
@@ -333,7 +349,18 @@ const App = () => {
       ) : (
         <>
           <div>
-            <Auth />
+            <Router>
+              <Routes>
+                <Route exact path="/" element={<Auth />} />
+                <Route path="/form-lamaran-kerja" element={<FormLamaran />} />
+                {isLamaran && (
+                  <>
+                    <Route path="/sended-form" element={<SendedForm />} />
+                  </>
+                )}
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </Router>
           </div>
         </>
       )}

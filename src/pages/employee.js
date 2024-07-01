@@ -14,7 +14,7 @@ class Employee extends Component {
       dataDisplay: [],
       dataKaryawanBaru: [],
       datakaryawanBerakhir: [],
-
+      employeeDocuments: [],
       totalKaryawan: 0,
       totalDivisi: 0,
       totalKaryawanBaru: 0,
@@ -26,9 +26,30 @@ class Employee extends Component {
   componentDidMount() {
     this.getAllEmployees();
     this.getTimData();
+    this.getEmployeeDocuments();
   }
 
   // Get Data
+  getEmployeeDocuments = async (id) => {
+    try {
+      const subCollectionRef = collection(
+        db,
+        "employees",
+        id,
+        "dokumenKaryawan"
+      );
+      const querySnapshot = await getDocs(subCollectionRef);
+      const documents = [];
+      querySnapshot.forEach((doc) => {
+        documents.push({ id: doc.id, ...doc.data() });
+      });
+      console.log("Dokumen Karyawan:", documents);
+      this.setState({ employeeDocuments: documents });
+    } catch (error) {
+      console.error("Error mengambil dokumen subkoleksi: ", error);
+      this.setState({ employeeDocuments: [] });
+    }
+  };
   getAllEmployees = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "employees"));
@@ -90,6 +111,8 @@ class Employee extends Component {
         datakaryawanBerakhir: dataBerakhir,
         dataDisplay: dataFormat,
         totalKaryawan: employeesData.length,
+        totalKaryawanBaru: dataBaru.length,
+        totalAkanBerakhir: dataBerakhir.length,
       });
     } catch (error) {
       console.error("Error fetching employees:", error.message);
@@ -105,19 +128,29 @@ class Employee extends Component {
         ...doc.data(),
       }));
       const data = this.removeDuplicates(timList);
-      const dataOption = timList.map((item) => ({
+      const dataOption = data.map((item) => ({
         text: item.Nama,
         value: item.Nama,
       }));
 
       console.log(data, "tim");
-      this.setState({ dataDivisi: dataOption });
+      this.setState({ dataDivisi: dataOption, totalDivisi: dataOption.length });
     } catch (error) {
       console.error("Error fetching Tim data: ", error);
       return [];
     }
   };
 
+  // handleData
+  handleTab = (name) => {
+    if (name == "tab1") {
+      this.setState({ dataDisplay: this.state.dataEmployees });
+    } else if (name == "tab2") {
+      this.setState({ dataDisplay: this.state.datakaryawanBerakhir });
+    } else {
+      this.setState({ dataDisplay: this.state.dataKaryawanBaru });
+    }
+  };
   // Format data
   sisaMasaKontrak = (startDate, endDate) => {
     const start = dayjs(startDate, "YYYY/MM/DD");
@@ -144,22 +177,18 @@ class Employee extends Component {
     return filteredArray;
   }
 
-  handleTab = (name) => {
-    if (name == "tab1") {
-      this.setState({ dataDisplay: this.state.dataEmployees });
-    } else if (name == "tab2") {
-      this.setState({ dataDisplay: this.state.datakaryawanBerakhir });
-    } else {
-      this.setState({ dataDisplay: this.state.dataKaryawanBaru });
-    }
-  };
   render() {
     return (
       <div>
         <div className="flex w-full justify-start p-4 items-center text-white text-3xl mb-6">
           Karyawan Perusahaan
         </div>
-        <CardEmployee totalKaryawan={this.state.totalKaryawan} />
+        <CardEmployee
+          totalKaryawan={this.state.totalKaryawan}
+          totalAkanBerakhir={this.state.totalAkanBerakhir}
+          totalKaryawanBaru={this.state.totalKaryawanBaru}
+          totalDivisi={this.state.totalDivisi}
+        />
         <div className="flex justify-center w-full items-start gap-16 text-md">
           <TableEmployee
             data={this.state.dataDisplay}

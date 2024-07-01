@@ -4,18 +4,6 @@ import { Tabs, Tab } from "react-bootstrap";
 import dayjs from "dayjs";
 import "../../styles/tab.css";
 import "dayjs/locale/id";
-const data = [
-  { id: 1, name: "John Doe", age: 25 },
-  { id: 2, name: "Jane Doe", age: 30 },
-  { id: 3, name: "Jim Smith", age: 35 },
-  { id: 4, name: "Jill Smith", age: 40 },
-  { id: 5, name: "Jake Brown", age: 45 },
-  { id: 6, name: "Jessica Brown", age: 50 },
-  { id: 7, name: "Jay Green", age: 55 },
-  { id: 8, name: "Jill Green", age: 60 },
-  { id: 9, name: "Joe White", age: 65 },
-  { id: 10, name: "Joan White", age: 70 },
-];
 
 function TableDashboardDivision(props) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,21 +14,13 @@ function TableDashboardDivision(props) {
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const indexOfLastDataDetail = currentPage * dataPerPageDetail;
   const indexOfFirstDataDetail = indexOfLastDataDetail - dataPerPageDetail;
-  const currentData = data.slice(indexOfFirstData, indexOfLastData);
+  const currentData = props.dataDivisi.slice(indexOfFirstData, indexOfLastData);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const formatRupiah = (angka) => {
-    const nilai = parseFloat(angka);
-    return nilai.toLocaleString("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  };
+
   const formatDurasi = (durasi) => {
     if (durasi < 60) {
       return durasi + " menit";
@@ -109,21 +89,23 @@ function TableDashboardDivision(props) {
           </tr>
         </thead>
         <tbody>
-          <tr onClick={() => {}} className="hover:cursor-pointer">
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              gggg
-            </td>
+          {currentData.map((data) => (
+            <tr onClick={() => {}} className="hover:cursor-pointer">
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                {data.Nama}
+              </td>
 
-            <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-              ggg
-            </td>
-          </tr>
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                {data.jumlahKaryawan}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
       <div className="mt-10">
         {Array.from(
-          { length: Math.ceil(data.length / dataPerPage) },
+          { length: Math.ceil(props.dataDivisi.length / dataPerPage) },
           (_, i) => i + 1
         ).map((page) => (
           <button

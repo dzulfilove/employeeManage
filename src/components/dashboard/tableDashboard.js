@@ -4,18 +4,6 @@ import { Tabs, Tab } from "react-bootstrap";
 import dayjs from "dayjs";
 import "../../styles/tab.css";
 import "dayjs/locale/id";
-const data = [
-  { id: 1, name: "John Doe", age: 25 },
-  { id: 2, name: "Jane Doe", age: 30 },
-  { id: 3, name: "Jim Smith", age: 35 },
-  { id: 4, name: "Jill Smith", age: 40 },
-  { id: 5, name: "Jake Brown", age: 45 },
-  { id: 6, name: "Jessica Brown", age: 50 },
-  { id: 7, name: "Jay Green", age: 55 },
-  { id: 8, name: "Jill Green", age: 60 },
-  { id: 9, name: "Joe White", age: 65 },
-  { id: 10, name: "Joan White", age: 70 },
-];
 
 function TableDashboard(props) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,74 +14,59 @@ function TableDashboard(props) {
   const indexOfFirstData = indexOfLastData - dataPerPage;
   const indexOfLastDataDetail = currentPage * dataPerPageDetail;
   const indexOfFirstDataDetail = indexOfLastDataDetail - dataPerPageDetail;
-  const currentData = data.slice(indexOfFirstData, indexOfLastData);
+  const currentData = props.dataEmployees.slice(
+    indexOfFirstData,
+    indexOfLastData
+  );
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const formatRupiah = (angka) => {
-    const nilai = parseFloat(angka);
-    return nilai.toLocaleString("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-  };
-  const formatDurasi = (durasi) => {
-    if (durasi < 60) {
-      return durasi + " menit";
-    } else if (durasi === 60) {
-      return "1 jam";
-    } else {
-      const jam = Math.floor(durasi / 60);
-      const menit = durasi % 60;
-      if (menit === 0) {
-        return jam + " jam";
-      } else {
-        return jam + " jam " + menit + " menit";
-      }
+  const convertDays = (days) => {
+    // Jika jumlah hari kurang dari 30, langsung kembalikan sebagai hari
+    if (days < 30) {
+      return `${days} hari`;
     }
-  };
 
+    // Hitung jumlah bulan dan hari
+    const months = Math.floor(days / 30);
+    const remainingDays = days % 30;
+
+    // Jika tidak ada sisa hari, kembalikan hanya bulan
+    if (remainingDays === 0) {
+      return `${months} bulan`;
+    }
+
+    // Kembalikan dalam format bulan dan hari
+    return `${months} bulan ${remainingDays} hari`;
+  };
   const formatTanggal = (tanggal) => {
-    const hari = dayjs(tanggal).locale("id").format("dddd");
-    const bulan = dayjs(tanggal).locale("id").format("MMMM");
+    // Parsing tanggal dengan format "DD-MM-YYYY"
+    const parsedDate = dayjs(tanggal, "YYYY/MM/DD");
+
+    // Ambil nama hari dan bulan dalam bahasa Indonesia
+    const hari = parsedDate.locale("id").format("dddd");
+    const bulan = parsedDate.locale("id").format("MMMM");
+
+    // Format ulang tanggal sesuai keinginan
     const hasil =
-      tanggal.substring(8, 10) + " " + bulan + " " + tanggal.substring(0, 4);
-    console.log("tanggal", dayjs(tanggal).locale("id").format("MMMM"));
+      parsedDate.format("DD") + " " + bulan + " " + parsedDate.format("YYYY");
 
     return hasil;
   };
 
-  const sortByDateAndTimeDescending = (arrayObjek) => {
-    return arrayObjek.sort((a, b) => {
-      const dateA = new Date(a.tanggal);
-      const dateB = new Date(b.tanggal);
-
-      if (dateB - dateA !== 0) {
-        return dateB - dateA;
-      }
-
-      // Menggunakan metode sortir jam keluar dari user
-      let [jamAInt, menitAInt] = a.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-      let [jamBInt, menitBInt] = b.lokasiAkhir[0].jamSampai
-        .split(":")
-        .map(Number);
-
-      if (jamAInt !== jamBInt) {
-        return jamBInt - jamAInt;
-      } else {
-        return menitBInt - menitAInt;
-      }
-    });
-  };
-
   const handleTab = (key) => {
     setTab(key);
+  };
+
+  const convertToTitleCase = (input) => {
+    const words = input.split(/(?=[A-Z])/).map((word) => word.toLowerCase());
+    const titleCaseWords = words.map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    );
+    const titleCaseString = titleCaseWords.join(" ");
+    return titleCaseString;
   };
   return (
     <div
@@ -108,7 +81,7 @@ function TableDashboard(props) {
           onSelect={handleTab}
           className={"custom-tab-bar"}
         >
-          <Tab eventKey="tab1" title="Kontrak Berakhir"></Tab>
+          <Tab eventKey="tab1" title="Kontrak Akan Berakhir"></Tab>
           <Tab eventKey="tab2" title="Calon Kandidat"></Tab>
         </Tabs>
       </div>
@@ -117,8 +90,7 @@ function TableDashboard(props) {
           <table className="w-[100%] text-left text-base font-normal">
             <thead>
               <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
-                <th className="px-4 py-4 font-medium rounded-l-xl">Foto</th>
-                <th className="px-4 py-4 font-medium ">Nama</th>
+                <th className="px-4 py-4 font-medium rounded-l-xl">Nama</th>
                 <th className="px-4 py-4 font-medium ">Divisi</th>
 
                 <th className="px-4 py-4 font-medium">Posisi</th>
@@ -130,26 +102,28 @@ function TableDashboard(props) {
               </tr>
             </thead>
             <tbody>
-              <tr onClick={() => {}} className="hover:cursor-pointer">
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  gggg
-                </td>
+              {props.dataKandidat.map((item) => (
+                <tr onClick={() => {}} className="hover:cursor-pointer">
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {item.nama}
+                  </td>
 
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  ggg
-                </td>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {item.divisi}
+                  </td>
 
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  ggg
-                </td>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {item.posisi}
+                  </td>
 
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  gggg
-                </td>
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  ggg
-                </td>
-              </tr>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {item.tanggalMelamar}
+                  </td>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {convertToTitleCase(item.statusTahap)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </>
@@ -170,26 +144,29 @@ function TableDashboard(props) {
               </tr>
             </thead>
             <tbody>
-              <tr onClick={() => {}} className="hover:cursor-pointer">
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  gggg
-                </td>
+              {currentData.map((data) => (
+                <tr onClick={() => {}} className="hover:cursor-pointer">
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {data.nama}
+                  </td>
 
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  ggg
-                </td>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {data.divisi}
+                  </td>
 
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  ggg
-                </td>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {data.posisi}
+                  </td>
 
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  gggg
-                </td>
-                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                  ggg
-                </td>
-              </tr>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {formatTanggal(data.tanggalAwalKontrak)} -{" "}
+                    {formatTanggal(data.tanggalAkhirKontrak)}
+                  </td>
+                  <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                    {convertDays(data.sisaKontrak)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </>
@@ -197,7 +174,7 @@ function TableDashboard(props) {
 
       <div className="mt-10">
         {Array.from(
-          { length: Math.ceil(data.length / dataPerPage) },
+          { length: Math.ceil(props.dataEmployees.length / dataPerPage) },
           (_, i) => i + 1
         ).map((page) => (
           <button

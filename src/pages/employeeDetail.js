@@ -1,17 +1,28 @@
 import React, { Component } from "react";
+import swal from "sweetalert2";
 
 import CardDetailEmployee from "../components/employee/cardDetailEmployee";
 import TableEmployeeDetail from "../components/employee/tableEmployeeDetail";
 import withRouter from "../components/features/withRouter";
+import { doc, getDoc, getDocs, collection } from "firebase/firestore";
 import {
-  doc,
-  getDoc,
-  getDocs,
-  collection,
+  addDoc,
+  deleteDoc,
+  getFirestore,
+  setDoc,
   query,
   where,
 } from "firebase/firestore";
+import Swal from "sweetalert2";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import { db } from "../config/firebase";
+import { generateRandomString } from "../components/features/utils";
 class EmployeeDetail extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +33,7 @@ class EmployeeDetail extends Component {
       dataDivisi: [],
       dataLokasi: [],
       dataEmployee: {},
+      employeeDocuments: [],
     };
   }
 
@@ -29,6 +41,7 @@ class EmployeeDetail extends Component {
     this.getEmployee(this.state.idEmployee);
     this.getAllCabang();
     this.getTimData();
+    this.getEmployeeDocuments(this.state.idEmployee);
   }
 
   // Get data
@@ -58,12 +71,11 @@ class EmployeeDetail extends Component {
         id: doc.id,
         ...doc.data(),
       }));
-      const dataOption = timList.map((item) => ({
-        value: item.Nama,
-
+      const data = this.removeDuplicates(timList);
+      const dataOption = data.map((item) => ({
         text: item.Nama,
+        value: item.Nama,
       }));
-
       this.setState({ dataDivisi: dataOption });
     } catch (error) {
       console.error("Error fetching Tim data: ", error);
@@ -101,6 +113,232 @@ class EmployeeDetail extends Component {
     }
   };
 
+  getEmployeeDocuments = async (id) => {
+    try {
+      const subCollectionRef = collection(
+        db,
+        "employees",
+        id,
+        "dokumenKaryawan"
+      );
+      const querySnapshot = await getDocs(subCollectionRef);
+      const documents = [];
+      querySnapshot.forEach((doc) => {
+        documents.push({ id: doc.id, ...doc.data() });
+      });
+      console.log("Dokumen Karyawan:", documents);
+      this.setState({ employeeDocuments: documents });
+    } catch (error) {
+      console.error("Error mengambil dokumen subkoleksi: ", error);
+      this.setState({ employeeDocuments: [] });
+    }
+  };
+
+  handleSimpanDokumenKeStorage = async (file) => {
+    if (!file) {
+      throw new Error("File not found");
+    }
+    const random = generateRandomString(12);
+    const storageRef = ref(
+      getStorage(),
+      `dokumenKaryawan/karyawan-${random}-${file.name}`
+    );
+
+    try {
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log("berhasil Upload File");
+      return downloadURL;
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      throw error;
+    }
+  };
+
+  handleSubmitDokumen = async (
+    namaDokumen,
+    kategoriDokumen,
+    tanggalTerbitDokumen,
+    tanggal,
+    statusDokumen,
+    fileDokumen
+  ) => {
+    this.setState({ isProses: true });
+
+    try {
+      if (!fileDokumen) {
+        throw new Error("Dokumen tidak ditemukan");
+      }
+
+      const dokumenURL = await this.handleSimpanDokumenKeStorage(fileDokumen);
+
+      const dokumenKaryawan = {
+        namaDokumen,
+        kategoriDokumen,
+        tanggalTerbitDokumen,
+        tanggalUpload: tanggal,
+        statusDokumen,
+        url: dokumenURL,
+      };
+
+      // Simpan dokumen ke subkoleksi dokumenKaryawan
+      const employeeDocRef = doc(
+        getFirestore(),
+        "employees",
+        this.state.idEmployee
+      );
+      await addDoc(
+        collection(employeeDocRef, "dokumenKaryawan"),
+        dokumenKaryawan
+      );
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Dokumen berhasil disimpan",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.getEmployeeDocuments(this.state.idEmployee);
+        }
+      });
+    } catch (error) {
+      console.error("Error saving applicant data:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Terjadi kesalahan saat menyimpan dokumen",
+        icon: "error",
+      });
+    }
+
+    this.setState({ isProses: false });
+  };
+
+  handleUpdateDokumen = async (
+    data,
+    idData,
+    namaDokumen,
+    kategoriDokumen,
+    tanggalTerbitDokumen,
+    tanggal,
+    statusDokumen,
+    fileDokumen
+  ) => {
+    try {
+      let dokumenURL;
+
+      if (data.url !== fileDokumen) {
+        // Unggah file baru dan dapatkan URL-nya
+        dokumenURL = await this.handleSimpanDokumenKeStorage(fileDokumen);
+      } else {
+        // Gunakan URL yang sudah ada
+        dokumenURL = fileDokumen;
+      }
+
+      const dokumenKaryawan = {
+        namaDokumen,
+        kategoriDokumen,
+        tanggalTerbitDokumen,
+        statusDokumen,
+        url: dokumenURL,
+      };
+
+      console.log(dokumenKaryawan, "data");
+      console.log("data", idData);
+      // Perbarui dokumen di subkoleksi dokumenKaryawan
+      const db = getFirestore();
+      const employeeDocRef = doc(db, "employees", this.state.idEmployee);
+      const dokumenCollectionRef = collection(
+        employeeDocRef,
+        "dokumenKaryawan"
+      );
+      const dokumenRef = doc(dokumenCollectionRef, idData);
+
+      await setDoc(dokumenRef, dokumenKaryawan, { merge: true });
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Dokumen berhasil diperbarui",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.getEmployeeDocuments(this.state.idEmployee);
+        }
+      });
+    } catch (error) {
+      console.error("Error updating document:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Terjadi kesalahan saat memperbarui dokumen",
+        icon: "error",
+      });
+    }
+
+    this.setState({ isProses: false, isEdit: false, idDokumenEdit: null });
+  };
+
+  handleDeleteDokumen = async (data) => {
+    const { idEmployee } = this.state;
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Dokumen akan dihapus secara permanen",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const storage = getStorage();
+          const storageRef = ref(storage, data.url);
+
+          // Hapus file dari Firebase Storage
+          await deleteObject(storageRef);
+
+          // Hapus dokumen dari Firestore
+          const employeeDocRef = doc(getFirestore(), "employees", idEmployee);
+          const dokumenRef = doc(employeeDocRef, "dokumenKaryawan", data.id);
+          await deleteDoc(dokumenRef);
+
+          Swal.fire({
+            title: "Berhasil!",
+            text: "Dokumen berhasil dihapus",
+            icon: "success",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.getEmployeeDocuments(this.state.idEmployee);
+            }
+          });
+        } catch (error) {
+          console.error("Error deleting document:", error);
+          Swal.fire({
+            title: "Error!",
+            text: "Terjadi kesalahan saat menghapus dokumen",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
+
+  // FormatData
+
+  removeDuplicates(dataArray) {
+    // Gunakan objek untuk melacak nama yang sudah ada
+    const uniqueNames = {};
+
+    // Filter dataArray untuk hanya menyimpan objek dengan nama yang unik
+    const filteredArray = dataArray.filter((item) => {
+      if (!uniqueNames[item.Nama]) {
+        uniqueNames[item.Nama] = true;
+        return true; // Simpan item jika nama belum ada dalam uniqueNames
+      }
+      return false; // Abaikan item jika nama sudah ada dalam uniqueNames
+    });
+
+    return filteredArray;
+  }
+
   render() {
     return (
       <div className="flex flex-col justify-start items-center">
@@ -113,10 +351,16 @@ class EmployeeDetail extends Component {
           dataDivisi={this.state.dataDivisi}
           dataLokasi={this.state.dataLokasi}
           id={this.state.idEmployee}
+          getDataEmployee={this.getEmployee}
         />
 
         <div className="flex justify-center w-full items-start gap-16">
-          <TableEmployeeDetail />
+          <TableEmployeeDetail
+            data={this.state.employeeDocuments}
+            simpanDocument={this.handleSubmitDokumen}
+            updateDocument={this.handleUpdateDokumen}
+            deleteDocument={this.handleDeleteDokumen}
+          />
         </div>
       </div>
     );

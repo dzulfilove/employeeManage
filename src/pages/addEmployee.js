@@ -21,15 +21,40 @@ class AddEmployee extends Component {
       dataDivisi: [],
       dataKosong: [],
       dataLokasi: [],
+      dataPosisi: [],
     };
   }
 
   componentDidMount() {
     this.getTimData();
     this.getAllCabang();
+    this.getAllDivisions();
   }
 
   // getData
+  getAllDivisions = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "divisions"));
+
+      if (querySnapshot.empty) {
+        console.log("Tidak ada dokumen yang ditemukan.");
+        return;
+      }
+      const divisions = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const dataOption = divisions.map((data) => ({
+        text: data.namaPosisi,
+        value: data.namaPosisi,
+      }));
+      console.log(dataOption, "data Option divisi");
+      this.setState({ dataPosisi: dataOption });
+    } catch (error) {
+      console.error("Error fetching divisions:", error.message);
+    }
+  };
   getTimData = async () => {
     try {
       const timCollection = collection(db, "Tim");
@@ -38,11 +63,11 @@ class AddEmployee extends Component {
         id: doc.id,
         ...doc.data(),
       }));
-      const dataOption = timList.map((item) => ({
-        value: item.id,
+      const data = this.removeDuplicates(timList);
+      const dataOption = data.map((item) => ({
         text: item.Nama,
+        value: item.Nama,
       }));
-
       this.setState({ dataDivisi: dataOption });
     } catch (error) {
       console.error("Error fetching Tim data: ", error);
@@ -79,7 +104,22 @@ class AddEmployee extends Component {
     }
   };
 
-  // handle Data
+  // format data
+  removeDuplicates(dataArray) {
+    // Gunakan objek untuk melacak nama yang sudah ada
+    const uniqueNames = {};
+
+    // Filter dataArray untuk hanya menyimpan objek dengan nama yang unik
+    const filteredArray = dataArray.filter((item) => {
+      if (!uniqueNames[item.Nama]) {
+        uniqueNames[item.Nama] = true;
+        return true; // Simpan item jika nama belum ada dalam uniqueNames
+      }
+      return false; // Abaikan item jika nama sudah ada dalam uniqueNames
+    });
+
+    return filteredArray;
+  }
 
   render() {
     return (
@@ -91,6 +131,7 @@ class AddEmployee extends Component {
         <FormAddEmployee
           dataDivisi={this.state.dataDivisi}
           dataLokasi={this.state.dataLokasi}
+          dataPosisi={this.state.dataPosisi}
         />
 
         <div className="flex justify-center w-full items-start gap-16"></div>

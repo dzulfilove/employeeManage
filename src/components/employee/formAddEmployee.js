@@ -22,6 +22,7 @@ import { db, dbImage } from "../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Swal from "sweetalert2";
 import { generateRandomString } from "../features/utils";
+import { Navigate } from "react-router-dom";
 /** Manually entering any of the following formats will perform date parsing */
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
@@ -37,6 +38,7 @@ function FormAddEmployee(props) {
   const [alamat, setAlamat] = useState("");
   const [riwayatPendidikan, setRiwayatPendidikan] = useState("");
   const [posisi, setPosisi] = useState("");
+  const [posisiLain, setPosisiLain] = useState("");
   const [divisi, setDivisi] = useState("");
   const [lokasi, setLokasi] = useState("");
   const [status, setStatus] = useState("");
@@ -142,7 +144,16 @@ function FormAddEmployee(props) {
       // Simpan URL foto terbaru dan CV terbaru ke state
 
       const fotoTerbaru = fotoTerbaruURL;
-
+      let posisiKerja = "";
+      if (posisi == "Lainnya") {
+        posisiKerja = posisiLain;
+        const division = {
+          namaPosisi: posisiLain,
+        };
+        const divisionRef = await addDoc(collection(db, "divisions"), division);
+      } else {
+        posisiKerja = posisi;
+      }
       // Persiapkan dokumen utama untuk employeesApplicant
       const employee = {
         email,
@@ -150,7 +161,7 @@ function FormAddEmployee(props) {
         nik,
         alamat,
         nomorWhatsapp: noTelpon,
-        posisi,
+        posisi: posisiKerja,
         cabang: lokasi,
         riwayatPendidikan,
         gaji,
@@ -174,11 +185,11 @@ function FormAddEmployee(props) {
 
       Swal.fire({
         title: "Berhasil!",
-        text: "شكرًا لك على إرسال طلب التوظيف الخاص بك",
+        text: "Data Karyawan berhasil Ditambahkan",
         icon: "success",
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = "/karyawan/add";
+          <Navigate to="/employee" />;
         }
       });
     } catch (error) {
@@ -276,12 +287,27 @@ function FormAddEmployee(props) {
               <h4 className="font-semibold text-base">Posisi</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
-                  options={optionPosisi}
+                  options={props.dataPosisi}
                   change={(data) => {
                     setPosisi(data.text);
                   }}
+                  name={"Posisi"}
                 />
               </div>
+
+              {posisi == "Lainnya" && (
+                <>
+                  <input
+                    type="text"
+                    className="w-full flex p-2 mt-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={posisiLain}
+                    placeholder="Masukkan Posisi / Jabatan Kerja"
+                    onChange={(e) => {
+                      setPosisiLain(e.target.value);
+                    }}
+                  />
+                </>
+              )}
             </div>
           </div>
           <div className="w-full gap-2 flex justify-between items-start p-2">
@@ -318,6 +344,7 @@ function FormAddEmployee(props) {
                   change={(data) => {
                     setLokasi(data.text);
                   }}
+                  name={"Lokasi Kerja"}
                 />
               </div>
             </div>
@@ -330,6 +357,7 @@ function FormAddEmployee(props) {
                   change={(data) => {
                     setDivisi(data.text);
                   }}
+                  name={"Divisi"}
                 />
               </div>
             </div>
@@ -364,13 +392,14 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Riwayat Pendidikan</h4>
+              <h4 className="font-semibold text-base"> Pendidikan Terakhir</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
                   options={optionPendidikan}
                   change={(data) => {
                     setRiwayatPendidikan(data.text);
                   }}
+                  name={"Pendidikan terakhir"}
                 />
               </div>
             </div>
@@ -400,13 +429,14 @@ function FormAddEmployee(props) {
               />
             </div>
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Divisi</h4>
+              <h4 className="font-semibold text-base">Status Karyawan</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
                   options={optionStatus}
                   change={(data) => {
                     setStatus(data.text);
                   }}
+                  name={"Status Karyawan"}
                 />
               </div>
             </div>

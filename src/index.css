@@ -17,3 +17,31 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+/* styles for medium screens */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    width: 768px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .navbar-desktop {
+    display: none;
+  }
+  * {
+    padding: 0;
+  }
+}
+
+/* styles for small screens and mobile devices */
+@media (max-width: 767px) {
+  body {
+    padding: 0;
+    width: 100%;
+  }
+
+  .navbar-desktop {
+    display: none;
+  }
+}

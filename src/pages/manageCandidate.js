@@ -3,336 +3,407 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import SubCard from "../components/candidate/subCard";
 import MainCard from "../components/candidate/manageCandidateCard";
+import { db } from "../config/firebase";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  writeBatch,
+} from "firebase/firestore";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class ManageCandidate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      droppedItems: [
-        { name: "adi", tahap: "awal" },
-        { name: "Budi", tahap: "awal" },
-      ],
-      droppedItems2: [
-        { name: "Ali", tahap: "admin" },
-        { name: "Heru", tahap: "admin" },
-      ],
-      droppedItems3: [
-        { name: "Waduh", tahap: "interview" },
-        { name: "Ganjar", tahap: "interview" },
-      ],
-      droppedItems4: [
-        { name: "Mamank", tahap: "training" },
-        { name: "Garox", tahap: "training" },
-      ],
       itemNew: null,
+      candidateList: [],
+      tahapSeleksiAwal: [],
+      tahapAdministrasi: [],
+      tahapTes: [],
+      tahapInterview: [],
+      employees: [],
     };
   }
 
-  handleDrop = (item) => {
-    console.log("Item Lama", this.state.itemNew);
+  componentDidMount = async () => {
+    await this.getAllCandidate();
+    await this.getCandidateFiltered();
+    // this.getAllEmployees();
+  };
 
-    // Update droppedItems2
-    const updatedDroppedItems2 = [...this.state.droppedItems, item];
-    this.setState({
-      droppedItems: updatedDroppedItems2,
-      itemNew: item,
-    });
+  getAllCandidate = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "employeesApplicant"));
 
-    // Update droppedItems
-
-    if (item.tahap == "admin") {
-      const updatedDropItems = this.state.droppedItems2.filter(
-        (data) => data.name !== item.name
-      );
-
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems2: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems2: updatedDropItems,
-        });
+      if (querySnapshot.empty) {
+        console.log("Tidak ada dokumen yang ditemukan.");
+        return;
       }
-    } else if (item.tahap == "interview") {
-      const updatedDropItems = this.state.droppedItems3.filter(
-        (data) => data.name !== item.name
-      );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems3: newDataBaru,
+
+      let kandidatKaryawan = [];
+      for (const doc of querySnapshot.docs) {
+        const employeeData = { id: doc.id, ...doc.data() };
+
+        const experienceCollectionRef = collection(doc.ref, "pengalamanKerja");
+        const experienceSnapshot = await getDocs(experienceCollectionRef);
+        let experienceData = [];
+        experienceSnapshot.forEach((expDoc) => {
+          experienceData.push({ id: expDoc.id, ...expDoc.data() });
         });
-      } else {
-        this.setState({
-          droppedItems3: updatedDropItems,
-        });
+        employeeData.pengalamanKerja = experienceData;
+
+        kandidatKaryawan.push(employeeData);
       }
-    } else {
-      const updatedDropItems = this.state.droppedItems4.filter(
-        (data) => data.name !== item.name
-      );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems4: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems4: updatedDropItems,
-        });
-      }
+
+      await new Promise((resolve) => {
+        this.setState({ candidateList: kandidatKaryawan }, resolve);
+      });
+    } catch (error) {
+      console.error("Error fetching employees:", error.message);
     }
   };
-  handleDrop2 = (item) => {
-    console.log("Item Lama", item);
 
-    // Update droppedItems2
-    const updatedDroppedItems2 = [...this.state.droppedItems2, item];
+  getCandidateFiltered = () => {
+    const { candidateList } = this.state;
+    const tahapAwal = this.filterCandidate(candidateList, "tahapSeleksiAwal");
+    const administrasi = this.filterCandidate(
+      candidateList,
+      "tahapAdministrasi"
+    );
+    const tahapTes = this.filterCandidate(candidateList, "tahapTes");
+    const tahapInterview = this.filterCandidate(
+      candidateList,
+      "tahapInterview"
+    );
+
     this.setState({
-      droppedItems2: updatedDroppedItems2,
-      itemNew: item,
+      tahapSeleksiAwal: tahapAwal,
+      tahapAdministrasi: administrasi,
+      tahapTes: tahapTes,
+      tahapInterview: tahapInterview,
     });
-
-    // Update droppedItems
-    if (item.tahap == "awal") {
-      const updatedDropItems = this.state.droppedItems.filter(
-        (data) => data.name !== item.name
-      );
-
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems: updatedDropItems,
-        });
-      }
-    } else if (item.tahap == "interview") {
-      const updatedDropItems = this.state.droppedItems3.filter(
-        (data) => data.name !== item.name
-      );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems3: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems3: updatedDropItems,
-        });
-      }
-    } else {
-      const updatedDropItems = this.state.droppedItems4.filter(
-        (data) => data.name !== item.name
-      );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems4: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems4: updatedDropItems,
-        });
-      }
-    }
-    console.log("Updated droppedItems2:", updatedDroppedItems2);
-    console.log("Updated droppedItems:");
   };
-  handleDrop3 = (item) => {
-    console.log("Item Lama", this.state.itemNew);
 
-    // Update droppedItems2
-    const updatedDroppedItems2 = [...this.state.droppedItems3, item];
+  handleDropGeneric = (item, targetTahap) => {
+    const {
+      tahapSeleksiAwal,
+      tahapAdministrasi,
+      tahapTes,
+      tahapInterview,
+      employees,
+    } = this.state;
+    const tahapan = {
+      tahapSeleksiAwal,
+      tahapAdministrasi,
+      tahapTes,
+      tahapInterview,
+      employees,
+    };
+
+    // Update tahap yang sesuai dengan item baru
+    const updatedTargetTahap = [...tahapan[targetTahap], item];
     this.setState({
-      droppedItems3: updatedDroppedItems2,
+      [targetTahap]: updatedTargetTahap,
       itemNew: item,
     });
 
-    if (item.tahap == "admin") {
-      const updatedDropItems = this.state.droppedItems2.filter(
-        (data) => data.name !== item.name
-      );
-
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
+    // Update tahap lain dengan menghapus item
+    Object.keys(tahapan).forEach((tahap) => {
+      if (tahap !== targetTahap) {
+        const updatedTahap = tahapan[tahap].filter(
+          (data) => data.nama !== item.nama
+        );
         this.setState({
-          droppedItems2: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems2: updatedDropItems,
+          [tahap]: updatedTahap,
         });
       }
-    } else if (item.tahap == "awal") {
-      const updatedDropItems = this.state.droppedItems.filter(
-        (data) => data.name !== item.name
-      );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems: updatedDropItems,
-        });
-      }
-    } else {
-      const updatedDropItems = this.state.droppedItems4.filter(
-        (data) => data.name !== item.name
-      );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems4: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems4: updatedDropItems,
-        });
-      }
-    }
-    console.log("Updated droppedItems:", updatedDroppedItems2);
-    console.log("Updated droppedItems2:");
+    });
   };
-  handleDrop4 = (item) => {
-    console.log("Item Lama", this.state.itemNew);
 
-    // Update droppedItems2
-    const updatedDroppedItems2 = [...this.state.droppedItems4, item];
-    this.setState({
-      droppedItems4: updatedDroppedItems2,
-      itemNew: item,
+  handleSaveChanges = async () => {
+    const {
+      tahapSeleksiAwal,
+      tahapAdministrasi,
+      tahapTes,
+      tahapInterview,
+      employees,
+    } = this.state;
+
+    const activeCandidateIds = new Set();
+
+    // Collect all active candidate IDs
+    [
+      ...tahapSeleksiAwal,
+      ...tahapAdministrasi,
+      ...tahapTes,
+      ...tahapInterview,
+    ].forEach((candidate) => {
+      activeCandidateIds.add(candidate.id);
     });
 
-    // Update droppedItems
-    if (item.tahap == "admin") {
-      const updatedDropItems = this.state.droppedItems2.filter(
-        (data) => data.name !== item.name
-      );
+    // Update employeesApplicant collection
+    const batch = writeBatch(db);
+    const candidateUpdates = [];
 
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems2: newDataBaru,
-        });
+    const upsertCandidateStatus = async (candidate, statusTahap) => {
+      const docRef = doc(db, "employeesApplicant", candidate.id);
+      const docSnapshot = await getDoc(docRef);
+      if (docSnapshot.exists()) {
+        batch.update(docRef, { statusTahap });
       } else {
-        this.setState({
-          droppedItems2: updatedDropItems,
-        });
+        batch.set(docRef, { ...candidate, statusTahap });
       }
-    } else if (item.tahap == "interview") {
-      const updatedDropItems = this.state.droppedItems3.filter(
-        (data) => data.name !== item.name
+    };
+
+    // Upsert tahapSeleksiAwal
+    for (const candidate of tahapSeleksiAwal) {
+      candidateUpdates.push(
+        upsertCandidateStatus(candidate, "tahapSeleksiAwal")
       );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems3: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems3: updatedDropItems,
-        });
-      }
-    } else {
-      const updatedDropItems = this.state.droppedItems.filter(
-        (data) => data.name !== item.name
+    }
+
+    // Upsert tahapAdministrasi
+    for (const candidate of tahapAdministrasi) {
+      candidateUpdates.push(
+        upsertCandidateStatus(candidate, "tahapAdministrasi")
       );
-      if (this.state.itemNew !== null) {
-        const newDataBaru = [...updatedDropItems];
-        this.setState({
-          droppedItems: newDataBaru,
-        });
-      } else {
-        this.setState({
-          droppedItems: updatedDropItems,
-        });
+    }
+
+    // Upsert tahapTes
+    for (const candidate of tahapTes) {
+      candidateUpdates.push(upsertCandidateStatus(candidate, "tahapTes"));
+    }
+
+    // Upsert tahapInterview
+    for (const candidate of tahapInterview) {
+      candidateUpdates.push(upsertCandidateStatus(candidate, "tahapInterview"));
+    }
+
+    try {
+      await Promise.all(candidateUpdates);
+      await batch.commit();
+      toast.success(
+        "Data tahapan kandidat berhasil diperbarui di employeesApplicant collection."
+      );
+    } catch (error) {
+      console.error("Error updating candidates:", error.message);
+      toast.error("Terjadi kesalahan saat memperbarui data kandidat.");
+    }
+
+    // Delete candidates not in active stages from employeesApplicant collection
+    const deletePromises = [];
+    const querySnapshot = await getDocs(collection(db, "employeesApplicant"));
+
+    for (const doc of querySnapshot.docs) {
+      const candidateId = doc.id;
+      if (!activeCandidateIds.has(candidateId)) {
+        // Delete the document itself
+        deletePromises.push(deleteDoc(doc.ref));
+
+        // Delete subcollection pengalamanKerja
+        const pengalamanKerjaRef = collection(doc.ref, "pengalamanKerja");
+        deletePromises.push(this.deleteSubcollection(pengalamanKerjaRef));
       }
     }
-    console.log("Updated droppedItems:", updatedDroppedItems2);
-    console.log("Updated droppedItems2:");
+
+    try {
+      await Promise.all(deletePromises);
+      toast.success(
+        "Data kandidat yang tidak lagi aktif beserta subkoleksinya berhasil dihapus dari employeesApplicant collection."
+      );
+    } catch (error) {
+      console.error("Error deleting inactive candidates:", error.message);
+      toast.error(
+        "Terjadi kesalahan saat menghapus data kandidat tidak aktif."
+      );
+    }
+
+    // Insert or update into employees collection only if there are changes in employees state
+    if (employees.length > 0) {
+      const batch = writeBatch(db);
+
+      for (const employee of employees) {
+        const employeeRef = doc(db, "employees", employee.id);
+
+        const { pengalamanKerja, ...employeeData } = employee;
+
+        batch.set(employeeRef, employeeData, { merge: true });
+
+        if (Array.isArray(pengalamanKerja)) {
+          const pengalamanKerjaRef = collection(employeeRef, "pengalamanKerja");
+          for (const pengalaman of pengalamanKerja) {
+            await addDoc(pengalamanKerjaRef, pengalaman);
+          }
+        } else {
+          console.error("pengalamanKerja is not an array:", pengalamanKerja);
+        }
+      }
+
+      try {
+        await batch.commit();
+        toast.success(
+          "Data karyawan berhasil ditambahkan atau diperbarui di collection employees."
+        );
+
+        this.setState({ employees: [] });
+      } catch (error) {
+        console.error("Error adding or updating employees:", error.message);
+        toast.error(
+          "Terjadi kesalahan saat menambahkan atau memperbarui data karyawan."
+        );
+      }
+    } else {
+      toast.info("Tidak ada perubahan yang perlu disimpan untuk karyawan.");
+    }
+
+    await this.getAllCandidate();
+    await this.getCandidateFiltered();
+  };
+
+  deleteSubcollection = async (collectionRef) => {
+    const deletePromises = [];
+    const querySnapshot = await getDocs(collectionRef);
+
+    for (const doc of querySnapshot.docs) {
+      deletePromises.push(deleteDoc(doc.ref));
+    }
+
+    await Promise.all(deletePromises);
+  };
+
+  filterCandidate = (dataArray, status) => {
+    return dataArray.filter((candidate) => candidate.statusTahap === status);
   };
 
   render() {
+    const {
+      tahapSeleksiAwal,
+      tahapTes,
+      tahapInterview,
+      tahapAdministrasi,
+      employees,
+    } = this.state;
     return (
       <DndProvider backend={HTML5Backend}>
+        <ToastContainer />
         <div>
           <div className="flex w-full justify-start p-4 items-center text-white text-3xl mb-6">
             Manajemen Calon Kandidat Karyawan
           </div>
-          <div className="w-full flex  mt-20 justify-between items-start">
+          <div>
+            <button className="button-add" onClick={this.handleSaveChanges}>
+              Simpan Perubahan
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+          <div className="w-full flex  mt-10 justify-between items-start">
             <div
               data-aos="fade-down"
               data-aos-delay="50"
-              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
+              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
             >
-              <div className="w-[22rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[18rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg  border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                 <h4>Tahap Awal Seleksi</h4>
               </div>
               <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {this.state.droppedItems.map((item, index) => (
+                {tahapSeleksiAwal.map((item, index) => (
                   <SubCard key={index} name={item} />
                 ))}
-                <MainCard onDrop={this.handleDrop} />
+                <MainCard
+                  onDrop={(item) =>
+                    this.handleDropGeneric(item, "tahapSeleksiAwal")
+                  }
+                />
               </div>
             </div>
             <div
               data-aos="fade-down"
               data-aos-delay="150"
-              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
             >
-              <div className="w-[22rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[18rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl  text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                 <h4>Tahap Administrasi</h4>
               </div>
               <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {this.state.droppedItems2.map((item, index) => (
+                {tahapAdministrasi.map((item, index) => (
                   <SubCard key={index} name={item} />
                 ))}
-                <MainCard onDrop={this.handleDrop2} />
+                <MainCard
+                  onDrop={(item) =>
+                    this.handleDropGeneric(item, "tahapAdministrasi")
+                  }
+                />
               </div>
             </div>
             <div
               data-aos="fade-down"
               data-aos-delay="250"
-              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
             >
-              <div className="w-[22rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[18rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+
+              <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
+                <h4>Tahap Tes</h4>
+              </div>
+              <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
+                {tahapTes.map((item, index) => (
+                  <SubCard key={index} name={item} />
+                ))}
+                <MainCard
+                  onDrop={(item) => this.handleDropGeneric(item, "tahapTes")}
+                />
+              </div>
+            </div>
+            <div
+              data-aos="fade-down"
+              data-aos-delay="250"
+              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+            >
+              <div className="w-[18rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                 <h4>Tahap Interview</h4>
               </div>
               <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {this.state.droppedItems3.map((item, index) => (
+                {tahapInterview.map((item, index) => (
                   <SubCard key={index} name={item} />
                 ))}
-                <MainCard onDrop={this.handleDrop3} />
+                <MainCard
+                  onDrop={(item) =>
+                    this.handleDropGeneric(item, "tahapInterview")
+                  }
+                />
               </div>
             </div>
             <div
               data-aos="fade-down"
               data-aos-delay="350"
-              className="w-[22rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
             >
-              <div className="w-[22rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div className="w-[18rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
               <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
-                <h4>Tahap Training</h4>
+                <h4>Karyawan</h4>
               </div>
               <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {this.state.droppedItems4.map((item, index) => (
+                {employees.map((item, index) => (
                   <SubCard key={index} name={item} />
                 ))}
-                <MainCard onDrop={this.handleDrop4} />
+                <MainCard
+                  onDrop={(item) => this.handleDropGeneric(item, "employees")}
+                />
               </div>
             </div>
           </div>

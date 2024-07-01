@@ -1,7 +1,7 @@
 import React from "react";
 import { GoArrowUpRight } from "react-icons/go";
 import "../../styles/card.css";
-export default function CardDashboard() {
+export default function CardDashboard(props) {
   return (
     <div>
       {" "}
@@ -53,15 +53,14 @@ export default function CardDashboard() {
             </div>
           </div>
 
-          <div className="flex gap-5 justify-between  mt-6 w-full border-t border-t-red-500 pt-4 p-4 z-[99]">
+          <div className="flex gap-5 justify-center  mt-8 w-full border-t border-t-red-500 pt-4 p-4 z-[99]">
             <div className="flex gap-2 whitespace-nowrap">
-              <div className="grow text-4xl font-bold text-white">45</div>
+              <div className="grow text-4xl font-bold text-white">
+                {props.totalDivisi}
+              </div>
               <div className="ml-6 flex items-end text-base text-slate-300">
                 Divisi
               </div>
-            </div>
-            <div className="self-start mt-5 text-sm leading-4 text-teal-400">
-              25 in last week
             </div>
           </div>
         </div>
@@ -113,15 +112,14 @@ export default function CardDashboard() {
             </div>
           </div>
 
-          <div className="flex gap-5 justify-between  mt-6 w-full border-t border-t-blue-500 pt-4 p-4 z-[99]">
+          <div className="flex gap-5 justify-center  mt-6 w-full border-t border-t-blue-500 pt-4 p-4 z-[99]">
             <div className="flex gap-2 whitespace-nowrap">
-              <div className="grow text-4xl font-bold text-white">45</div>
+              <div className="grow text-4xl font-bold text-white">
+                {props.totalKaryawan}
+              </div>
               <div className="ml-6 flex items-end text-base text-slate-300">
                 Karyawan
               </div>
-            </div>
-            <div className="self-start mt-5 text-sm leading-4 text-teal-400">
-              25 in last week
             </div>
           </div>
         </div>
@@ -173,15 +171,14 @@ export default function CardDashboard() {
             </div>
           </div>
 
-          <div className="flex gap-5 justify-between  mt-6 w-full border-t border-t-yellow-500 pt-4 p-4 z-[99]">
+          <div className="flex gap-5 justify-center  mt-6 w-full border-t border-t-yellow-500 pt-4 p-4 z-[99]">
             <div className="flex gap-2 whitespace-nowrap">
-              <div className="grow text-4xl font-bold text-white">45</div>
+              <div className="grow text-4xl font-bold text-white">
+                {props.totalAkanBerakhir}
+              </div>
               <div className="ml-6 flex items-end text-base text-slate-300">
                 Karyawan
               </div>
-            </div>
-            <div className="self-start mt-5 text-sm leading-4 text-teal-400">
-              25 in last week
             </div>
           </div>
         </div>
@@ -231,15 +228,14 @@ export default function CardDashboard() {
             </div>
           </div>
 
-          <div className="flex  p-4 gap-5 justify-between  mt-6 w-full border-t border-t-emerald-500 pt-4 z-[99]">
+          <div className="flex  p-4 gap-5 justify-center  mt-6 w-full border-t border-t-emerald-500 pt-4 z-[99]">
             <div className="flex gap-2 whitespace-nowrap">
-              <div className="grow text-4xl font-bold text-white">45</div>
+              <div className="grow text-4xl font-bold text-white">
+                {props.totalKandidat}
+              </div>
               <div className="ml-6 flex items-end text-base text-slate-300">
                 Kandidat Terpilih
               </div>
-            </div>
-            <div className="self-start mt-5 text-sm leading-4 text-teal-400">
-              25 in last week
             </div>
           </div>
         </div>

@@ -13,9 +13,9 @@ const SubCard = ({ name }) => {
   return (
     <div
       ref={drag}
-      className="flex box w-full container justify-center cursor-pointer items-center p-2 border border-slate-400 bg-slate-600 text-white rounded-lg"
+      className="flex box w-full  font-normal container justify-center cursor-pointer items-center p-2 border border-slate-400 bg-slate-600 text-white rounded-lg"
     >
-      {name.name}
+      {name.nama}
     </div>
   );
 };
