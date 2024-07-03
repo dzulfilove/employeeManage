@@ -88,8 +88,14 @@ function CardDetailEmployee(props) {
       setAlamat(props.data.alamat);
       setGaji(props.data.gaji);
       setMasaKerja(props.data.masaKerja);
-      setTanggalAwalKontrak(props.data.tanggalAwalKontrak);
-      setTanggalAkhirKontrak(props.data.tanggalAkhirKontrak);
+      setTanggalAwalKontrak(
+        props.data.tanggalAwalKontrak ? props.data.tanggalAwalKontrak : tanggal
+      );
+      setTanggalAkhirKontrak(
+        props.data.tanggalAkhirKontrak
+          ? props.data.tanggalAkhirKontrak
+          : tanggal
+      );
 
       const lokasiSelect = props.dataLokasi.filter(
         (item) => item.text == props.data.cabang
@@ -689,7 +695,7 @@ function CardDetailEmployee(props) {
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Gaji</h4>
                     <input
-                      type="text"
+                      type="number"
                       className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                       value={gaji}
                       onChange={(e) => {
