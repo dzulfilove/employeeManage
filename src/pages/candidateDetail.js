@@ -38,6 +38,7 @@ class CandidateDetail extends Component {
 
   componentDidMount() {
     this.getCandidate(this.state.idCandidate);
+    this.getCandidateExperience(this.state.idCandidate);
   }
 
   // Get data
@@ -59,7 +60,7 @@ class CandidateDetail extends Component {
     }
   };
 
-  getCandidateDocuments = async (id) => {
+  getCandidateExperience = async (id) => {
     try {
       const subCollectionRef = collection(
         db,
@@ -84,7 +85,7 @@ class CandidateDetail extends Component {
     return (
       <div className="flex flex-col justify-start items-center">
         <div className="flex w-[97%] justify-start p-4 pl-0  items-center text-white text-3xl mb-6 border-b border-b-teal-500 pb-10">
-          Data Detail Karyawan
+          Data Detail Kandidat
         </div>
 
         <CardDetailCandidate
@@ -93,6 +94,7 @@ class CandidateDetail extends Component {
           dataLokasi={this.state.dataLokasi}
           id={this.state.idCandidate}
           getDataCandidate={this.getCandidate}
+          experienceData={this.state.candidatePengalaman}
         />
 
         <div className="flex justify-center w-full items-start gap-16"></div>

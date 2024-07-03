@@ -77,6 +77,7 @@ function FormAddEmployee(props) {
     { value: "Karyawan Tetap", text: "Karyawan Tetap" },
     { value: "Karyawan Magang", text: "Karyawan Magang" },
     { value: "Karyawan Pelatihan", text: "Karyawan Pelatihan" },
+    { value: "Karyawan Tidak Aktif", text: "Karyawan Tidak Aktif" },
     { value: "Karyawan Uji Coba", text: "Karyawan Uji Coba" },
   ];
 

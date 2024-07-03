@@ -3,11 +3,14 @@ import CardDashboard from "../components/dashboard/cardDashboard";
 import TableDashboard from "../components/dashboard/tableDashboard";
 import TableDashboardDivision from "../components/dashboard/tableDashboardDivision";
 import { db } from "../config/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import dayjs from "dayjs";
+import Swal from "sweetalert2";
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+    const idPerusahaan = sessionStorage.getItem("refPerusahaan");
+
     this.state = {
       dataKosong: [],
       dataDivisi: [],
@@ -16,6 +19,7 @@ class Dashboard extends Component {
       totalAkanBerakhir: 0,
       totalDivisi: 0,
       tanggal: dayjs().locale("id").format("YYYY/MM/DD"),
+      refPerusahaan: idPerusahaan,
       totalkandidat: 0,
       candidateList: [],
     };
@@ -80,6 +84,7 @@ class Dashboard extends Component {
 
       const dataBerakhir = dataFormat.filter((data) => data.sisaKontrak < 90);
       console.log(dataFormat, "data Baru Format");
+      this.checkKontrakBerakhir(dataBerakhir);
       this.setState({
         dataEmployees: dataBerakhir,
         totalKaryawan: dataFormat.length,
@@ -92,15 +97,20 @@ class Dashboard extends Component {
   };
 
   getTimData = async (dataEmployee) => {
+    const refPerusahaan = doc(db, "Perusahaan", this.state.refPerusahaan);
+
     try {
-      const timCollection = collection(db, "Tim");
-      const timSnapshot = await getDocs(timCollection);
-      const timList = timSnapshot.docs.map((doc) => ({
+      const q = query(
+        collection(db, "Tim"),
+        where("refPerusahaan", "==", refPerusahaan)
+      );
+      const querySnapshot = await getDocs(q);
+
+      const timList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       const data = this.removeDuplicates(timList);
-
       console.log(data, "tim");
       // Langkah 1: Buat objek untuk menyimpan jumlah pengguna per kelas
       const userCounts = {};
@@ -125,7 +135,6 @@ class Dashboard extends Component {
       return [];
     }
   };
-
   getAllCandidate = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "employeesApplicant"));
@@ -149,9 +158,18 @@ class Dashboard extends Component {
 
         kandidatKaryawan.push(employeeData);
       }
+      const kandidatInterview = kandidatKaryawan.filter(
+        (item) => item.statusTahap == "tahapInterview"
+      );
       console.log("kandidat", kandidatKaryawan);
       await new Promise((resolve) => {
-        this.setState({ candidateList: kandidatKaryawan }, resolve);
+        this.setState(
+          {
+            candidateList: kandidatKaryawan,
+            totalkandidat: kandidatKaryawan.length,
+          },
+          resolve
+        );
       });
     } catch (error) {
       console.error("Error fetching employees:", error.message);
@@ -181,9 +199,33 @@ class Dashboard extends Component {
 
     const diffInDays = end.diff(start, "day");
 
-    return diffInDays;
+    return diffInDays - 1;
   };
 
+  checkKontrakBerakhir = (data) => {
+    const namaArray = [];
+
+    // Loop melalui setiap objek dalam array
+    data.forEach((obj) => {
+      // Cek jika properti 'nilai' kurang dari 3
+      if (obj.sisaKontrak < 5) {
+        // Tambahkan properti 'nama' ke array namaArray
+        namaArray.push(obj.nama);
+      }
+    });
+    const hasilGabung = namaArray.join(", ");
+    if (namaArray.length > 0) {
+      Swal.fire({
+        title: "Perhatian",
+        text: `Ada Beberapa Karyawan Dengan Kontrak Kurang dari 5 Hari, Yakni ${hasilGabung}. Mohon Lakukan Pembaruan Data Kontrak Jika Karyawan Memperpanjang Kontrak Kerja`,
+        icon: "warning",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/employee";
+        }
+      });
+    }
+  };
   render() {
     console.log(this.state.dataDivisi, "divisi");
     return (

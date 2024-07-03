@@ -31,6 +31,7 @@ import Auth from "./pages/auth";
 import FormLamaran from "./pages/lamaranKerja";
 import SendedForm from "./pages/sendedForm";
 import CandidateDetail from "./pages/candidateDetail";
+import EndedContract from "./pages/endedContract";
 const App = () => {
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
   const isLamaran = sessionStorage.getItem("isLamaran");
@@ -331,6 +332,8 @@ const App = () => {
                       path="/employee-detail/:id"
                       element={<EmployeeDetail />}
                     />
+                    <Route path="/send-notif" element={<EndedContract />} />
+
                     <Route
                       path="/candidate-detail/:id"
                       element={<CandidateDetail />}
@@ -353,6 +356,7 @@ const App = () => {
               <Routes>
                 <Route exact path="/" element={<Auth />} />
                 <Route path="/form-lamaran-kerja" element={<FormLamaran />} />
+                <Route path="/send-notif" element={<EndedContract />} />
                 {isLamaran && (
                   <>
                     <Route path="/sended-form" element={<SendedForm />} />

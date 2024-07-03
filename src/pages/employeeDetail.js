@@ -27,12 +27,14 @@ class EmployeeDetail extends Component {
   constructor(props) {
     super(props);
     const { id } = this.props.params;
+    const idPerusahaan = sessionStorage.getItem("refPerusahaan");
 
     this.state = {
       idEmployee: id,
       dataDivisi: [],
       dataLokasi: [],
       dataEmployee: {},
+      refPerusahaan: idPerusahaan,
       employeeDocuments: [],
     };
   }
@@ -64,10 +66,16 @@ class EmployeeDetail extends Component {
   };
 
   getTimData = async () => {
+    const refPerusahaan = doc(db, "Perusahaan", this.state.refPerusahaan);
+
     try {
-      const timCollection = collection(db, "Tim");
-      const timSnapshot = await getDocs(timCollection);
-      const timList = timSnapshot.docs.map((doc) => ({
+      const q = query(
+        collection(db, "Tim"),
+        where("refPerusahaan", "==", refPerusahaan)
+      );
+      const querySnapshot = await getDocs(q);
+
+      const timList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -84,7 +92,7 @@ class EmployeeDetail extends Component {
   };
 
   getAllCabang = async () => {
-    const refPerusahaan = doc(db, "Perusahaan", "42c0276C84e8chpCogKK");
+    const refPerusahaan = doc(db, "Perusahaan", this.state.refPerusahaan);
     try {
       const q = query(
         collection(db, "CabangPerusahaan"),
@@ -102,8 +110,7 @@ class EmployeeDetail extends Component {
       }));
 
       const dataOption = cabangList.map((item) => ({
-        value: item.nama,
-
+        value: item.id,
         text: item.nama,
       }));
 

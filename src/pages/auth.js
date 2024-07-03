@@ -43,6 +43,7 @@ class Auth extends Component {
       await new Promise((resolve) => {
         this.setState({ user: userData }, resolve);
       });
+      sessionStorage.setItem("refPerusahaan", userData.refPerusahaan.id);
 
       return userData;
     } catch (error) {
@@ -92,12 +93,9 @@ class Auth extends Component {
           showConfirmButton: false,
           timer: 1500,
         },
-        () => {
-          window.location.href = `/`;
-        }
+        () => {}
       );
-      window.location.href = `/`;
-
+      window.location.href = "/";
       console.log("Login successful");
     } catch (error) {
       Swal.fire({

@@ -155,7 +155,8 @@ function TableEmployee(props) {
           <Tab eventKey="tab1" title="Semua Karyawan"></Tab>
 
           <Tab eventKey="tab2" title="Akan Berakhir"></Tab>
-          <Tab eventKey="tab3" title="Baru"></Tab>
+          <Tab eventKey="tab3" title="Berakhir"></Tab>
+          <Tab eventKey="tab4" title="Baru"></Tab>
         </Tabs>
         <div className="search">
           <div className="search-box">

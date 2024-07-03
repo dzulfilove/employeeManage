@@ -33,6 +33,7 @@ class FormLamaran extends Component {
       pengalamanKerjaList: [], // Ubah menjadi pengalamanKerjaList
       isAddingPengalaman: false,
       lokasiPengalaman: "",
+      tanggalPengalaman: "",
       posisiPengalaman: "",
       deskripsiPengalaman: "",
       gajiYangDiharapkan: 0,
@@ -40,6 +41,7 @@ class FormLamaran extends Component {
       fotoTerbaruFile: null,
       cvTerbaru: "",
       cvTerbaruFile: null,
+      jurusan: "",
       isJaminanIjazah: false,
       isStrAktif: false,
       penempatanCabang: false,
@@ -82,9 +84,15 @@ class FormLamaran extends Component {
   handleChange = (event) => {
     const { name, value, type, checked, files } = event.target;
     if (type === "file") {
-      this.setState({
-        [`${name}File`]: files[0],
-      });
+      if (name == "fotoTerbaru") {
+        this.setState({
+          fotoTerbaruFile: files[0],
+        });
+      } else {
+        this.setState({
+          cvTerbaruFile: files[0],
+        });
+      }
     } else {
       this.setState({
         [name]: type === "checkbox" ? checked : value,
@@ -119,6 +127,7 @@ class FormLamaran extends Component {
       lokasiPengalaman,
       posisiPengalaman,
       deskripsiPengalaman,
+      tanggalPengalaman,
       pengalamanKerjaList,
     } = this.state;
 
@@ -129,6 +138,7 @@ class FormLamaran extends Component {
       lokasiPengalaman,
       deskripsiPengalaman,
       posisiPengalaman,
+      lamaKerja: tanggalPengalaman,
     };
     toast.success("🦄 Pengalaman berhasil ditambah!", {
       position: "top-right",
@@ -148,28 +158,10 @@ class FormLamaran extends Component {
         lokasiPengalaman: "",
         posisiPengalaman: "",
         deskripsiPengalaman: "",
+        tanggalPengalaman: "",
       },
-      () => {
-        console.log("Pengalaman Kerja List:", this.state.pengalamanKerjaList);
-      }
+      () => {}
     );
-  };
-
-  handleSaveFoto = async (file) => {
-    if (!file) {
-      throw new Error("File not found");
-    }
-    const random = generateRandomString(12);
-    const storageRef = ref(dbImage, `fotoPegawai/${random}-${file.name}`);
-
-    try {
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      return downloadURL;
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      throw error;
-    }
   };
 
   handleSaveCv = async (file) => {
@@ -189,6 +181,37 @@ class FormLamaran extends Component {
     }
   };
 
+  sendMessage = async (text, foto) => {
+    try {
+      const response = await fetch(
+        "https://api.telegram.org/bot6823587684:AAE4Ya6Lpwbfw8QxFYec6xAqWkBYeP53MLQ/sendPhoto",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: "-1001812360373",
+            // chat_id: "6546310886",
+            photo: foto,
+            caption: text,
+            message_thread_id: "3231",
+            parse_mode: "html",
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // Swal.fire("Berhasil", "Alasan Telah Berhasil Dikirim", "success");
+        console.log("Berhasil Dikirmkan");
+      } else {
+        // Swal.fire("Perhatian", "Alasan Gagal dikirim", "warning");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan. Silakan coba lagi.");
+    }
+  };
   handleSubmit = async (e) => {
     e.preventDefault();
     const {
@@ -209,9 +232,12 @@ class FormLamaran extends Component {
       fotoTerbaruFile,
       cvTerbaruFile,
       tanggal,
+      jurusan,
+      lokasiPengalaman,
+      posisiPengalaman,
+      deskripsiPengalaman,
+      tanggalPengalaman,
     } = this.state;
-    console.log(fotoTerbaruFile);
-    console.log(cvTerbaruFile);
 
     let cek = this.handleCheckEmptyFields();
 
@@ -243,7 +269,7 @@ class FormLamaran extends Component {
       this.setState({ isProses: true });
 
       try {
-        const fotoTerbaruURL = await this.handleSaveFoto(fotoTerbaruFile);
+        const fotoTerbaruURL = await this.handleFoto(fotoTerbaruFile);
         const cvTerbaruURL = await this.handleSaveCv(cvTerbaruFile);
 
         // Simpan URL foto terbaru dan CV terbaru ke state
@@ -266,13 +292,13 @@ class FormLamaran extends Component {
           cvTerbaru: cvTerbaruURL,
           isJaminanIjazah,
           isStrAktif,
+          jurusan,
           penempatanCabang,
           tanggalMelamar: tanggal,
           sumberInformasi,
           statusTahap: "tahapSeleksiAwal",
         };
 
-        console.log(pelamar, "data Upload");
         // Simpan dokumen pelamar ke koleksi "employeesApplicant"
         const pelamarRef = await addDoc(
           collection(db, "employeesApplicant"),
@@ -286,24 +312,52 @@ class FormLamaran extends Component {
         // Membuat subcollection "pengalamanKerja" di dalam dokumen pelamar
         const pengalamanKerjaCol = collection(pengalamanRef, "pengalamanKerja");
 
+        let listPengalaman = [];
+
+        if (
+          pengalamanKerjaList.length == 0 &&
+          lokasiPengalaman !== "" &&
+          posisiPengalaman !== "" &&
+          deskripsiPengalaman !== "" &&
+          tanggalPengalaman !== ""
+        ) {
+          listPengalaman = [
+            {
+              lokasiKerja: lokasiPengalaman,
+              lamaKerja: tanggalPengalaman,
+              posisi: posisiPengalaman,
+              deskripsiPengalaman,
+            },
+          ];
+        } else {
+          listPengalaman = pengalamanKerjaList;
+        }
         // Iterasi pengalamanKerjaList dan tambahkan ke subcollection
-        pengalamanKerjaList.forEach((pengalaman) => {
-          const { lokasiPengalaman, posisiPengalaman, deskripsiPengalaman } =
-            pengalaman;
+        listPengalaman.forEach((pengalaman) => {
+          const {
+            lokasiPengalaman,
+            posisiPengalaman,
+            deskripsiPengalaman,
+            lamaKerja,
+          } = pengalaman;
           const newPengalamanRef = doc(pengalamanKerjaCol);
           batch.set(newPengalamanRef, {
             lokasiKerja: lokasiPengalaman,
             posisi: posisiPengalaman,
             deskripsiPengalaman,
+            lamaKerja,
           });
         });
         await batch.commit();
 
-        console.log(
-          "Data pelamar dan pengalaman kerja berhasil disimpan:",
-          pelamar
-        );
+        const foto = fotoTerbaruURL;
+        const text = `<b>Ada Pelamar ${posisi} Baru</b>\n\n<b>Tanggal:</b> ${this.formatTanggal(
+          tanggal
+        )}\n<b>Nama: </b> ${nama}\n<b>Email:</b> ${email}\n<b>No. Telepon:</b> ${nomorWhatsapp}\n<b>Pendidikan Terakhir:</b> ${riwayatPendidikan} ${jurusan}\n<b>Posisi Yang Dilamar:</b> ${posisi}\n<b>Bersedia Menyimpan Ijazah:</b> ${
+          isJaminanIjazah == true ? "Ya" : "Tidak"
+        }\n<b>Link CV:</b> ${cvTerbaruURL} `;
 
+        await this.sendMessage(text, foto);
         Swal.fire({
           title: "Berhasil!",
           text: "Lamaran Anda Berhasil Diajukan",
@@ -367,6 +421,88 @@ class FormLamaran extends Component {
     }
   };
 
+  handleFoto = async (file) => {
+    try {
+      // Fungsi untuk mengompres gambar menggunakan canvas
+      const compressImage = (file, maxWidth, maxHeight, quality) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = URL.createObjectURL(file);
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height *= maxWidth / width));
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width *= maxHeight / height));
+                height = maxHeight;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(
+              (blob) => {
+                resolve(blob);
+              },
+              "image/jpeg",
+              quality
+            );
+          };
+          img.onerror = (err) => {
+            reject(err);
+          };
+        });
+      };
+
+      // Kompresi gambar dengan resolusi maksimal 1920x1920 dan kualitas 0.7
+      const compressedFile = await compressImage(file, 1920, 1920, 0.7);
+
+      const random = generateRandomString(12);
+      const storageRef = ref(dbImage, `fotoPegawai/${random}-${file.name}`);
+
+      await uploadBytes(storageRef, compressedFile);
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL;
+    } catch (error) {
+      console.error("Gagal mengunggah foto:", error);
+    }
+  };
+
+  // Fungsi untuk mengonversi data URI menjadi Blob
+  dataURItoBlob = (dataURI) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  };
+  formatTanggal = (tanggal) => {
+    // Parsing tanggal dengan format "DD-MM-YYYY"
+    const parsedDate = dayjs(tanggal, "YYYY/MM/DD");
+
+    // Ambil nama hari dan bulan dalam bahasa Indonesia
+    const hari = parsedDate.locale("id").format("dddd");
+    const bulan = parsedDate.locale("id").format("MMMM");
+
+    // Format ulang tanggal sesuai keinginan
+    const hasil =
+      parsedDate.format("DD") + " " + bulan + " " + parsedDate.format("YYYY");
+
+    return hasil;
+  };
   render() {
     const optionPendidikan = [
       { value: "SD", text: "SD" },
@@ -386,6 +522,9 @@ class FormLamaran extends Component {
               <div className="absolute z-[99999] w-full h-[100vh] flex justify-center items-center bg-white flex-col gap-4">
                 <div className="loader-form"></div>
                 <h3 className="text-base font-medium">Mohon Tunggu....</h3>
+                <h3 className="text-base font-medium">
+                  Jangan Tutup Halaman Ini
+                </h3>
               </div>
             </>
           ) : (
@@ -491,7 +630,17 @@ class FormLamaran extends Component {
                     />
                   </div>
                 </div>
-
+                <div className="flex flex-col justify-between items-start w-full gap-2">
+                  <h3 className=" font-semibold">Jurusan:</h3>
+                  <input
+                    type="text"
+                    name="jurusan"
+                    value={this.state.jurusan}
+                    onChange={this.handleChange}
+                    className="border border-slate-500 rounded-lg bg-slate-50 h-[3rem] w-full  p-2"
+                    required
+                  />
+                </div>
                 <div className="flex flex-col justify-between items-start w-full gap-2">
                   <h3 className="font-semibold">Pengalaman Kerja</h3>
                   <button
@@ -526,6 +675,17 @@ class FormLamaran extends Component {
                         }
                         required
                       />
+                      <input
+                        type="text"
+                        name="tanggalPengalaman"
+                        placeholder="Lama Kerja"
+                        value={this.state.tanggalPengalaman}
+                        className="border border-slate-500 rounded-lg bg-slate-50 h-[3rem] w-full  p-2"
+                        onChange={(e) =>
+                          this.handleChangePengalaman(e, "tanggalPengalaman")
+                        }
+                        required
+                      />
                       <textarea
                         name="deskripsiPengalaman"
                         placeholder="Deskripsi Pengalaman"
@@ -536,13 +696,18 @@ class FormLamaran extends Component {
                         }
                         required
                       />
-                      <button
-                        className="flex justify-center items-center p-2 rounded-xl bg-emerald-500  w-[8rem] text-white"
-                        type="button"
-                        onClick={() => this.handleSubmitPengalaman(null)}
-                      >
-                        Simpan
-                      </button>
+                      <div className="flex flex-col justify-between w-full items-start">
+                        <button
+                          className="flex justify-center items-center p-2 rounded-xl bg-emerald-500  w-[8rem] text-white"
+                          type="button"
+                          onClick={() => this.handleSubmitPengalaman(null)}
+                        >
+                          Simpan
+                        </button>
+                        <h3 className="text-sm text-teal-600 font-normal mt-2">
+                          *Klik Untuk Menyimpan Pengalaman Anda
+                        </h3>
+                      </div>
                     </div>
                   )}
 
@@ -609,7 +774,7 @@ class FormLamaran extends Component {
                 </div>
 
                 <div className="flex flex-col justify-between items-start w-full gap-2">
-                  <h3 className=" font-semibold">CV Terbaru</h3>
+                  <h3 className=" font-semibold">CV Terbaru (PDF / Image)</h3>
                   <input
                     type="file"
                     name="cvTerbaru"

@@ -17,22 +17,24 @@ import { generateRandomString } from "../components/features/utils";
 class AddEmployee extends Component {
   constructor(props) {
     super(props);
+    const idPerusahaan = sessionStorage.getItem("refPerusahaan");
     this.state = {
       dataDivisi: [],
       dataKosong: [],
       dataLokasi: [],
       dataPosisi: [],
+      refPerusahaan: idPerusahaan,
     };
   }
 
   componentDidMount() {
     this.getTimData();
     this.getAllCabang();
-    this.getAllDivisions();
+    this.getAllPosisi();
   }
 
   // getData
-  getAllDivisions = async () => {
+  getAllPosisi = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "divisions"));
 
@@ -56,10 +58,16 @@ class AddEmployee extends Component {
     }
   };
   getTimData = async () => {
+    const refPerusahaan = doc(db, "Perusahaan", this.state.refPerusahaan);
+
     try {
-      const timCollection = collection(db, "Tim");
-      const timSnapshot = await getDocs(timCollection);
-      const timList = timSnapshot.docs.map((doc) => ({
+      const q = query(
+        collection(db, "Tim"),
+        where("refPerusahaan", "==", refPerusahaan)
+      );
+      const querySnapshot = await getDocs(q);
+
+      const timList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -76,7 +84,7 @@ class AddEmployee extends Component {
   };
 
   getAllCabang = async () => {
-    const refPerusahaan = doc(db, "Perusahaan", "42c0276C84e8chpCogKK");
+    const refPerusahaan = doc(db, "Perusahaan", this.state.refPerusahaan);
     try {
       const q = query(
         collection(db, "CabangPerusahaan"),

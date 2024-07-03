@@ -28,7 +28,7 @@ import {
 import { generateRandomString } from "../features/utils";
 import DropdownSearch from "../features/dropdown";
 import { Link } from "react-router-dom";
-const dateFormatList = ["YYYY/MM/DD", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
 function TableEmployeeDetail(props) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -169,6 +169,16 @@ function TableEmployeeDetail(props) {
 
     return hasil;
   };
+
+  function ubahFormatTanggal(tanggal) {
+    // Memisahkan string tanggal berdasarkan karakter '/'
+    const [tahun, bulan, hari] = tanggal.split("/");
+
+    // Menggabungkan kembali dalam format DD/MM/YYYY
+    const formatBaru = `${hari}/${bulan}/${tahun}`;
+
+    return formatBaru;
+  }
   console.log(data);
   return (
     <div className="p-4 bg-slate-800 w-[90%] rounded-xl shadow-lg mb-[8rem] mt-16">
@@ -219,9 +229,7 @@ function TableEmployeeDetail(props) {
             <Space direction="vertical" size={12}>
               <DatePicker
                 defaultValue={dayjs(
-                  data !== null
-                    ? data.tanggalTerbitDokumen
-                    : tanggalTerbitDokumen,
+                  ubahFormatTanggal(tanggalTerbitDokumen),
                   dateFormatList[0]
                 )}
                 format={dateFormatList}
@@ -241,6 +249,7 @@ function TableEmployeeDetail(props) {
                 change={(data) => {
                   setStatusDokumen(data.text);
                 }}
+                name={"Status"}
               />
             </div>
           </div>

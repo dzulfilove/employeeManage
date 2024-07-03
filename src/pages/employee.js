@@ -2,21 +2,26 @@ import React, { Component } from "react";
 import CardEmployee from "../components/employee/cardEmployee";
 import TableEmployee from "../components/employee/tableEmployee";
 import { db } from "../config/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 class Employee extends Component {
   constructor(props) {
     super(props);
+    const idPerusahaan = sessionStorage.getItem("refPerusahaan");
+
     this.state = {
       dataEmployees: [],
       dataDivisi: [],
       dataDisplay: [],
       dataKaryawanBaru: [],
       datakaryawanBerakhir: [],
+      dataBerakhir: [],
       employeeDocuments: [],
       totalKaryawan: 0,
       totalDivisi: 0,
+      refPerusahaan: idPerusahaan,
+
       totalKaryawanBaru: 0,
       totalAkanBerakhir: 0,
       tanggal: dayjs().locale("id").format("YYYY/MM/DD"),
@@ -102,13 +107,24 @@ class Employee extends Component {
         ),
       }));
 
-      const dataBerakhir = dataFormat.filter((data) => data.sisaKontrak < 90);
-      const dataBaru = dataFormat.filter((data) => data.lamaKerja <= 30);
+      const dataBerakhir = dataFormat.filter(
+        (data) =>
+          data.sisaKontrak < 90 &&
+          data.statusKaryawan !== "Karyawan Tidak Aktif"
+      );
+      const sudahBerakhir = dataFormat.filter(
+        (item) => item.statusKaryawan == "Karyawan Tidak Aktif"
+      );
+      const dataBaru = dataFormat.filter(
+        (data) =>
+          data.lamaKerja <= 30 && data.statusKaryawan !== "Karyawan Tidak Aktif"
+      );
       console.log(dataFormat, "data Baru Format");
       this.setState({
         dataEmployees: dataFormat,
         dataKaryawanBaru: dataBaru,
         datakaryawanBerakhir: dataBerakhir,
+        dataBerakhir: sudahBerakhir,
         dataDisplay: dataFormat,
         totalKaryawan: employeesData.length,
         totalKaryawanBaru: dataBaru.length,
@@ -120,10 +136,16 @@ class Employee extends Component {
   };
 
   getTimData = async () => {
+    const refPerusahaan = doc(db, "Perusahaan", this.state.refPerusahaan);
+
     try {
-      const timCollection = collection(db, "Tim");
-      const timSnapshot = await getDocs(timCollection);
-      const timList = timSnapshot.docs.map((doc) => ({
+      const q = query(
+        collection(db, "Tim"),
+        where("refPerusahaan", "==", refPerusahaan)
+      );
+      const querySnapshot = await getDocs(q);
+
+      const timList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -132,9 +154,7 @@ class Employee extends Component {
         text: item.Nama,
         value: item.Nama,
       }));
-
-      console.log(data, "tim");
-      this.setState({ dataDivisi: dataOption, totalDivisi: dataOption.length });
+      this.setState({ dataDivisi: dataOption });
     } catch (error) {
       console.error("Error fetching Tim data: ", error);
       return [];
@@ -147,6 +167,8 @@ class Employee extends Component {
       this.setState({ dataDisplay: this.state.dataEmployees });
     } else if (name == "tab2") {
       this.setState({ dataDisplay: this.state.datakaryawanBerakhir });
+    } else if (name == "tab3") {
+      this.setState({ dataDisplay: this.state.dataBerakhir });
     } else {
       this.setState({ dataDisplay: this.state.dataKaryawanBaru });
     }
@@ -158,7 +180,7 @@ class Employee extends Component {
 
     const diffInDays = end.diff(start, "day");
 
-    return diffInDays;
+    return diffInDays - 1;
   };
 
   removeDuplicates(dataArray) {

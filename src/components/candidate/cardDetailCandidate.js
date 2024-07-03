@@ -246,12 +246,31 @@ function CardDetailCandidate(props) {
             <div className="w-full gap-2 flex flex-col justify-between items-start p-2 px-4 ">
               <h4 className="font-semibold text-base">Pengalaman Kerja</h4>
 
-              <div className="w-full gap-2 flex flex-col justify-between items-start p-2 border border-slate-500 rounded-xl bg-slate-800">
-                <div className="flex justify-between w-full items-center ">
-                  <div className=" min-w-[10rem] gap-2 flex font-normal justify-start items-center p-2 border border-slate-500 rounded-xl bg-slate-700">
-                    Posisi
+              <div className="w-full gap-8 flex flex-col justify-between items-start p-2  rounded-xl bg-slate-800">
+                {props.experienceData.map((item) => (
+                  <div className="flex justify-between w-full items-center ">
+                    <div className=" w-full gap-2 flex flex-col font-normal justify-start items-center p-2 border  border-slate-500 rounded-xl bg-slate-700">
+                      <div className="flex justify-between text-base items-center w-full">
+                        <h3 className="font-semibold text-white">
+                          {item.posisi}
+                        </h3>
+                        <h3 className="font-semibold text-white">
+                          {item.lamaKerja}
+                        </h3>
+                      </div>
+                      <div className="flex justify-between text-sm items-center w-full">
+                        <h3 className="font-normal text-white">
+                          {item.lokasiKerja}
+                        </h3>
+                      </div>
+                      <div className="flex pl-8 mt-2 justify-between text-sm items-center w-full flex-wrap whitespace-nowrap">
+                        <h3 className="font-normal text-white">
+                          {item.deskripsiPengalaman}
+                        </h3>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

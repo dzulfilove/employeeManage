@@ -13,12 +13,14 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, dbImage } from "../../config/firebase";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
-const dateFormatList = ["YYYY/MM/DD", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 function CardDetailEmployee(props) {
   const [preview, setPreview] = useState(props.data.fotoTerbaru);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSet, setIsSet] = useState(false);
-
+  const [tanggal, setTanggal] = useState(
+    dayjs().locale("id").format("YYYY/MM/DD")
+  );
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -66,6 +68,7 @@ function CardDetailEmployee(props) {
     { value: "Karyawan Magang", text: "Karyawan Magang" },
     { value: "Karyawan Pelatihan", text: "Karyawan Pelatihan" },
     { value: "Karyawan Uji Coba", text: "Karyawan Uji Coba" },
+    { value: "Karyawan Tidak Aktif", text: "Karyawan Tidak Aktif" },
   ];
 
   useEffect(() => {
@@ -164,9 +167,57 @@ function CardDetailEmployee(props) {
     }
   };
 
+  const perpanjangKontrak = async () => {
+    const tanggalStart = tambahSatuTahun(props.data.tanggalAwalKontrak);
+    const tanggalEnd = tambahSatuTahun(props.data.tanggalAkhirKontrak);
+    const waktuKerja = parseInt(props.data.masaKerja) + 1;
+
+    try {
+      const eventRef = doc(db, "employees", props.id);
+      await updateDoc(eventRef, {
+        tanggalAwalKontrak: tanggalStart,
+        tanggalAkhirKontrak: tanggalEnd,
+        masaKerja: waktuKerja,
+      });
+      Swal.fire({
+        title: "Berhasil",
+        text: "Anda Berhasil Memperpanjang Kontrak Karyawan ",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          props.getDataEmployee(props.id);
+          setIsEdit(false);
+        }
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
+
+  const berhentikanKontrak = async () => {
+    try {
+      const eventRef = doc(db, "employees", props.id);
+      await updateDoc(eventRef, {
+        statusKaryawan: "Karyawan Tidak Aktif",
+      });
+      Swal.fire({
+        title: "Berhasil",
+        text: "Anda Berhasil Memberhentikan Kontrak Karyawan ",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          props.getDataEmployee(props.id);
+          setIsEdit(false);
+        }
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(divisi, "div");
     try {
       // Upload gambar baru (jika ada)
       if (selectedFile !== null) {
@@ -262,6 +313,50 @@ function CardDetailEmployee(props) {
     }
   };
 
+  function ubahFormatTanggal(tanggal) {
+    // Memisahkan string tanggal berdasarkan karakter '/'
+    const [tahun, bulan, hari] = tanggal.split("/");
+
+    // Menggabungkan kembali dalam format DD/MM/YYYY
+    const formatBaru = `${hari}/${bulan}/${tahun}`;
+
+    return formatBaru;
+  }
+  const sisaMasaKontrak = (startDate, endDate) => {
+    const start = dayjs(startDate, "YYYY/MM/DD");
+    const end = dayjs(endDate, "YYYY/MM/DD");
+
+    const diffInDays = end.diff(start, "day");
+
+    return diffInDays - 1;
+  };
+
+  function tambahSatuTahun(tanggal) {
+    // Memisahkan string tanggal berdasarkan karakter '/'
+    let [tahun, bulan, hari] = tanggal.split("/");
+
+    // Mengubah tahun dari string ke integer dan menambah satu tahun
+    tahun = parseInt(tahun) + 1;
+
+    // Menggabungkan kembali dalam format YYYY/MM/DD
+    const tanggalBaru = `${tahun}/${bulan}/${hari}`;
+
+    return tanggalBaru;
+  }
+  const formatTanggal = (tanggal) => {
+    // Parsing tanggal dengan format "DD-MM-YYYY"
+    const parsedDate = dayjs(tanggal, "YYYY/MM/DD");
+
+    // Ambil nama hari dan bulan dalam bahasa Indonesia
+    const hari = parsedDate.locale("id").format("dddd");
+    const bulan = parsedDate.locale("id").format("MMMM");
+
+    // Format ulang tanggal sesuai keinginan
+    const hasil =
+      parsedDate.format("DD") + " " + bulan + " " + parsedDate.format("YYYY");
+
+    return hasil;
+  };
   console.log(posisi, "divisi");
   return (
     <div className="flex w-full  justify-center items-center">
@@ -322,7 +417,16 @@ function CardDetailEmployee(props) {
               <div className="content-profile ">
                 <div className="back">
                   <div className="back-content">
-                    <div className="flex justify-center items-center rounded-full  w-[15rem] h-[15rem] z-[99] ">
+                    <div
+                      className={`flex justify-center items-center rounded-full  ${
+                        sisaMasaKontrak(
+                          tanggal,
+                          props.data.tanggalAkhirKontrak
+                        ) < 5
+                          ? "w-[12rem] h-[12rem]"
+                          : "w-[15rem] h-[15rem]"
+                      } z-[99] `}
+                    >
                       <img
                         className="object-cover h-full w-full rounded-full"
                         src={isEdit ? preview : props.data.fotoTerbaru}
@@ -357,6 +461,41 @@ function CardDetailEmployee(props) {
                           {props.data.cabang}
                         </div>
                       </div>
+                    </div>
+                    <div className="flex w-full justify-center items-center px-8 flex-col gap-2 z-[99]  ">
+                      {sisaMasaKontrak(
+                        tanggal,
+                        props.data.tanggalAkhirKontrak
+                      ) < 5 &&
+                        props.data.statusKaryawan !==
+                          "Karyawan Tidak Aktif" && (
+                          <>
+                            <button
+                              class="button-add mt-4"
+                              onClick={perpanjangKontrak}
+                            >
+                              Perpanjang Kontrak
+                              <span></span>
+                              <span></span>
+                              <span></span>
+                              <span></span>
+                            </button>
+                          </>
+                        )}
+                      {props.data.statusKaryawan !== "Karyawan Tidak Aktif" && (
+                        <>
+                          <button
+                            class="button-add mt-4"
+                            onClick={berhentikanKontrak}
+                          >
+                            Berhentikan Kontrak
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -481,7 +620,7 @@ function CardDetailEmployee(props) {
                     <Space direction="vertical" size={12}>
                       <DatePicker
                         defaultValue={dayjs(
-                          props.data.tanggalAwalKontrak,
+                          ubahFormatTanggal(props.data.tanggalAwalKontrak),
                           dateFormatList[0]
                         )}
                         onChange={(date) => {
@@ -499,7 +638,7 @@ function CardDetailEmployee(props) {
                     <Space direction="vertical" size={12}>
                       <DatePicker
                         defaultValue={dayjs(
-                          props.data.tanggalAkhirKontrak,
+                          ubahFormatTanggal(props.data.tanggalAkhirKontrak),
                           dateFormatList[0]
                         )}
                         onChange={(date) => {
@@ -642,7 +781,7 @@ function CardDetailEmployee(props) {
                       Tanggal Awal Kontrak
                     </h4>
                     <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.tanggalAwalKontrak}
+                      {formatTanggal(props.data.tanggalAwalKontrak)}
                     </div>
                   </div>
 
@@ -651,7 +790,7 @@ function CardDetailEmployee(props) {
                       Tanggal Akhir Kontrak
                     </h4>
                     <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.tanggalAkhirKontrak}
+                      {formatTanggal(props.data.tanggalAkhirKontrak)}
                     </div>
                   </div>
                 </div>
