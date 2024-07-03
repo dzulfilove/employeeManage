@@ -86,8 +86,8 @@ function CardDetailEmployee(props) {
       setNik(props.data.nik);
       setNoTelpon(props.data.nomorWhatsapp);
       setAlamat(props.data.alamat);
-      setGaji(props.data.gaji);
-      setMasaKerja(props.data.masaKerja);
+      setGaji(props.data.gaji ? props.data.gaji : 0);
+      setMasaKerja(props.data.masaKerja ? props.data.masaKerja : 0);
       setTanggalAwalKontrak(
         props.data.tanggalAwalKontrak ? props.data.tanggalAwalKontrak : tanggal
       );
@@ -114,10 +114,12 @@ function CardDetailEmployee(props) {
       );
 
       console.log(props.data.posisi, "lokasi2");
-      setDivisi(divisiSelect[0]);
-      setRiwayatPendidikan(pendidikanSelect[0]);
-      setLokasi(lokasiSelect[0]);
-      setStatus(statusSelect[0]);
+      setDivisi(divisiSelect.length > 0 ? divisiSelect[0] : "");
+      setRiwayatPendidikan(
+        pendidikanSelect.length > 0 ? pendidikanSelect[0] : ""
+      );
+      setLokasi(lokasiSelect.length > 0 ? lokasiSelect[0] : "");
+      setStatus(statusSelect.length > 0 ? statusSelect[0] : "");
       setPosisi(props.data.posisi);
       setIsSet(true);
     }
@@ -224,98 +226,101 @@ function CardDetailEmployee(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(divisi, "div");
-    try {
-      // Upload gambar baru (jika ada)
-      if (selectedFile !== null) {
-        const imageUrl = await handleSaveFoto(selectedFile);
+    const cek = await handleCheckEmptyFields();
+    if (cek == false) {
+      try {
+        // Upload gambar baru (jika ada)
+        if (selectedFile !== null) {
+          const imageUrl = await handleSaveFoto(selectedFile);
 
-        const data = {
-          email: email,
-          nama: name,
-          nik,
-          alamat,
-          nomorWhatsapp: noTelpon,
-          posisi: posisi,
-          cabang: lokasi.text,
-          riwayatPendidikan: riwayatPendidikan.text,
-          gaji,
-          divisi: divisi.text,
-          masaKerja: masakerja,
-          tanggalAwalKontrak: tanggalAwalKontrak,
-          tanggalAkhirKontrak: tanggalAkhirKontrak,
-          statusKaryawan: status.text,
-          fotoTerbaru: imageUrl,
-        };
+          const data = {
+            email: email,
+            nama: name,
+            nik,
+            alamat,
+            nomorWhatsapp: noTelpon,
+            posisi: posisi.text,
+            cabang: lokasi.text,
+            riwayatPendidikan: riwayatPendidikan.text,
+            gaji,
+            divisi: divisi.text,
+            masaKerja: masakerja,
+            tanggalAwalKontrak: tanggalAwalKontrak,
+            tanggalAkhirKontrak: tanggalAkhirKontrak,
+            statusKaryawan: status.text,
+            fotoTerbaru: imageUrl,
+          };
 
-        console.log(data, "update");
-        // Update properti foto_tindakan pada dokumen tindakan yang sesuai
-        const eventRef = doc(db, "employees", props.id);
-        await updateDoc(eventRef, {
-          email: email,
-          nama: name,
-          nik,
-          alamat,
-          nomorWhatsapp: noTelpon,
-          posisi: posisi,
-          cabang: lokasi.text,
-          riwayatPendidikan: riwayatPendidikan.text,
-          gaji,
-          divisi: divisi.text,
-          masaKerja: masakerja,
-          tanggalAwalKontrak: tanggalAwalKontrak,
-          tanggalAkhirKontrak: tanggalAkhirKontrak,
-          statusKaryawan: status.text,
-          fotoTerbaru: imageUrl,
-        });
-      } else {
-        const data = {
-          email: email,
-          nama: name,
-          nik,
-          alamat,
-          nomorWhatsapp: noTelpon,
-          posisi: posisi,
-          cabang: lokasi.text,
-          riwayatPendidikan: riwayatPendidikan.text,
-          gaji,
-          divisi: divisi.text,
-          masaKerja: masakerja,
-          tanggalAwalKontrak: tanggalAwalKontrak,
-          tanggalAkhirKontrak: tanggalAkhirKontrak,
-          statusKaryawan: status.text,
-        };
-        console.log(data, "update");
-        // Jika tidak ada gambar baru, hanya perbarui properti nama_tindakan dan deskripsi_tindakan
-        const eventRef = doc(db, "employees", props.id);
-        await updateDoc(eventRef, {
-          email: email,
-          nama: name,
-          nik,
-          alamat,
-          nomorWhatsapp: noTelpon,
-          posisi: posisi,
-          cabang: lokasi.text,
-          riwayatPendidikan: riwayatPendidikan.text,
-          gaji,
-          divisi: divisi.text,
-          masaKerja: masakerja,
-          tanggalAwalKontrak: tanggalAwalKontrak,
-          tanggalAkhirKontrak: tanggalAkhirKontrak,
-          statusKaryawan: status.text,
-        });
-      }
-      Swal.fire({
-        title: "Berhasil",
-        text: "Anda Berhasil Merubah data",
-        icon: "success",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          props.getDataEmployee(props.id);
-          setIsEdit(false);
+          console.log(data, "update");
+          // Update properti foto_tindakan pada dokumen tindakan yang sesuai
+          const eventRef = doc(db, "employees", props.id);
+          await updateDoc(eventRef, {
+            email: email,
+            nama: name,
+            nik,
+            alamat,
+            nomorWhatsapp: noTelpon,
+            posisi: posisi.text,
+            cabang: lokasi.text,
+            riwayatPendidikan: riwayatPendidikan.text,
+            gaji,
+            divisi: divisi.text,
+            masaKerja: masakerja,
+            tanggalAwalKontrak: tanggalAwalKontrak,
+            tanggalAkhirKontrak: tanggalAkhirKontrak,
+            statusKaryawan: status.text,
+            fotoTerbaru: imageUrl,
+          });
+        } else {
+          const data = {
+            email: email,
+            nama: name,
+            nik,
+            alamat,
+            nomorWhatsapp: noTelpon,
+            posisi: posisi.text,
+            cabang: lokasi.text,
+            riwayatPendidikan: riwayatPendidikan.text,
+            gaji,
+            divisi: divisi.text,
+            masaKerja: masakerja,
+            tanggalAwalKontrak: tanggalAwalKontrak,
+            tanggalAkhirKontrak: tanggalAkhirKontrak,
+            statusKaryawan: status.text,
+          };
+          console.log(data, "update");
+          // Jika tidak ada gambar baru, hanya perbarui properti nama_tindakan dan deskripsi_tindakan
+          const eventRef = doc(db, "employees", props.id);
+          await updateDoc(eventRef, {
+            email: email,
+            nama: name,
+            nik,
+            alamat,
+            nomorWhatsapp: noTelpon,
+            posisi: posisi.text,
+            cabang: lokasi.text,
+            riwayatPendidikan: riwayatPendidikan.text,
+            gaji,
+            divisi: divisi.text,
+            masaKerja: masakerja,
+            tanggalAwalKontrak: tanggalAwalKontrak,
+            tanggalAkhirKontrak: tanggalAkhirKontrak,
+            statusKaryawan: status.text,
+          });
         }
-      });
-    } catch (error) {
-      console.error("Error updating document: ", error);
+        Swal.fire({
+          title: "Berhasil",
+          text: "Anda Berhasil Merubah data",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            props.getDataEmployee(props.id);
+            setIsEdit(false);
+          }
+        });
+      } catch (error) {
+        console.error("Error updating document: ", error);
+      }
     }
   };
 
@@ -362,6 +367,59 @@ function CardDetailEmployee(props) {
       parsedDate.format("DD") + " " + bulan + " " + parsedDate.format("YYYY");
 
     return hasil;
+  };
+
+  const handleCheckEmptyFields = () => {
+    const emptyFields = [];
+    const fieldsToCheck = [
+      { key: "name", label: "Nama" },
+      { key: "email", label: "Email" },
+      { key: "nik", label: "NIK" },
+      { key: "noTelpon", label: "Nomor WhatsApp" },
+      { key: "alamat", label: "Alamat" },
+      { key: "riwayatPendidikan", label: "Riwayat Pendidikan" },
+      { key: "posisi", label: "Posisi" },
+      { key: "divisi", label: "Divisi" },
+      { key: "lokasi", label: "Lokasi Kerja" },
+      { key: "status", label: "Status Karyawan" },
+      { key: "gaji", label: "Gaji" },
+      { key: "masakerja", label: "Masa Kerja" },
+      { key: "tanggalAwalKontrak", label: "Tanggal Awal Kontrak" },
+      { key: "tanggalAkhirKontrak", label: "Tanggal Akhir Kontrak" },
+    ];
+
+    fieldsToCheck.forEach((field) => {
+      if (
+        field.key === "gaji" || field.key === "masakerja"
+          ? eval(field.key) === 0
+          : eval(field.key) === "" || eval(field.key) === null
+      ) {
+        console.log(field.label, eval(field.key));
+        emptyFields.push(field.label);
+      }
+    });
+
+    if (emptyFields.length > 0) {
+      Swal.fire({
+        title: "Data Tidak Lengkap",
+        text: `Field berikut harus diisi: ${emptyFields.join(", ")}`,
+        icon: "warning",
+        button: "OK",
+      });
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const formatRupiah = (angka) => {
+    const nilai = parseFloat(angka);
+    return nilai.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
   };
   console.log(posisi, "divisi");
   return (
@@ -682,7 +740,7 @@ function CardDetailEmployee(props) {
                       Masa Kerja (Tahun)
                     </h4>
                     <input
-                      type="text"
+                      type="number"
                       className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                       value={masakerja}
                       onChange={(e) => {
@@ -729,59 +787,104 @@ function CardDetailEmployee(props) {
                 <div className="w-full gap-2 flex justify-between items-center p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Nama</h4>
-
-                    <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
-                      {props.data.nama}
+                    <div
+                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                        props.data.nama
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.nama || "Tidak ada data"}
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Email</h4>
-                    <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
-                      {props.data.email}
+                    <div
+                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                        props.data.email
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.email || "Tidak ada data"}
                     </div>
                   </div>
                 </div>
                 <div className="w-full gap-2 flex justify-between items-center p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">NIK</h4>
-                    <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
-                      {props.data.nik}
+                    <div
+                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                        props.data.nik
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.nik || "Tidak ada data"}
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Posisi</h4>
-                    <div className="w-full gap-2 flex flex-col font-normal h-[3rem] justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.posisi}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal h-[3rem] justify-start items-start p-2 border rounded-xl ${
+                        props.data.posisi
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.posisi || "Tidak ada data"}
                     </div>
                   </div>
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">No. WhatsApp</h4>
-                    <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
-                      {props.data.nomorWhatsapp}
+                    <div
+                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                        props.data.nomorWhatsapp
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.nomorWhatsapp || "Tidak ada data"}
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Alamat</h4>
-
-                    <div className="w-full p-2 bg-slate-700 text-white border-slate-500 border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal">
-                      {props.data.alamat}
+                    <div
+                      className={`w-full p-2 text-white border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal ${
+                        props.data.alamat
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.alamat || "Tidak ada data"}
                     </div>
                   </div>
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Divisi</h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.divisi}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.divisi
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.divisi || "Tidak ada data"}
                     </div>
                   </div>
-
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Lokasi Kerja</h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.cabang}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.cabang
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.cabang || "Tidak ada data"}
                     </div>
                   </div>
                 </div>
@@ -790,17 +893,32 @@ function CardDetailEmployee(props) {
                     <h4 className="font-semibold text-base">
                       Tanggal Awal Kontrak
                     </h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {formatTanggal(props.data.tanggalAwalKontrak)}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.tanggalAwalKontrak
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.tanggalAwalKontrak
+                        ? formatTanggal(props.data.tanggalAwalKontrak)
+                        : "Tidak ada data"}
                     </div>
                   </div>
-
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">
                       Tanggal Akhir Kontrak
                     </h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {formatTanggal(props.data.tanggalAkhirKontrak)}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.tanggalAkhirKontrak
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.tanggalAkhirKontrak
+                        ? formatTanggal(props.data.tanggalAkhirKontrak)
+                        : "Tidak ada data"}
                     </div>
                   </div>
                 </div>
@@ -809,32 +927,54 @@ function CardDetailEmployee(props) {
                     <h4 className="font-semibold text-base">
                       Riwayat Pendidikan
                     </h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.riwayatPendidikan}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.riwayatPendidikan
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.riwayatPendidikan || "Tidak ada data"}
                     </div>
                   </div>
-
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">
                       Masa Kerja (Tahun)
                     </h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.masaKerja}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.masaKerja
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.masaKerja || "Tidak ada data"}
                     </div>
                   </div>
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Gaji</h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.gaji}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.gaji
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {formatRupiah(props.data.gaji) || "Tidak ada data"}
                     </div>
                   </div>
-
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
                     <h4 className="font-semibold text-base">Status Karyawan</h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                      {props.data.statusKaryawan}
+                    <div
+                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                        props.data.statusKaryawan
+                          ? "bg-slate-700 border-slate-500"
+                          : "text-red-500 border-red-600"
+                      }`}
+                    >
+                      {props.data.statusKaryawan || "Tidak ada data"}
                     </div>
                   </div>
                 </div>

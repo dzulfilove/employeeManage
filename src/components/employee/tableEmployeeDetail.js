@@ -98,23 +98,26 @@ function TableEmployeeDetail(props) {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.simpanDocument(
-      namaDokumen,
-      kategoriDokumen,
-      tanggalTerbitDokumen,
-      tanggal,
-      statusDokumen,
-      fileDokumen
-    );
-    setIsAddData(false);
-    setIsEditData(false);
-    setData({});
-    setIdData("");
-    setNamaDokumen("");
-    setKategoriDokumen("");
-    setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
-    setStatusDokumen(null);
-    setFileDokumen(null);
+    const cek = handleCheckEmptyDocumentFields();
+    if (cek == false) {
+      props.simpanDocument(
+        namaDokumen,
+        kategoriDokumen,
+        tanggalTerbitDokumen,
+        tanggal,
+        statusDokumen,
+        fileDokumen
+      );
+      setIsAddData(false);
+      setIsEditData(false);
+      setData({});
+      setIdData("");
+      setNamaDokumen("");
+      setKategoriDokumen("");
+      setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
+      setStatusDokumen(null);
+      setFileDokumen(null);
+    }
   };
 
   const handleEdit = (data) => {
@@ -179,6 +182,39 @@ function TableEmployeeDetail(props) {
 
     return formatBaru;
   }
+
+  const handleCheckEmptyDocumentFields = () => {
+    const emptyFields = [];
+    const fieldsToCheck = [
+      { key: "namaDokumen", label: "Nama Dokumen" },
+      { key: "kategoriDokumen", label: "Kategori Dokumen" },
+      { key: "tanggalTerbitDokumen", label: "Tanggal Terbit Dokumen" },
+      { key: "tanggal", label: "Tanggal" },
+      { key: "statusDokumen", label: "Status Dokumen" },
+      { key: "fileDokumen", label: "File Dokumen" },
+    ];
+
+    fieldsToCheck.forEach((field) => {
+      if (eval(field.key) === "" || eval(field.key) === null) {
+        console.log(field.label, eval(field.key));
+        emptyFields.push(field.label);
+      }
+    });
+
+    if (emptyFields.length > 0) {
+      Swal.fire({
+        title: "Data Dokumen Tidak Lengkap",
+        text: `Field berikut harus diisi: ${emptyFields.join(", ")}`,
+        icon: "warning",
+        button: "OK",
+      });
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   console.log(data);
   return (
     <div className="p-4 bg-slate-800 w-[90%] rounded-xl shadow-lg mb-[8rem] mt-16">

@@ -134,75 +134,122 @@ function FormAddEmployee(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      if (!selectedFile) {
-        throw new Error("Foto terbaru tidak ditemukan");
-      }
-
-      const fotoTerbaruURL = await handleSaveFoto(selectedFile);
-
-      // Simpan URL foto terbaru dan CV terbaru ke state
-
-      const fotoTerbaru = fotoTerbaruURL;
-      let posisiKerja = "";
-      if (posisi == "Lainnya") {
-        posisiKerja = posisiLain;
-        const division = {
-          namaPosisi: posisiLain,
-        };
-        const divisionRef = await addDoc(collection(db, "divisions"), division);
-      } else {
-        posisiKerja = posisi;
-      }
-      // Persiapkan dokumen utama untuk employeesApplicant
-      const employee = {
-        email,
-        nama: name,
-        nik,
-        alamat,
-        nomorWhatsapp: noTelpon,
-        posisi: posisiKerja,
-        cabang: lokasi,
-        riwayatPendidikan,
-        gaji,
-        divisi: divisi,
-        masaKerja: masakerja,
-        tanggalAwalKontrak: tanggalAwal,
-        tanggalAkhirKontrak: tanggalAkhir,
-        fotoTerbaru: fotoTerbaruURL,
-        statusKaryawan: status,
-      };
-
-      console.log(employee, "dataauhakshaqskf");
-
-      // Simpan dokumen pelamar ke koleksi "employeesApplicant"
-      const employeeRef = await addDoc(collection(db, "employees"), employee);
-
-      console.log(
-        "Data pelamar dan pengalaman kerja berhasil disimpan:",
-        employee
-      );
-
-      Swal.fire({
-        title: "Berhasil!",
-        text: "Data Karyawan berhasil Ditambahkan",
-        icon: "success",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          <Navigate to="/employee" />;
+    const cek = await handleCheckEmptyFields();
+    if (cek == false) {
+      try {
+        if (!selectedFile) {
+          throw new Error("Foto terbaru tidak ditemukan");
         }
-      });
-    } catch (error) {
-      console.error("Error saving applicant data:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Wih, Error tuch",
-        icon: "error",
-      });
+
+        const fotoTerbaruURL = await handleSaveFoto(selectedFile);
+
+        // Simpan URL foto terbaru dan CV terbaru ke state
+
+        const fotoTerbaru = fotoTerbaruURL;
+        let posisiKerja = "";
+        if (posisi == "Lainnya") {
+          posisiKerja = posisiLain;
+          const division = {
+            namaPosisi: posisiLain,
+          };
+          const divisionRef = await addDoc(
+            collection(db, "divisions"),
+            division
+          );
+        } else {
+          posisiKerja = posisi;
+        }
+        // Persiapkan dokumen utama untuk employeesApplicant
+        const employee = {
+          email,
+          nama: name,
+          nik,
+          alamat,
+          nomorWhatsapp: noTelpon,
+          posisi: posisiKerja,
+          cabang: lokasi,
+          riwayatPendidikan,
+          gaji,
+          divisi: divisi,
+          masaKerja: masakerja,
+          tanggalAwalKontrak: tanggalAwal,
+          tanggalAkhirKontrak: tanggalAkhir,
+          fotoTerbaru: fotoTerbaruURL,
+          statusKaryawan: status,
+        };
+
+        console.log(employee, "dataauhakshaqskf");
+
+        // Simpan dokumen pelamar ke koleksi "employeesApplicant"
+        const employeeRef = await addDoc(collection(db, "employees"), employee);
+
+        console.log(
+          "Data pelamar dan pengalaman kerja berhasil disimpan:",
+          employee
+        );
+
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Data Karyawan berhasil Ditambahkan",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            <Navigate to="/employee" />;
+          }
+        });
+      } catch (error) {
+        console.error("Error saving applicant data:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Wih, Error tuch",
+          icon: "error",
+        });
+      }
     }
   };
+  const handleCheckEmptyFields = () => {
+    const emptyFields = [];
+    const fieldsToCheck = [
+      { key: "name", label: "Nama" },
+      { key: "email", label: "Email" },
+      { key: "nik", label: "NIK" },
+      { key: "noTelpon", label: "Nomor WhatsApp" },
+      { key: "alamat", label: "Alamat" },
+      { key: "riwayatPendidikan", label: "Riwayat Pendidikan" },
+      { key: "posisi", label: "Posisi" },
+      { key: "divisi", label: "Divisi" },
+      { key: "lokasi", label: "Lokasi Kerja" },
+      { key: "status", label: "Status Karyawan" },
+      { key: "gaji", label: "Gaji" },
+      { key: "masakerja", label: "Masa Kerja" },
+      { key: "tanggalAwalKontrak", label: "Tanggal Awal Kontrak" },
+      { key: "tanggalAkhirKontrak", label: "Tanggal Akhir Kontrak" },
+    ];
 
+    fieldsToCheck.forEach((field) => {
+      if (
+        field.key === "gaji" || field.key === "masakerja"
+          ? eval(field.key) === 0
+          : eval(field.key) === "" || eval(field.key) === null
+      ) {
+        console.log(field.label, eval(field.key));
+        emptyFields.push(field.label);
+      }
+    });
+
+    if (emptyFields.length > 0) {
+      Swal.fire({
+        title: "Data Tidak Lengkap",
+        text: `Field berikut harus diisi: ${emptyFields.join(", ")}`,
+        icon: "warning",
+        button: "OK",
+      });
+
+      return true;
+    } else {
+      return false;
+    }
+  };
   return (
     <div className="flex w-full  justify-center items-center mb-20">
       <div className="w-[90%] flex justify-start items-center p-6 gap-12  rounded-lg relative playing border-2 border-slate-600 overflow-hidden shadow-xl mt-10">
