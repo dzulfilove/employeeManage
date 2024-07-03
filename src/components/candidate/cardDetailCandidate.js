@@ -99,13 +99,18 @@ function CardDetailCandidate(props) {
                         <div className=" flex  justify-center text-sm text-slate-300  items-center gap-2 mt-4  flex-col  border-slate-400 border p-2 rounded-lg">
                           {props.data.nomorWhatsapp}
                         </div>
-                        <div className=" flex hover:bg-teal-500 transition-all relative hover:text-slate-800 justify-center text-sm text-slate-300  items-center gap-2 mt-4  flex-col  border-slate-400 border p-2 rounded-lg">
+                        <div className=" flex hover:border-teal-500 transition-all relative hover:text-slate-800 justify-center text-sm text-slate-300  items-center gap-2 mt-4  flex-col  border-slate-400 border p-2 rounded-lg">
                           <a
                             target="_blank"
                             rel="noreferrer"
                             href={props.data.cvTerbaru}
                           >
-                            <a href="#" className="btn-shine">
+                            <a
+                              target="_blank"
+                              rel="noreferrer"
+                              href={props.data.cvTerbaru}
+                              className="btn-shine"
+                            >
                               Lihat CV Terbaru
                             </a>
                           </a>
