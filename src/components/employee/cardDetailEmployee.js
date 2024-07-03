@@ -620,7 +620,9 @@ function CardDetailEmployee(props) {
                     <Space direction="vertical" size={12}>
                       <DatePicker
                         defaultValue={dayjs(
-                          ubahFormatTanggal(props.data.tanggalAwalKontrak),
+                          props.data.tanggalAwalKontrak
+                            ? ubahFormatTanggal(props.data.tanggalAwalKontrak)
+                            : ubahFormatTanggal(tanggal),
                           dateFormatList[0]
                         )}
                         onChange={(date) => {
@@ -638,7 +640,9 @@ function CardDetailEmployee(props) {
                     <Space direction="vertical" size={12}>
                       <DatePicker
                         defaultValue={dayjs(
-                          ubahFormatTanggal(props.data.tanggalAkhirKontrak),
+                          props.data.tanggalAkhirKontrak
+                            ? ubahFormatTanggal(props.data.tanggalAkhirKontrak)
+                            : ubahFormatTanggal(tanggal),
                           dateFormatList[0]
                         )}
                         onChange={(date) => {
