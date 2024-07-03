@@ -296,11 +296,11 @@ function FormAddEmployee(props) {
         >
           <div className="w-full gap-2 flex justify-between items-center p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Nama</h4>
+              <h4 className="font-semibold text-sm">Nama</h4>
 
               <input
                 type="text"
-                className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                className="w-full flex p-2 text-sm capitalize bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
@@ -308,10 +308,10 @@ function FormAddEmployee(props) {
               />
             </div>
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Email</h4>
+              <h4 className="font-semibold text-sm">Email</h4>
               <input
                 type="text"
-                className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -321,10 +321,10 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-2 flex justify-between items-center p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">NIK</h4>
+              <h4 className="font-semibold text-sm">NIK</h4>
               <input
                 type="number"
-                className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                 value={nik}
                 onChange={(e) => {
                   setNik(e.target.value);
@@ -332,7 +332,7 @@ function FormAddEmployee(props) {
               />
             </div>
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Posisi</h4>
+              <h4 className="font-semibold text-sm">Posisi</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
                   options={props.dataPosisi}
@@ -347,7 +347,7 @@ function FormAddEmployee(props) {
                 <>
                   <input
                     type="text"
-                    className="w-full flex p-2 mt-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    className="w-full flex p-2 text-sm mt-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                     value={posisiLain}
                     placeholder="Masukkan Posisi / Jabatan Kerja"
                     onChange={(e) => {
@@ -360,10 +360,10 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">No. WhatsApp</h4>
+              <h4 className="font-semibold text-sm">No. WhatsApp</h4>
               <input
                 type="number"
-                className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                 value={noTelpon}
                 onChange={(e) => {
                   setNoTelpon(e.target.value);
@@ -371,7 +371,7 @@ function FormAddEmployee(props) {
               />
             </div>
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Alamat</h4>
+              <h4 className="font-semibold text-sm">Alamat</h4>
 
               <textarea
                 className="w-full p-2 bg-slate-700 text-white border-slate-500 border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal"
@@ -385,7 +385,7 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Lokasi Kerja</h4>
+              <h4 className="font-semibold text-sm">Lokasi Kerja</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
                   options={props.dataLokasi}
@@ -398,7 +398,7 @@ function FormAddEmployee(props) {
             </div>
 
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Divisi</h4>
+              <h4 className="font-semibold text-sm">Divisi</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
                   options={props.dataDivisi}
@@ -412,7 +412,7 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-6 p-4 flex justify-between items-start ">
             <div className="w-[50%] flex justify-start gap-6 flex-col">
-              <h4 className="font-semibold text-base">Tanggal Awal Kontrak</h4>
+              <h4 className="font-semibold text-sm">Tanggal Awal Kontrak</h4>
               <Space direction="vertical" size={12}>
                 <DatePicker
                   defaultValue={dayjs(tanggalAwal, dateFormatList[0])}
@@ -425,7 +425,7 @@ function FormAddEmployee(props) {
               </Space>
             </div>
             <div className="w-[50%] flex justify-start  gap-6 flex-col">
-              <h4 className="font-semibold text-base">Tanggal Akhir Kontrak</h4>
+              <h4 className="font-semibold text-sm">Tanggal Akhir Kontrak</h4>
               <Space direction="vertical" size={12}>
                 <DatePicker
                   defaultValue={dayjs(tanggalAkhir, dateFormatList[0])}
@@ -440,7 +440,7 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base"> Pendidikan Terakhir</h4>
+              <h4 className="font-semibold text-sm"> Pendidikan Terakhir</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
                   options={optionPendidikan}
@@ -453,10 +453,10 @@ function FormAddEmployee(props) {
             </div>
 
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Masa Kerja</h4>
+              <h4 className="font-semibold text-sm">Masa Kerja</h4>
               <input
                 type="number"
-                className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                 value={masakerja}
                 onChange={(e) => {
                   setMasaKerja(e.target.value);
@@ -466,10 +466,10 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Gaji</h4>
+              <h4 className="font-semibold text-sm">Gaji</h4>
               <input
                 type="number"
-                className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                 value={gaji}
                 onChange={(e) => {
                   setGaji(e.target.value);
@@ -477,7 +477,7 @@ function FormAddEmployee(props) {
               />
             </div>
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-base">Status Karyawan</h4>
+              <h4 className="font-semibold text-sm">Status Karyawan</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
                   options={optionStatus}

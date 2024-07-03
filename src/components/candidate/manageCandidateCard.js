@@ -15,7 +15,7 @@ const MainCard = ({ onDrop }) => {
   return (
     <div
       ref={drop}
-      className="bg-transparent border hover:bg-slate-700 border-slate-400 rounded-lg flex w-full gap-6 p-2 h-[5rem] mt-6 justify-center items-center text-white"
+      className="bg-transparent border hover:bg-slate-700 border-slate-400 text-sm rounded-lg flex w-full gap-6 p-2 h-[5rem] mt-6 justify-center items-center text-white"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -84,7 +84,7 @@ class CandidateDetail extends Component {
   render() {
     return (
       <div className="flex flex-col justify-start items-center">
-        <div className="flex w-[97%] justify-start p-4 pl-0  items-center text-white text-3xl mb-6 border-b border-b-teal-500 pb-10">
+        <div className="flex w-[97%] justify-start p-4 pl-0  items-center text-white text-2xl border-b border-b-teal-500 pb-10">
           Data Detail Kandidat
         </div>
 

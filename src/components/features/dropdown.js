@@ -37,7 +37,7 @@ const DropdownSearch = ({ options, change, value, name }) => {
   return (
     <div className="relative w-full">
       <div
-        className=" text-white rounded p-2 font-normal cursor-pointer"
+        className=" text-white rounded p-2 font-normal cursor-pointer text-sm"
         onClick={() => setShowOptions(!showOptions)}
       >
         {selectedOption ? selectedOption.text : `Pilih ${name}..`}
@@ -56,7 +56,7 @@ const DropdownSearch = ({ options, change, value, name }) => {
               filteredOptions.map((option, index) => (
                 <li
                   key={index}
-                  className="p-2 hover:bg-slate-100 cursor-pointer text-slate-100 font-medium hover:text-slate-900"
+                  className="p-2 hover:bg-slate-100 cursor-pointer text-slate-100 text-sm font-medium hover:text-slate-900"
                   onClick={() => handleOptionClick(option)}
                 >
                   {option.text}

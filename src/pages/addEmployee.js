@@ -132,7 +132,7 @@ class AddEmployee extends Component {
   render() {
     return (
       <div>
-        <div className="flex w-full justify-start p-4 items-center text-white text-3xl mb-6">
+        <div className="flex w-full justify-start p-4 items-center text-white text-2xl ">
           Input Data Karyawan
         </div>
 

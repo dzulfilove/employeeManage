@@ -66,7 +66,7 @@ const App = () => {
               <div
                 className={`bg-slate-800 min-h-screen pl-8 z-[999] ${
                   open ? "w-[17rem]" : "w-[6rem]"
-                } duration-500 text-gray-100 px-4 text-xl border-r-2 border-r-slate-600`}
+                } duration-500 text-gray-100 px-4 text-base border-r-2 border-r-slate-600`}
               >
                 <div className="flex justify-between items-center mt-12 w-full border-b border-b-slate-600 pb-12">
                   <div
@@ -87,7 +87,7 @@ const App = () => {
                             style={{
                               transitionDelay: `${4}00ms`,
                             }}
-                            className={`text-xl font-semibold text-blue-100 text-center whitespace-pre duration-500 ${
+                            className={`text-base font-semibold text-blue-100 text-center whitespace-pre duration-500 ${
                               !open &&
                               "opacity-0 translate-x-28 overflow-hidden"
                             }`}
@@ -107,7 +107,7 @@ const App = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-col gap-4 relative text-blue-100">
+                <div className="mt-4 flex flex-col gap-4 relative text-blue-100 ">
                   {isLoggedIn ? (
                     <>
                       {menus.map((menu) => (
@@ -137,7 +137,7 @@ const App = () => {
                                   style={{
                                     transitionDelay: `${1 + 3}00ms`,
                                   }}
-                                  className={`whitespace-pre duration-500 button-content ${
+                                  className={`whitespace-pre duration-500 button-content text-base ${
                                     !open && "opacity-0 hidden translate-x-28  "
                                   }`}
                                 >
@@ -146,7 +146,7 @@ const App = () => {
                                 <h2
                                   className={`${
                                     open && "hidden"
-                                  } absolute z-[99999] left-48 bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                  } absolute z-[99999] text-base left-48 bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
                                 >
                                   {menu.name}
                                 </h2>
@@ -173,7 +173,7 @@ const App = () => {
                                   style={{
                                     transitionDelay: `${1 + 3}00ms`,
                                   }}
-                                  className={`whitespace-pre duration-500 button-content ${
+                                  className={`whitespace-pre duration-500 button-content text-base ${
                                     !open && "opacity-0 hidden translate-x-28  "
                                   }`}
                                 >
@@ -182,7 +182,7 @@ const App = () => {
                                 <h2
                                   className={`${
                                     open && "hidden"
-                                  } absolute z-[99999] left-48 bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                  } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
                                 >
                                   {menu.name}
                                 </h2>
@@ -193,14 +193,14 @@ const App = () => {
                           {isSubMenu && menu.name == "Kandidat" && open && (
                             <div
                               data-aos="slide-down"
-                              className=" top-full left-0 w-48  shadow-md py-2  rounded text-base overlow-hidden"
+                              className=" top-full left-0 w-48  shadow-md py-2  rounded text-base overlow-hidden text-base"
                               onAnimationEnd={() => setIsSubMenu(false)}
                             >
                               <ul>
                                 <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
                                   <a
                                     href="/all-candidate"
-                                    className=" button-content  text-slate-300 "
+                                    className=" button-content  text-slate-300 text-base"
                                   >
                                     Semua Kandidat
                                   </a>
@@ -242,7 +242,7 @@ const App = () => {
                             style={{
                               transitionDelay: `${1 + 3}00ms`,
                             }}
-                            className={`whitespace-pre duration-500 button-content ${
+                            className={`whitespace-pre duration-500 button-content text-base ${
                               !open && "opacity-0 hidden translate-x-28  "
                             }`}
                           >
@@ -251,7 +251,7 @@ const App = () => {
                           <h2
                             className={`${
                               open && "hidden"
-                            } absolute z-[99999] left-48 bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                            } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
                           >
                             Logout
                           </h2>

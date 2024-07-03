@@ -94,7 +94,7 @@ function TableDashboard(props) {
       </div>
       {tab == "tab2" ? (
         <>
-          <table className="w-[100%] text-left text-base font-normal">
+          <table className="w-[100%] text-left text-sm font-normal">
             <thead>
               <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
                 <th className="px-4 py-4 font-medium rounded-l-xl">Nama</th>
@@ -166,7 +166,7 @@ function TableDashboard(props) {
         </>
       ) : (
         <>
-          <table className="w-[100%] text-left text-base font-normal">
+          <table className="w-[100%] text-left text-sm font-normal">
             <thead>
               <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
                 <th className="px-4 py-4 font-medium rounded-l-xl">Nama</th>
@@ -223,7 +223,7 @@ function TableDashboard(props) {
                           height={150}
                           width={150}
                         />
-                        <h3 className="text-xl text-white font-medium text-center">
+                        <h3 className="text-base text-white font-medium text-center">
                           Belum Ada Data
                         </h3>
                       </div>

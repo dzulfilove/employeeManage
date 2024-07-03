@@ -85,13 +85,13 @@ function CardDetailCandidate(props) {
                     </div>
 
                     <div className="flex w-full justify-start items-start px-8 flex-col gap-2 z-[99] mt-6 ">
-                      <h2 className="text-white font-semibold text-xl capitalize">
+                      <h2 className="text-white font-semibold text-lg capitalize">
                         {props.data.nama}
                       </h2>
-                      <h2 className="text-white font-normal text-base">
+                      <h2 className="text-white font-normal text-sm">
                         {props.data.posisi}
                       </h2>
-                      <h2 className="text-white font-semibold text-xl mt-6">
+                      <h2 className="text-white font-semibold text-lg mt-6">
                         Informasi Pribadi
                       </h2>
 
@@ -105,19 +105,21 @@ function CardDetailCandidate(props) {
                             rel="noreferrer"
                             href={props.data.cvTerbaru}
                           >
-                            CV Terbaru
+                            Lihat CV Terbaru
                           </a>
                         </div>
                       </div>
-                      <h2 className="text-white font-semibold text-xl mt-6">
+                      <h2 className="text-white font-semibold text-lg mt-6">
                         Tahap Seleksi
                       </h2>
 
-                      <h2 className="text-white font-semibold text-base mt-6 capitalize">
-                        {props.data.statusTahap
-                          ? camelCaseToNormal(props.data.statusTahap)
-                          : ""}
-                      </h2>
+                      <div className=" flex w-full justify-start  items-start gap-6  ">
+                        <div className=" flex  justify-center text-sm text-slate-300  items-center gap-2 mt-4  flex-col  border-slate-400 border p-2 rounded-lg">
+                          {props.data.statusTahap
+                            ? camelCaseToNormal(props.data.statusTahap)
+                            : ""}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -127,32 +129,32 @@ function CardDetailCandidate(props) {
           <div
             data-aos="fade-down"
             data-aos-delay="350"
-            className="flex flex-col justify-start items-start p-6 w-[60%] gap-2 text-white  "
+            className="flex flex-col justify-start items-start p-6 w-[60%] gap-2 text-white text-sm "
           >
             <div className="w-full gap-2 flex justify-between items-center p-2">
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Nama</h4>
+                <h4 className="font-semibold text-sm">Nama</h4>
 
-                <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
+                <div className="w-full flex p-2 bg-slate-700 font-normal text-sm border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
                   {props.data.nama}
                 </div>
               </div>
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Email</h4>
-                <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
+                <h4 className="font-semibold text-sm">Email</h4>
+                <div className="w-full flex p-2 bg-slate-700 font-normal text-sm border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
                   {props.data.email}
                 </div>
               </div>
             </div>
             <div className="w-full gap-2 flex justify-between items-center p-2">
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">NIK</h4>
-                <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
+                <h4 className="font-semibold text-sm">NIK</h4>
+                <div className="w-full flex p-2 bg-slate-700 font-normal text-sm border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
                   {props.data.nik}
                 </div>
               </div>
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Posisi</h4>
+                <h4 className="font-semibold text-sm">Posisi</h4>
                 <div className="w-full gap-2 flex flex-col font-normal h-[3rem] justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                   {props.data.posisi}
                 </div>
@@ -160,13 +162,13 @@ function CardDetailCandidate(props) {
             </div>
             <div className="w-full gap-2 flex justify-between items-start p-2">
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">No. WhatsApp</h4>
-                <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
+                <h4 className="font-semibold text-sm">No. WhatsApp</h4>
+                <div className="w-full flex p-2 bg-slate-700 font-normal text-sm border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
                   {props.data.nomorWhatsapp}
                 </div>
               </div>
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Alamat</h4>
+                <h4 className="font-semibold text-sm">Alamat</h4>
 
                 <div className="w-full p-2 bg-slate-700 text-white border-slate-500 border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal">
                   {props.data.alamat}
@@ -175,14 +177,14 @@ function CardDetailCandidate(props) {
             </div>
             <div className="w-full gap-2 flex justify-between items-start p-2">
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Riwayat Pendidikan</h4>
+                <h4 className="font-semibold text-sm">Riwayat Pendidikan</h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                   {props.data.riwayatPendidikan}
                 </div>
               </div>
 
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Memiliki STR Aktif</h4>
+                <h4 className="font-semibold text-sm">Memiliki STR Aktif</h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                   {props.data.isStrAktif == true ? "Ya" : "Tidak"}
                 </div>
@@ -190,7 +192,7 @@ function CardDetailCandidate(props) {
             </div>
             <div className="w-full gap-2 flex justify-between items-start p-2">
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">
+                <h4 className="font-semibold text-sm">
                   Bersedia Ijazah Ditahan
                 </h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
@@ -199,7 +201,7 @@ function CardDetailCandidate(props) {
               </div>
 
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">
+                <h4 className="font-semibold text-sm">
                   Bersedia Ditempatkan Di Seluruh cabang
                 </h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
@@ -209,14 +211,14 @@ function CardDetailCandidate(props) {
             </div>
             <div className="w-full gap-2 flex justify-between items-start p-2">
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Tanggal Melamar</h4>
+                <h4 className="font-semibold text-sm">Tanggal Melamar</h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                   {formatTanggal(props.data.tanggalMelamar)}
                 </div>
               </div>
 
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Sumber Informasi</h4>
+                <h4 className="font-semibold text-sm">Sumber Informasi</h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                   {props.data.sumberInformasi}
                 </div>
@@ -225,16 +227,14 @@ function CardDetailCandidate(props) {
 
             <div className="w-full gap-2 flex justify-between items-start p-2">
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">
-                  Gaji Yang Diharapkan
-                </h4>
+                <h4 className="font-semibold text-sm">Gaji Yang Diharapkan</h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                   {formatRupiah(props.data.gajiYangDiharapkan)}
                 </div>
               </div>
 
               <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                <h4 className="font-semibold text-base">Tahap Seleksi</h4>
+                <h4 className="font-semibold text-sm">Tahap Seleksi</h4>
                 <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                   {props.data.statusTahap
                     ? camelCaseToNormal(props.data.statusTahap)
@@ -244,13 +244,13 @@ function CardDetailCandidate(props) {
             </div>
 
             <div className="w-full gap-2 flex flex-col justify-between items-start p-2 px-4 ">
-              <h4 className="font-semibold text-base">Pengalaman Kerja</h4>
+              <h4 className="font-semibold text-sm">Pengalaman Kerja</h4>
 
-              <div className="w-full gap-8 flex flex-col justify-between items-start p-2  rounded-xl bg-slate-800">
+              <div className="w-full gap-8 flex flex-col justify-between items-start   rounded-xl bg-transparent pt-2">
                 {props.experienceData.map((item) => (
                   <div className="flex justify-between w-full items-center ">
                     <div className=" w-full gap-2 flex flex-col font-normal justify-start items-center p-2 border  border-slate-500 rounded-xl bg-slate-700">
-                      <div className="flex justify-between text-base items-center w-full">
+                      <div className="flex justify-between text-sm items-center w-full">
                         <h3 className="font-semibold text-white">
                           {item.posisi}
                         </h3>

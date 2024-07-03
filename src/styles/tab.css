@@ -7,7 +7,7 @@
   height: auto;
   padding: 8px;
   border-color: #6366f1; /* kode warna biru-nya */
-  font-size: 16px;
+  font-size: 14px;
   transition: all 400ms;
 }
 .custom-tab-bar .nav-link.active {

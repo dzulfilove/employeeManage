@@ -33,6 +33,7 @@ class EmployeeDetail extends Component {
       idEmployee: id,
       dataDivisi: [],
       dataLokasi: [],
+      dataPosisi: [],
       dataEmployee: {},
       refPerusahaan: idPerusahaan,
       employeeDocuments: [],
@@ -44,9 +45,33 @@ class EmployeeDetail extends Component {
     this.getAllCabang();
     this.getTimData();
     this.getEmployeeDocuments(this.state.idEmployee);
+    this.getAllPosisi();
   }
 
   // Get data
+  getAllPosisi = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "divisions"));
+
+      if (querySnapshot.empty) {
+        console.log("Tidak ada dokumen yang ditemukan.");
+        return;
+      }
+      const divisions = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const dataOption = divisions.map((data) => ({
+        text: data.namaPosisi,
+        value: data.namaPosisi,
+      }));
+      console.log(dataOption, "data Option divisi");
+      this.setState({ dataPosisi: dataOption });
+    } catch (error) {
+      console.error("Error fetching divisions:", error.message);
+    }
+  };
   getEmployee = async (id) => {
     try {
       const docRef = doc(db, "employees", id);
@@ -349,7 +374,7 @@ class EmployeeDetail extends Component {
   render() {
     return (
       <div className="flex flex-col justify-start items-center">
-        <div className="flex w-[97%] justify-start p-4 pl-0  items-center text-white text-3xl mb-6 border-b border-b-teal-500 pb-10">
+        <div className="flex w-[97%] justify-start p-4 pl-0  items-center text-white text-2xl  border-b border-b-teal-500 pb-10">
           Data Detail Karyawan
         </div>
 
@@ -357,8 +382,10 @@ class EmployeeDetail extends Component {
           data={this.state.dataEmployee}
           dataDivisi={this.state.dataDivisi}
           dataLokasi={this.state.dataLokasi}
+          dataPosisi={this.state.dataPosisi}
           id={this.state.idEmployee}
           getDataEmployee={this.getEmployee}
+          getDataPosisi={this.getAllPosisi}
         />
 
         <div className="flex justify-center w-full items-start gap-16">

@@ -230,7 +230,7 @@ class Dashboard extends Component {
     console.log(this.state.dataDivisi, "divisi");
     return (
       <div>
-        <div className="flex w-full justify-start p-4 items-center text-white text-3xl mb-6">
+        <div className="flex w-full justify-start p-4 items-center text-white text-2xl">
           Employee Management System
         </div>
         <CardDashboard
@@ -239,7 +239,7 @@ class Dashboard extends Component {
           totalDivisi={this.state.totalDivisi}
           totalKandidat={this.state.totalkandidat}
         />
-        <div className="flex justify-between w-full items-start gap-16">
+        <div className="flex justify-between w-full items-start gap-10">
           <TableDashboard
             dataEmployees={this.state.dataEmployees}
             dataKandidat={this.state.candidateList}

@@ -142,10 +142,10 @@ function TableCandidate(props) {
         </Tabs>
         <div className="search">
           <div className="search-box">
-            <div className="search-field">
+            <div className="search-field font-normal">
               <input
                 placeholder="Search..."
-                className="input-search"
+                className="input-search font-normal"
                 type="text"
                 onChange={handleSearch}
               />
@@ -182,7 +182,7 @@ function TableCandidate(props) {
       <table
         data-aos="fade-up"
         data-aos-delay="550"
-        className="w-[100%] text-left text-base font-normal"
+        className="w-[100%] text-left text-sm font-normal"
       >
         <thead>
           <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">

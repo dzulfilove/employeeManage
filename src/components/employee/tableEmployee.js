@@ -188,7 +188,7 @@ function TableEmployee(props) {
           </div>
         </div>
         <div className="w-auto flex z-[999] justify-start gap-3 items-center p-1 border border-slate-400 rounded-md">
-          <div className="flex items-center justify-center z-[999] w-[15rem]">
+          <div className="flex items-center justify-center z-[999] w-[12rem]">
             <DropdownSearch
               options={props.dataDivisi}
               change={(item) => handleFilter(item)}
@@ -209,7 +209,7 @@ function TableEmployee(props) {
       <table
         data-aos="fade-up"
         data-aos-delay="550"
-        className="w-[100%] text-left text-base font-normal"
+        className="w-[100%] text-left text-sm font-normal"
       >
         <thead>
           <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">

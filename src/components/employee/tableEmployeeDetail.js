@@ -217,7 +217,7 @@ function TableEmployeeDetail(props) {
 
   console.log(data);
   return (
-    <div className="p-4 bg-slate-800 w-[90%] rounded-xl shadow-lg mb-[8rem] mt-16">
+    <div className="p-4 bg-slate-800 w-[97%] rounded-xl shadow-lg mb-[8rem] mt-16">
       <div className="mt-2 flex justify-start items-center mb-10 gap-10">
         <button className="button-add" onClick={handleAdd}>
           Tambah Dokumen
@@ -233,34 +233,34 @@ function TableEmployeeDetail(props) {
         } duration-500 flex w-full flex-col justify-between items-start border border-slate-400 rounded-lg `}
       >
         <div
-          className={`flex w-full justify-between items-center rounded-lg mb-10 ${
+          className={`flex w-full justify-between items-center rounded-lg mb-10  ${
             isAddData ? "" : "hidden "
           }`}
         >
-          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
-            <h4 className="font-semibold text-base">Nama Dokumen</h4>
+          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-sm">Nama Dokumen</h4>
             <input
               type="text"
-              className="w-[15rem] flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+              className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
               value={namaDokumen}
               onChange={(e) => {
                 setNamaDokumen(e.target.value);
               }}
             />
           </div>
-          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
-            <h4 className="font-semibold text-base"> Kategori Dokumen</h4>
+          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-sm"> Kategori Dokumen</h4>
             <input
               type="text"
-              className="w-[15rem] flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+              className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
               value={kategoriDokumen}
               onChange={(e) => {
                 setKategoriDokumen(e.target.value);
               }}
             />
           </div>
-          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
-            <h4 className="font-semibold text-base">Tanggal Terbit</h4>
+          <div className="w-[10rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-sm">Tanggal Terbit</h4>
 
             <Space direction="vertical" size={12}>
               <DatePicker
@@ -272,13 +272,13 @@ function TableEmployeeDetail(props) {
                 onChange={(date) => {
                   handleChangeDate("startKontrak", date);
                 }}
-                className="bg-slate-700 text-white border border-slate-500 w-[15rem] p-3 hover:text-slate-800 active:text-slate-800"
+                className="bg-slate-700 text-white border w-full border-slate-500  p-3 hover:text-slate-800 active:text-slate-800"
               />
             </Space>
           </div>
 
-          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
-            <h4 className="font-semibold text-base">Status</h4>
+          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-sm">Status</h4>
             <div className="flex w-full justify-center items-center p-2 border border-slate-500 bg-slate-700 rounded-lg">
               <DropdownSearch
                 options={optionStatus}
@@ -289,11 +289,12 @@ function TableEmployeeDetail(props) {
               />
             </div>
           </div>
-          <div className="w-[20%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
-            <h4 className="font-semibold text-base"> File Dokumen</h4>
+          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-sm"> File Dokumen</h4>
+
             <input
               type="file"
-              className="w-[15rem] flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+              className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
               onChange={handleFileChange}
             />
           </div>
@@ -322,7 +323,7 @@ function TableEmployeeDetail(props) {
         )}
       </div>
 
-      <table className="w-[100%] text-left text-base font-normal">
+      <table className="w-[100%] text-left text-sm font-normal">
         <thead>
           <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
             <th className="px-4 py-4 font-medium rounded-l-xl">Nama Dokumen</th>
@@ -356,7 +357,7 @@ function TableEmployeeDetail(props) {
               <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
                 {data.statusDokumen}
               </td>
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] max-w-[15rem] px-4 py-4 text-white">
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] max-w-[17rem] px-4 py-4 text-white">
                 <div className="flex w-full justify-between items-center">
                   <div className="h-[3.2rem] w-[3.2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
                     <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>

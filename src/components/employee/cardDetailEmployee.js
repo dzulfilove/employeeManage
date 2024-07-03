@@ -11,7 +11,7 @@ import TextField from "@mui/material/TextField";
 import { generateRandomString } from "../features/utils";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, dbImage } from "../../config/firebase";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 function CardDetailEmployee(props) {
@@ -29,6 +29,7 @@ function CardDetailEmployee(props) {
   const [alamat, setAlamat] = useState("");
   const [riwayatPendidikan, setRiwayatPendidikan] = useState("");
   const [posisi, setPosisi] = useState("");
+  const [posisiLain, setPosisiLain] = useState("");
   const [divisi, setDivisi] = useState("");
   const [lokasi, setLokasi] = useState("");
   const [status, setStatus] = useState("");
@@ -42,17 +43,7 @@ function CardDetailEmployee(props) {
   );
   const [tanggalAwal, setTanggalAwal] = useState(dayjs().locale("id"));
   const [tanggalAkhir, setTanggalAkhir] = useState(dayjs().locale("id"));
-  const optionPosisi = [
-    { value: "Manager", text: "Manager" },
-    { value: "Assisten Manager", text: "Asisten Manager" },
-    { value: "Staff", text: "Staff" },
-    { value: "Admin", text: "Admin" },
-    { value: "HRD", text: "HRD" },
-    { value: "Dokter Umum", text: "Dokter Umum" },
-    { value: "Dokter Gigi", text: "Dokter Gigi" },
-    { value: "Perawat", text: "Perawat" },
-    { value: "Analis", text: "Analis" },
-  ];
+
   const optionPendidikan = [
     { value: "SD", text: "SD" },
     { value: "SMP", text: "SMP" },
@@ -77,52 +68,51 @@ function CardDetailEmployee(props) {
   }, []);
 
   const setData = () => {
-    setIsEdit(true);
+    setIsEdit(!isEdit);
 
-    if (isSet == false) {
-      setPreview(props.data.fotoTerbaru);
-      setName(props.data.nama);
-      setEmail(props.data.email);
-      setNik(props.data.nik);
-      setNoTelpon(props.data.nomorWhatsapp);
-      setAlamat(props.data.alamat);
-      setGaji(props.data.gaji ? props.data.gaji : 0);
-      setMasaKerja(props.data.masaKerja ? props.data.masaKerja : 0);
-      setTanggalAwalKontrak(
-        props.data.tanggalAwalKontrak ? props.data.tanggalAwalKontrak : tanggal
-      );
-      setTanggalAkhirKontrak(
-        props.data.tanggalAkhirKontrak
-          ? props.data.tanggalAkhirKontrak
-          : tanggal
-      );
+    setPreview(props.data.fotoTerbaru);
+    setName(props.data.nama);
+    setEmail(props.data.email);
+    setNik(props.data.nik);
+    setNoTelpon(props.data.nomorWhatsapp);
+    setAlamat(props.data.alamat);
+    setGaji(props.data.gaji ? props.data.gaji : 0);
+    setMasaKerja(props.data.masaKerja ? props.data.masaKerja : 0);
+    setTanggalAwalKontrak(
+      props.data.tanggalAwalKontrak ? props.data.tanggalAwalKontrak : tanggal
+    );
+    setTanggalAkhirKontrak(
+      props.data.tanggalAkhirKontrak ? props.data.tanggalAkhirKontrak : tanggal
+    );
 
-      const lokasiSelect = props.dataLokasi.filter(
-        (item) => item.text == props.data.cabang
-      );
+    const lokasiSelect = props.dataLokasi.filter(
+      (item) => item.text == props.data.cabang
+    );
 
-      const divisiSelect = props.dataDivisi.filter(
-        (item) => item.text == props.data.divisi
-      );
+    const divisiSelect = props.dataDivisi.filter(
+      (item) => item.text == props.data.divisi
+    );
 
-      const pendidikanSelect = optionPendidikan.filter(
-        (item) => item.value == props.data.riwayatPendidikan
-      );
+    const pendidikanSelect = optionPendidikan.filter(
+      (item) => item.value == props.data.riwayatPendidikan
+    );
 
-      const statusSelect = optionStatus.filter(
-        (item) => item.value == props.data.statusKaryawan
-      );
+    const statusSelect = optionStatus.filter(
+      (item) => item.value == props.data.statusKaryawan
+    );
+    const statusPosisi = props.dataPosisi.filter(
+      (item) => item.text == props.data.posisi
+    );
 
-      console.log(props.data.posisi, "lokasi2");
-      setDivisi(divisiSelect.length > 0 ? divisiSelect[0] : "");
-      setRiwayatPendidikan(
-        pendidikanSelect.length > 0 ? pendidikanSelect[0] : ""
-      );
-      setLokasi(lokasiSelect.length > 0 ? lokasiSelect[0] : "");
-      setStatus(statusSelect.length > 0 ? statusSelect[0] : "");
-      setPosisi(props.data.posisi);
-      setIsSet(true);
-    }
+    console.log(props.data.posisi, "lokasi2");
+    setDivisi(divisiSelect.length > 0 ? divisiSelect[0] : "");
+    setRiwayatPendidikan(
+      pendidikanSelect.length > 0 ? pendidikanSelect[0] : ""
+    );
+    setLokasi(lokasiSelect.length > 0 ? lokasiSelect[0] : "");
+    setStatus(statusSelect.length > 0 ? statusSelect[0] : "");
+    setPosisi(statusPosisi.length > 0 ? statusPosisi[0] : "");
+    setIsSet(true);
   };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -252,6 +242,24 @@ function CardDetailEmployee(props) {
           };
 
           console.log(data, "update");
+          let posisiKerja = "";
+          if (posisi.text == "Lainnya") {
+            alert("lainnya");
+
+            posisiKerja = posisiLain;
+            const division = {
+              namaPosisi: posisiLain,
+            };
+            const divisionRef = await addDoc(
+              collection(db, "divisions"),
+              division
+            );
+            props.getDataPosisi();
+
+            console.log(divisionRef);
+          } else {
+            posisiKerja = posisi.text;
+          }
           // Update properti foto_tindakan pada dokumen tindakan yang sesuai
           const eventRef = doc(db, "employees", props.id);
           await updateDoc(eventRef, {
@@ -260,7 +268,7 @@ function CardDetailEmployee(props) {
             nik,
             alamat,
             nomorWhatsapp: noTelpon,
-            posisi: posisi.text,
+            posisi: posisiKerja,
             cabang: lokasi.text,
             riwayatPendidikan: riwayatPendidikan.text,
             gaji,
@@ -289,6 +297,20 @@ function CardDetailEmployee(props) {
             statusKaryawan: status.text,
           };
           console.log(data, "update");
+          let posisiKerja = "";
+          if (posisi.text == "Lainnya") {
+            posisiKerja = posisiLain;
+            const division = {
+              namaPosisi: posisiLain,
+            };
+            const divisionRef = await addDoc(
+              collection(db, "divisions"),
+              division
+            );
+            props.getDataPosisi();
+          } else {
+            posisiKerja = posisi.text;
+          }
           // Jika tidak ada gambar baru, hanya perbarui properti nama_tindakan dan deskripsi_tindakan
           const eventRef = doc(db, "employees", props.id);
           await updateDoc(eventRef, {
@@ -297,7 +319,7 @@ function CardDetailEmployee(props) {
             nik,
             alamat,
             nomorWhatsapp: noTelpon,
-            posisi: posisi.text,
+            posisi: posisiKerja,
             cabang: lokasi.text,
             riwayatPendidikan: riwayatPendidikan.text,
             gaji,
@@ -316,6 +338,7 @@ function CardDetailEmployee(props) {
           if (result.isConfirmed) {
             props.getDataEmployee(props.id);
             setIsEdit(false);
+            setData();
           }
         });
       } catch (error) {
@@ -427,7 +450,7 @@ function CardDetailEmployee(props) {
       <div
         data-aos="fade-down"
         data-aos-delay="50"
-        className="w-[90%] flex flex-col justify-between items-end  rounded-lg relative playing border-2 border-slate-600 overflow-hidden shadow-xl mt-10"
+        className="w-[97%] flex flex-col justify-between items-end  rounded-lg relative playing border-2 border-slate-600 overflow-hidden shadow-xl mt-10"
       >
         <div className="w-full flex justify-center items-center left-0 m-0 p-0  bg-white rounded-lg absolute opacity-5 h-full"></div>
         <div className="w-[25rem] h-[25rem] opacity-10 rounded-full blur-3xl bg-white absolute left-[5%] top-[5%]"></div>
@@ -507,13 +530,13 @@ function CardDetailEmployee(props) {
                       </>
                     )}
                     <div className="flex w-full justify-start items-start px-8 flex-col gap-2 z-[99] mt-6 ">
-                      <h2 className="text-white font-semibold text-xl capitalize">
+                      <h2 className="text-white font-semibold text-lg capitalize">
                         {props.data.nama}
                       </h2>
-                      <h2 className="text-white font-normal text-base">
+                      <h2 className="text-white font-normal text-sm">
                         {props.data.posisi}
                       </h2>
-                      <h2 className="text-white font-semibold text-xl mt-6">
+                      <h2 className="text-white font-semibold text-lg mt-6">
                         Team
                       </h2>
 
@@ -531,8 +554,8 @@ function CardDetailEmployee(props) {
                         tanggal,
                         props.data.tanggalAkhirKontrak
                       ) < 5 &&
-                        props.data.statusKaryawan !==
-                          "Karyawan Tidak Aktif" && (
+                        props.data.statusKaryawan !== "Karyawan Tidak Aktif" &&
+                        isEdit == false && (
                           <>
                             <button
                               class="button-add mt-4"
@@ -546,20 +569,21 @@ function CardDetailEmployee(props) {
                             </button>
                           </>
                         )}
-                      {props.data.statusKaryawan !== "Karyawan Tidak Aktif" && (
-                        <>
-                          <button
-                            class="button-add mt-4"
-                            onClick={berhentikanKontrak}
-                          >
-                            Berhentikan Kontrak
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                          </button>
-                        </>
-                      )}
+                      {props.data.statusKaryawan !== "Karyawan Tidak Aktif" &&
+                        isEdit == false && (
+                          <>
+                            <button
+                              class="button-add mt-4"
+                              onClick={berhentikanKontrak}
+                            >
+                              Berhentikan Kontrak
+                              <span></span>
+                              <span></span>
+                              <span></span>
+                              <span></span>
+                            </button>
+                          </>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -575,11 +599,11 @@ function CardDetailEmployee(props) {
               >
                 <div className="w-full gap-2 flex justify-between items-center p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Nama</h4>
+                    <h4 className="font-semibold text-sm">Nama</h4>
 
                     <input
                       type="text"
-                      className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                      className="w-full text-sm flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                       value={name}
                       onChange={(e) => {
                         setName(e.target.value);
@@ -587,10 +611,10 @@ function CardDetailEmployee(props) {
                     />
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Email</h4>
+                    <h4 className="font-semibold text-sm">Email</h4>
                     <input
                       type="text"
-                      className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                      className="w-full text-sm flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value);
@@ -600,10 +624,10 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-center p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">NIK</h4>
+                    <h4 className="font-semibold text-sm">NIK</h4>
                     <input
                       type="text"
-                      className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                      className="w-full text-sm flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                       value={nik}
                       onChange={(e) => {
                         setNik(e.target.value);
@@ -611,23 +635,38 @@ function CardDetailEmployee(props) {
                     />
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Posisi</h4>
-                    <input
-                      type="text"
-                      className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                      value={posisi}
-                      onChange={(e) => {
-                        setPosisi(e.target.value);
-                      }}
-                    />
+                    <h4 className="font-semibold text-sm">Posisi</h4>
+                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
+                      <DropdownSearch
+                        options={props.dataPosisi}
+                        value={posisi}
+                        change={(data) => {
+                          setPosisi(data);
+                        }}
+                        name={"Posisi"}
+                      />
+                    </div>
+
+                    {posisi.text == "Lainnya" && (
+                      <>
+                        <input
+                          type="text"
+                          placeholder="Masukkan Posisi"
+                          className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border capitalize rounded-lg justify-start items-center h-[3rem]"
+                          onChange={(e) => {
+                            setPosisiLain(e.target.value);
+                          }}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">No. WhatsApp</h4>
+                    <h4 className="font-semibold text-sm">No. WhatsApp</h4>
                     <input
                       type="text"
-                      className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                      className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                       value={noTelpon}
                       onChange={(e) => {
                         setNoTelpon(e.target.value);
@@ -635,10 +674,10 @@ function CardDetailEmployee(props) {
                     />
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Alamat</h4>
+                    <h4 className="font-semibold text-sm">Alamat</h4>
 
                     <textarea
-                      className="w-full p-2 bg-slate-700 text-white border-slate-500 border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal"
+                      className="w-full p-2 text-sm bg-slate-700 text-white border-slate-500 border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal"
                       value={alamat}
                       onChange={(e) => {
                         setAlamat(e.target.value);
@@ -649,7 +688,7 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Lokasi Kerja</h4>
+                    <h4 className="font-semibold text-sm">Lokasi Kerja</h4>
                     <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                       <DropdownSearch
                         options={props.dataLokasi}
@@ -663,7 +702,7 @@ function CardDetailEmployee(props) {
                   </div>
 
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Divisi</h4>
+                    <h4 className="font-semibold text-sm">Divisi</h4>
                     <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                       <DropdownSearch
                         options={props.dataDivisi}
@@ -678,7 +717,7 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-6 p-4 flex justify-between items-start ">
                   <div className="w-[50%] flex justify-start gap-6 flex-col">
-                    <h4 className="font-semibold text-base">
+                    <h4 className="font-semibold text-sm">
                       Tanggal Awal Kontrak
                     </h4>
                     <Space direction="vertical" size={12}>
@@ -693,12 +732,12 @@ function CardDetailEmployee(props) {
                           handleChangeDate("startKontrak", date);
                         }}
                         format={dateFormatList}
-                        className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
+                        className="bg-slate-700 text-sm text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
                       />
                     </Space>
                   </div>
                   <div className="w-[50%] flex justify-start  gap-6 flex-col">
-                    <h4 className="font-semibold text-base">
+                    <h4 className="font-semibold text-sm">
                       Tanggal Akhir Kontrak
                     </h4>
                     <Space direction="vertical" size={12}>
@@ -720,7 +759,7 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">
+                    <h4 className="font-semibold text-sm">
                       Pendidikan Terakhir
                     </h4>
                     <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
@@ -736,7 +775,7 @@ function CardDetailEmployee(props) {
                   </div>
 
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">
+                    <h4 className="font-semibold text-sm">
                       Masa Kerja (Tahun)
                     </h4>
                     <input
@@ -751,10 +790,10 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Gaji</h4>
+                    <h4 className="font-semibold text-sm">Gaji</h4>
                     <input
                       type="number"
-                      className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                      className="w-full text-sm flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
                       value={gaji}
                       onChange={(e) => {
                         setGaji(e.target.value);
@@ -762,8 +801,8 @@ function CardDetailEmployee(props) {
                     />
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Status Karyawan</h4>
-                    <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
+                    <h4 className="font-semibold text-sm">Status Karyawan</h4>
+                    <div className="w-full gap-2 text-sm flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                       <DropdownSearch
                         change={(data) => {
                           setStatus(data);
@@ -786,9 +825,9 @@ function CardDetailEmployee(props) {
               >
                 <div className="w-full gap-2 flex justify-between items-center p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Nama</h4>
+                    <h4 className="font-semibold text-sm">Nama</h4>
                     <div
-                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                      className={`w-full flex p-2 font-normal border text-sm rounded-lg justify-start items-center h-[3rem] ${
                         props.data.nama
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -798,9 +837,9 @@ function CardDetailEmployee(props) {
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Email</h4>
+                    <h4 className="font-semibold text-sm">Email</h4>
                     <div
-                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                      className={`w-full flex p-2 font-normal border text-sm rounded-lg justify-start items-center h-[3rem] ${
                         props.data.email
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -812,9 +851,9 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-center p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">NIK</h4>
+                    <h4 className="font-semibold text-sm">NIK</h4>
                     <div
-                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                      className={`w-full flex p-2 font-normal border text-sm rounded-lg justify-start items-center h-[3rem] ${
                         props.data.nik
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -824,9 +863,9 @@ function CardDetailEmployee(props) {
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Posisi</h4>
+                    <h4 className="font-semibold text-sm">Posisi</h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal h-[3rem] justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col font-normal text-sm h-[3rem] justify-start items-start p-2 border rounded-xl ${
                         props.data.posisi
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -838,9 +877,9 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">No. WhatsApp</h4>
+                    <h4 className="font-semibold text-sm">No. WhatsApp</h4>
                     <div
-                      className={`w-full flex p-2 font-normal border rounded-lg justify-start items-center h-[3rem] ${
+                      className={`w-full flex p-2 font-normal border text-sm rounded-lg justify-start items-center h-[3rem] ${
                         props.data.nomorWhatsapp
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -850,9 +889,9 @@ function CardDetailEmployee(props) {
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Alamat</h4>
+                    <h4 className="font-semibold text-sm">Alamat</h4>
                     <div
-                      className={`w-full p-2 text-white border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal ${
+                      className={`w-full p-2 text-white border text-sm rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal ${
                         props.data.alamat
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -864,9 +903,9 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Divisi</h4>
+                    <h4 className="font-semibold text-sm">Divisi</h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
                         props.data.divisi
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -876,9 +915,9 @@ function CardDetailEmployee(props) {
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Lokasi Kerja</h4>
+                    <h4 className="font-semibold text-sm">Lokasi Kerja</h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
                         props.data.cabang
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -890,11 +929,11 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">
+                    <h4 className="font-semibold text-sm">
                       Tanggal Awal Kontrak
                     </h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
                         props.data.tanggalAwalKontrak
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -905,12 +944,12 @@ function CardDetailEmployee(props) {
                         : "Tidak ada data"}
                     </div>
                   </div>
-                  <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">
+                  <div className="w-[50%] gap-2 flex flex-col text-sm justify-start items-start p-2">
+                    <h4 className="font-semibold text-sm">
                       Tanggal Akhir Kontrak
                     </h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
                         props.data.tanggalAkhirKontrak
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -923,12 +962,12 @@ function CardDetailEmployee(props) {
                   </div>
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
-                  <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">
+                  <div className="w-[50%] gap-2 flex flex-col text-sm justify-start items-start p-2">
+                    <h4 className="font-semibold text-sm">
                       Riwayat Pendidikan
                     </h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col font-normal text-sm justify-start items-start p-2 border rounded-xl ${
                         props.data.riwayatPendidikan
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -938,11 +977,11 @@ function CardDetailEmployee(props) {
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">
+                    <h4 className="font-semibold text-sm">
                       Masa Kerja (Tahun)
                     </h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col font-normal text-sm justify-start items-start p-2 border rounded-xl ${
                         props.data.masaKerja
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -954,9 +993,9 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Gaji</h4>
+                    <h4 className="font-semibold text-sm">Gaji</h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
                         props.data.gaji
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"
@@ -966,9 +1005,9 @@ function CardDetailEmployee(props) {
                     </div>
                   </div>
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-base">Status Karyawan</h4>
+                    <h4 className="font-semibold text-sm">Status Karyawan</h4>
                     <div
-                      className={`w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border rounded-xl ${
+                      className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
                         props.data.statusKaryawan
                           ? "bg-slate-700 border-slate-500"
                           : "text-red-500 border-red-600"

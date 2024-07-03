@@ -276,7 +276,7 @@ class ManageCandidate extends Component {
 
     await this.getAllCandidate();
     await this.getCandidateFiltered();
-    window.location.href = "/manage-candidate";  
+    window.location.href = "/manage-candidate";
   };
 
   deleteSubcollection = async (collectionRef) => {
@@ -306,118 +306,121 @@ class ManageCandidate extends Component {
       <DndProvider backend={HTML5Backend}>
         <ToastContainer />
         <div>
-          <div className="flex w-full justify-start p-4 items-center text-white text-3xl mb-6">
+          <div className="flex w-full justify-start p-4 items-center text-white text-2xl ">
             Manajemen Calon Kandidat Karyawan
           </div>
-          <div>
-            <button className="button-add" onClick={this.handleSaveChanges}>
-              Simpan Perubahan
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-          </div>
-          <div className="w-full flex  mt-10 justify-between items-start">
-            <div
-              data-aos="fade-down"
-              data-aos-delay="50"
-              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
-            >
-              <div className="w-[18rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
-              <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg  border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
-                <h4>Tahap Awal Seleksi</h4>
-              </div>
-              <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {tahapSeleksiAwal.map((item, index) => (
-                  <SubCard key={index} name={item} />
-                ))}
-                <MainCard
-                  onDrop={(item) =>
-                    this.handleDropGeneric(item, "tahapSeleksiAwal")
-                  }
-                />
-              </div>
+          <div className="w-full flex flex-col  mt-10 justify-between items-start">
+            <div>
+              <button className="button-add" onClick={this.handleSaveChanges}>
+                Simpan Perubahan
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
             </div>
-            <div
-              data-aos="fade-down"
-              data-aos-delay="150"
-              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
-            >
-              <div className="w-[18rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+            <div className="w-full flex  mt-10 justify-between items-start">
+              <div
+                data-aos="fade-down"
+                data-aos-delay="50"
+                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
+              >
+                <div className="w-[14rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
-              <div className="w-full p-2  text-white bg-transparent shadow-xl  text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
-                <h4>Tahap Administrasi</h4>
+                <div className="w-full p-2  text-white bg-transparent shadow-xl text-base  border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
+                  <h4>Tahap Awal Seleksi</h4>
+                </div>
+                <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
+                  {tahapSeleksiAwal.map((item, index) => (
+                    <SubCard key={index} name={item} />
+                  ))}
+                  <MainCard
+                    onDrop={(item) =>
+                      this.handleDropGeneric(item, "tahapSeleksiAwal")
+                    }
+                  />
+                </div>
               </div>
-              <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {tahapAdministrasi.map((item, index) => (
-                  <SubCard key={index} name={item} />
-                ))}
-                <MainCard
-                  onDrop={(item) =>
-                    this.handleDropGeneric(item, "tahapAdministrasi")
-                  }
-                />
-              </div>
-            </div>
-            <div
-              data-aos="fade-down"
-              data-aos-delay="250"
-              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
-            >
-              <div className="w-[18rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div
+                data-aos="fade-down"
+                data-aos-delay="150"
+                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              >
+                <div className="w-[14rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
-              <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
-                <h4>Tahap Tes</h4>
+                <div className="w-full p-2  text-white bg-transparent shadow-xl  text-base border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
+                  <h4>Tahap Administrasi</h4>
+                </div>
+                <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
+                  {tahapAdministrasi.map((item, index) => (
+                    <SubCard key={index} name={item} />
+                  ))}
+                  <MainCard
+                    onDrop={(item) =>
+                      this.handleDropGeneric(item, "tahapAdministrasi")
+                    }
+                  />
+                </div>
               </div>
-              <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {tahapTes.map((item, index) => (
-                  <SubCard key={index} name={item} />
-                ))}
-                <MainCard
-                  onDrop={(item) => this.handleDropGeneric(item, "tahapTes")}
-                />
-              </div>
-            </div>
-            <div
-              data-aos="fade-down"
-              data-aos-delay="250"
-              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
-            >
-              <div className="w-[18rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div
+                data-aos="fade-down"
+                data-aos-delay="250"
+                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              >
+                <div className="w-[14rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
-              <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
-                <h4>Tahap Interview</h4>
+                <div className="w-full p-2  text-white bg-transparent shadow-xl text-base border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
+                  <h4>Tahap Tes</h4>
+                </div>
+                <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
+                  {tahapTes.map((item, index) => (
+                    <SubCard key={index} name={item} />
+                  ))}
+                  <MainCard
+                    onDrop={(item) => this.handleDropGeneric(item, "tahapTes")}
+                  />
+                </div>
               </div>
-              <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {tahapInterview.map((item, index) => (
-                  <SubCard key={index} name={item} />
-                ))}
-                <MainCard
-                  onDrop={(item) =>
-                    this.handleDropGeneric(item, "tahapInterview")
-                  }
-                />
-              </div>
-            </div>
-            <div
-              data-aos="fade-down"
-              data-aos-delay="350"
-              className="w-[18rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
-            >
-              <div className="w-[18rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+              <div
+                data-aos="fade-down"
+                data-aos-delay="250"
+                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              >
+                <div className="w-[14rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
-              <div className="w-full p-2  text-white bg-transparent shadow-xl text-lg border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
-                <h4>Karyawan</h4>
+                <div className="w-full p-2  text-white bg-transparent shadow-xl text-base border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
+                  <h4>Tahap Interview</h4>
+                </div>
+                <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
+                  {tahapInterview.map((item, index) => (
+                    <SubCard key={index} name={item} />
+                  ))}
+                  <MainCard
+                    onDrop={(item) =>
+                      this.handleDropGeneric(item, "tahapInterview")
+                    }
+                  />
+                </div>
               </div>
-              <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                {employees.map((item, index) => (
-                  <SubCard key={index} name={item} />
-                ))}
-                <MainCard
-                  onDrop={(item) => this.handleDropGeneric(item, "employees")}
-                />
+              <div
+                data-aos="fade-down"
+                data-aos-delay="350"
+                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+              >
+                <div className="w-[14rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
+
+                <div className="w-full p-2  text-white bg-transparent shadow-xl text-base border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
+                  <h4>Karyawan</h4>
+                </div>
+                <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
+                  {employees.map((item, index) => (
+                    <SubCard key={index} name={item} />
+                  ))}
+                  <MainCard
+                    onDrop={(item) => this.handleDropGeneric(item, "employees")}
+                  />
+                </div>
               </div>
             </div>
           </div>
