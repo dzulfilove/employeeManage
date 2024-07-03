@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 class ManageCandidate extends Component {
   constructor(props) {
@@ -106,23 +107,35 @@ class ManageCandidate extends Component {
     };
 
     // Update tahap yang sesuai dengan item baru
-    const updatedTargetTahap = [...tahapan[targetTahap], item];
-    this.setState({
-      [targetTahap]: updatedTargetTahap,
-      itemNew: item,
-    });
+    const cekdata = tahapan[targetTahap].filter((a) => a.id == item.id);
+    if (cekdata.length > 0) {
+      Swal.fire({
+        title: "Warning",
+        text: "Ada Error, Harap Simpan Perubahan dan Refresh Halaman",
+        icon: "error",
+      });
+    } else {
+      const updatedTargetTahap = [...tahapan[targetTahap], item];
+      console.log(item.nama, "nama");
+      console.log(tahapan[targetTahap], "data awal");
+      console.log(updatedTargetTahap, targetTahap);
+      this.setState({
+        [targetTahap]: updatedTargetTahap,
+        itemNew: item,
+      });
 
-    // Update tahap lain dengan menghapus item
-    Object.keys(tahapan).forEach((tahap) => {
-      if (tahap !== targetTahap) {
-        const updatedTahap = tahapan[tahap].filter(
-          (data) => data.nama !== item.nama
-        );
-        this.setState({
-          [tahap]: updatedTahap,
-        });
-      }
-    });
+      // Update tahap lain dengan menghapus item
+      Object.keys(tahapan).forEach((tahap) => {
+        if (tahap !== targetTahap) {
+          const updatedTahap = tahapan[tahap].filter(
+            (data) => data.id !== item.id
+          );
+          this.setState({
+            [tahap]: updatedTahap,
+          });
+        }
+      });
+    }
   };
 
   handleSaveChanges = async () => {
@@ -263,6 +276,7 @@ class ManageCandidate extends Component {
 
     await this.getAllCandidate();
     await this.getCandidateFiltered();
+    window.location.href = "/manage-candidate";  
   };
 
   deleteSubcollection = async (collectionRef) => {
