@@ -217,7 +217,7 @@ function TableEmployeeDetail(props) {
 
   console.log(data);
   return (
-    <div className="p-4 bg-slate-800 w-[97%] rounded-xl shadow-lg mb-[8rem] mt-16">
+    <div className="p-4 bg-slate-800 w-[97%] rounded-xl shadow-lg mb-[8rem] mt-10">
       <div className="mt-2 flex justify-start items-center mb-10 gap-10">
         <button className="button-add" onClick={handleAdd}>
           Tambah Dokumen

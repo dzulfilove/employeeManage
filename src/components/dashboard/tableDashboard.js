@@ -79,7 +79,7 @@ function TableDashboard(props) {
     <div
       data-aos="fade-down"
       data-aos-delay="350"
-      className="p-4 bg-slate-800 w-[70%] rounded-xl shadow-lg mb-[4rem] mt-16"
+      className="p-4 bg-slate-800 w-[70%] rounded-xl shadow-lg mb-[4rem] mt-6"
     >
       <div className="mt-2 flex justify-start items-center mb-6">
         <Tabs

@@ -78,7 +78,7 @@ function TableDashboardDivision(props) {
     <div
       data-aos="fade-down"
       data-aos-delay="450"
-      className="p-4 bg-slate-800 w-[30%] rounded-xl shadow-lg mb-[4rem] mt-16"
+      className="p-4 bg-slate-800 w-[30%] rounded-xl shadow-lg mb-[4rem] mt-6"
     >
       <table className="w-[100%] text-left text-sm font-normal">
         <thead>

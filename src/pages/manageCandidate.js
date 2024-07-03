@@ -306,7 +306,7 @@ class ManageCandidate extends Component {
       <DndProvider backend={HTML5Backend}>
         <ToastContainer />
         <div>
-          <div className="flex w-full justify-start p-4 items-center text-white text-2xl ">
+          <div className="flex w-full justify-start p-4 items-center text-white text-2xl border-b border-b-teal-500 pb-10 ">
             Manajemen Calon Kandidat Karyawan
           </div>
 

@@ -125,7 +125,7 @@ function TableCandidate(props) {
     <div
       data-aos="fade-down"
       data-aos-delay="450"
-      className="p-4 bg-slate-800 w-[97%] rounded-xl shadow-lg mb-[4rem] mt-16"
+      className="p-4 bg-slate-800 w-[97%] rounded-xl shadow-lg mb-[4rem] mt-6"
     >
       <div className="mt-2 flex justify-start items-center mb-10 gap-8">
         <Tabs
