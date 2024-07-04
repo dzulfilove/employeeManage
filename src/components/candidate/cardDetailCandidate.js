@@ -99,22 +99,23 @@ function CardDetailCandidate(props) {
                         <div className=" flex  justify-center text-sm text-slate-300  items-center gap-2 mt-4  flex-col  border-slate-400 border p-2 rounded-lg">
                           {props.data.nomorWhatsapp}
                         </div>
-                        <div className=" flex hover:border-teal-500 transition-all relative hover:text-slate-800 justify-center text-sm text-slate-300  items-center gap-2 mt-4  flex-col  border-slate-400 border p-2 rounded-lg">
+                        {/* <div className=" button-link">
+                        
+                        </div> */}
+                        <a
+                          target="_blank"
+                          rel="noreferrer"
+                          href={props.data.cvTerbaru}
+                          class="mt-3 cursor-pointer group group-hover:before:duration-500 border-slate-400 group-hover:after:duration-500 after:duration-500 hover:border-teal-300 hover:before:[box-shadow:_20px_20px_20px_30px_#a21caf] duration-500 before:duration-500 hover:duration-500  hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur hover:underline hover:underline-offset-4  origin-left hover:decoration-2 hover:text-teal-300 relative bg-slate-900 h- w-64 border text-left p-3 text-gray-50 text-sm font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-blue-500 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-teal-300 after:right-8 after:top-3 after:rounded-full after:blur-lg"
+                        >
                           <a
                             target="_blank"
                             rel="noreferrer"
                             href={props.data.cvTerbaru}
                           >
-                            <a
-                              target="_blank"
-                              rel="noreferrer"
-                              href={props.data.cvTerbaru}
-                              className="btn-shine"
-                            >
-                              Lihat CV Terbaru
-                            </a>
+                            Lihat CV
                           </a>
-                        </div>
+                        </a>
                       </div>
                       <h2 className="text-white font-semibold text-lg mt-6">
                         Tahap Seleksi
