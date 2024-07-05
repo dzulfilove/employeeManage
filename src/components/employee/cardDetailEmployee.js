@@ -1098,9 +1098,7 @@ function CardDetailEmployee(props) {
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
                   <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-                    <h4 className="font-semibold text-sm">
-                      Tanggal Awal Kerja
-                    </h4>
+                    <h4 className="font-semibold text-sm">Tanggal TMT</h4>
                     <div
                       className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
                         props.data.tanggalAwalMasuk

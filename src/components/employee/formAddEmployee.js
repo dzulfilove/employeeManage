@@ -123,7 +123,6 @@ function FormAddEmployee(props) {
       setTanggalAkhirKontrak(formattedDate);
     } else if (name === "tanggalMasuk") {
       setTanggalAwalMasuk(formattedDate);
-
     } else {
       setTanggalLahir(formattedDate);
     }
@@ -508,7 +507,7 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-6 p-4 flex justify-between items-start ">
             <div className="w-[50%] flex justify-start gap-6 flex-col">
-              <h4 className="font-semibold text-sm">Tanggal Awal Kerja</h4>
+              <h4 className="font-semibold text-sm">Tanggal TMT</h4>
               <Space direction="vertical" size={12}>
                 <DatePicker
                   defaultValue={dayjs(tanggalAwal, dateFormatList[0])}
