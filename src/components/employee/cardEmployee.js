@@ -82,7 +82,7 @@ export default function CardEmployee(props) {
                 Kontrak Akan Berakhir
               </h5>{" "}
               <h5 className="text-slate-300 text-sm font-normal mt-1">
-                Karyawan Kontrak Kurang Dari 3 Bulan
+                Karyawan Kontrak Kurang Dari 6 Bulan
               </h5>
             </div>
           </div>
