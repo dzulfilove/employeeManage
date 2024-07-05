@@ -102,9 +102,9 @@ const EndedContract = () => {
               )} \n<b>Sisa Kontrak : </b> ${sisaMasaKontrak(
                 tanggal,
                 p.tanggalAkhirKontrak
-              )}\n<b>Status :</b>${p.statusKaryawan}`
+              )}\n<b>Status : </b>${p.statusKaryawan}`
           )
-          .join("/n/n ");
+          .join("\n-----------------------------------------------\n\n");
 
         const text = ` <b>Karyawan Dengan Sisa Masa Kontrak Kurang Dari 3 Bulan: </b>
           \n\n${listKaryawan}`;
@@ -179,21 +179,7 @@ const EndedContract = () => {
 
   // Format data
 
-  const removeDuplicates = (dataArray) => {
-    // Gunakan objek untuk melacak nama yang sudah ada
-    const uniqueNames = {};
 
-    // Filter dataArray untuk hanya menyimpan objek dengan nama yang unik
-    const filteredArray = dataArray.filter((item) => {
-      if (!uniqueNames[item.Nama]) {
-        uniqueNames[item.Nama] = true;
-        return true; // Simpan item jika nama belum ada dalam uniqueNames
-      }
-      return false; // Abaikan item jika nama sudah ada dalam uniqueNames
-    });
-
-    return filteredArray;
-  };
   const sisaMasaKontrakHari = (startDate, endDate) => {
     const start = dayjs(startDate, "YYYY/MM/DD");
     const end = dayjs(endDate, "YYYY/MM/DD");

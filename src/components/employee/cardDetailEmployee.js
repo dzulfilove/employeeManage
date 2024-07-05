@@ -509,7 +509,7 @@ function CardDetailEmployee(props) {
                         sisaMasaKontrak(
                           tanggal,
                           props.data.tanggalAkhirKontrak
-                        ) < 5
+                        ) < 90 && isEdit == false
                           ? "w-[12rem] h-[12rem]"
                           : "w-[15rem] h-[15rem]"
                       } z-[99] `}
@@ -553,7 +553,7 @@ function CardDetailEmployee(props) {
                       {sisaMasaKontrak(
                         tanggal,
                         props.data.tanggalAkhirKontrak
-                      ) < 5 &&
+                      ) < 90 &&
                         props.data.statusKaryawan !== "Karyawan Tidak Aktif" &&
                         isEdit == false && (
                           <>
