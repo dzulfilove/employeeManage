@@ -192,7 +192,7 @@ function CardDetailEmployee(props) {
     try {
       const eventRef = doc(db, "employees", props.id);
       await updateDoc(eventRef, {
-        tanggalAwalKontrak: tanggalStart,
+        tanggalAwalKontrak: props.data.tanggalAkhirKontrak,
         tanggalAkhirKontrak: tanggalEnd,
         masaKerja: waktuKerja,
       });
