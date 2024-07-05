@@ -43,12 +43,23 @@ function FormAddEmployee(props) {
   const [lokasi, setLokasi] = useState("");
   const [status, setStatus] = useState("");
   const [gaji, setGaji] = useState(0);
+  const [noRekening, setNoRekening] = useState(0);
+  const [kontakLain, setKontakLain] = useState(0);
   const [masakerja, setMasaKerja] = useState(0);
   const [tanggalAwalKontrak, setTanggalAwalKontrak] = useState(
     dayjs().locale("id").format("YYYY-MM-DD")
   );
   const [tanggalAkhirKontrak, setTanggalAkhirKontrak] = useState(
     dayjs().locale("id").format("YYYY-MM-DD")
+  );
+  const [tanggal, setTanggal] = useState(
+    dayjs().locale("id").format("YYYY/MM/DD")
+  );
+  const [tanggalLahir, setTanggalLahir] = useState(
+    dayjs().locale("id").format("DD/MM/YYYY")
+  );
+  const [tanggalAwalMasuk, setTanggalAwalMasuk] = useState(
+    dayjs().locale("id").format("DD/MM/YYYY")
   );
   const [tanggalAwal, setTanggalAwal] = useState(dayjs().locale("id"));
   const [tanggalAkhir, setTanggalAkhir] = useState(dayjs().locale("id"));
@@ -105,11 +116,16 @@ function FormAddEmployee(props) {
     const formattedDate = dayjsDate.format("YYYY/MM/DD");
     if (name === "startKontrak") {
       setTanggalAwal(formattedDate);
-      setTanggalAwalKontrak(date);
-    } else {
+      setTanggalAwalKontrak(formattedDate);
+    } else if (name === "endKontrak") {
       setTanggalAkhir(formattedDate);
 
-      setTanggalAkhirKontrak(date);
+      setTanggalAkhirKontrak(formattedDate);
+    } else if (name === "tanggalMasuk") {
+      setTanggalAwalMasuk(formattedDate);
+
+    } else {
+      setTanggalLahir(formattedDate);
     }
   };
   const handleSaveFoto = async (file) => {
@@ -135,6 +151,8 @@ function FormAddEmployee(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const cek = await handleCheckEmptyFields();
+    const umur = await hitungSelisihTahun(tanggalLahir, tanggal);
+    const tahunKerja = await hitungSelisihTahun(tanggalAwalMasuk, tanggal);
     if (cek == false) {
       try {
         if (!selectedFile) {
@@ -171,11 +189,16 @@ function FormAddEmployee(props) {
           riwayatPendidikan,
           gaji,
           divisi: divisi,
-          masaKerja: masakerja,
+          masaKerja: tahunKerja,
+          umur: umur,
           tanggalAwalKontrak: tanggalAwal,
-          tanggalAkhirKontrak: tanggalAkhir,
+          tanggalAwalMasuk: tanggalAwalMasuk,
+          tanggalLahir,
+          kontakLain,
+          tanggalAkhirKontrak: tanggalAkhirKontrak,
           fotoTerbaru: fotoTerbaruURL,
           statusKaryawan: status,
+          noRekening: noRekening,
         };
 
         console.log(employee, "dataauhakshaqskf");
@@ -207,6 +230,22 @@ function FormAddEmployee(props) {
       }
     }
   };
+  function hitungSelisihTahun(tanggalAwal, tanggalAkhir) {
+    const awal = new Date(tanggalAwal);
+    const akhir = new Date(tanggalAkhir);
+
+    let selisihTahun = akhir.getFullYear() - awal.getFullYear();
+
+    // Periksa jika bulan/tanggal pada tahun akhir belum mencapai bulan/tanggal pada tahun awal
+    if (
+      akhir.getMonth() < awal.getMonth() ||
+      (akhir.getMonth() === awal.getMonth() && akhir.getDate() < awal.getDate())
+    ) {
+      selisihTahun--;
+    }
+
+    return selisihTahun;
+  }
   const handleCheckEmptyFields = () => {
     const emptyFields = [];
     const fieldsToCheck = [
@@ -221,7 +260,8 @@ function FormAddEmployee(props) {
       { key: "lokasi", label: "Lokasi Kerja" },
       { key: "status", label: "Status Karyawan" },
       { key: "gaji", label: "Gaji" },
-      { key: "masakerja", label: "Masa Kerja" },
+      { key: "noRekening", label: "No Rekening" },
+      { key: "masakerja", label: "Lama Bekerja" },
       { key: "tanggalAwalKontrak", label: "Tanggal Awal Kontrak" },
       { key: "tanggalAkhirKontrak", label: "Tanggal Akhir Kontrak" },
     ];
@@ -385,6 +425,34 @@ function FormAddEmployee(props) {
           </div>
           <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+              <h4 className="font-semibold text-sm">
+                Kontak Lain Yang Dapat Dihubungi
+              </h4>
+              <input
+                type="number"
+                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                value={kontakLain}
+                onChange={(e) => {
+                  setKontakLain(e.target.value);
+                }}
+              />
+            </div>
+            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2 ">
+              <h4 className="font-semibold text-sm">Tanggal Lahir</h4>
+              <Space direction="vertical" size={12}>
+                <DatePicker
+                  defaultValue={dayjs(tanggalLahir, dateFormatList[0])}
+                  format={dateFormatList}
+                  onChange={(date) => {
+                    handleChangeDate("tanggalLahir", date);
+                  }}
+                  className="bg-slate-700 text-white border border-slate-500 w-[15rem] p-3 hover:text-slate-800 active:text-slate-800"
+                />
+              </Space>
+            </div>
+          </div>
+          <div className="w-full gap-2 flex justify-between items-start p-2">
+            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
               <h4 className="font-semibold text-sm">Lokasi Kerja</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
                 <DropdownSearch
@@ -438,7 +506,20 @@ function FormAddEmployee(props) {
               </Space>
             </div>
           </div>
-          <div className="w-full gap-2 flex justify-between items-start p-2">
+          <div className="w-full gap-6 p-4 flex justify-between items-start ">
+            <div className="w-[50%] flex justify-start gap-6 flex-col">
+              <h4 className="font-semibold text-sm">Tanggal Awal Kerja</h4>
+              <Space direction="vertical" size={12}>
+                <DatePicker
+                  defaultValue={dayjs(tanggalAwal, dateFormatList[0])}
+                  format={dateFormatList}
+                  onChange={(date) => {
+                    handleChangeDate("tanggalMasuk", date);
+                  }}
+                  className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
+                />
+              </Space>
+            </div>
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
               <h4 className="font-semibold text-sm"> Pendidikan Terakhir</h4>
               <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
@@ -451,9 +532,10 @@ function FormAddEmployee(props) {
                 />
               </div>
             </div>
-
+          </div>
+          <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Masa Kerja</h4>
+              <h4 className="font-semibold text-sm">Lama Bekerja</h4>
               <input
                 type="number"
                 className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
@@ -463,7 +545,20 @@ function FormAddEmployee(props) {
                 }}
               />
             </div>
+
+            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+              <h4 className="font-semibold text-sm">Nomor Rekening</h4>
+              <input
+                type="number"
+                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                value={noRekening}
+                onChange={(e) => {
+                  setNoRekening(e.target.value);
+                }}
+              />
+            </div>
           </div>
+
           <div className="w-full gap-2 flex justify-between items-start p-2">
             <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
               <h4 className="font-semibold text-sm">Gaji</h4>

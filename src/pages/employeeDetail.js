@@ -191,6 +191,7 @@ class EmployeeDetail extends Component {
     namaDokumen,
     kategoriDokumen,
     tanggalTerbitDokumen,
+    tanggalBerakhirDokumen,
     tanggal,
     statusDokumen,
     fileDokumen
@@ -208,6 +209,7 @@ class EmployeeDetail extends Component {
         namaDokumen,
         kategoriDokumen,
         tanggalTerbitDokumen,
+        tanggalBerakhirDokumen,
         tanggalUpload: tanggal,
         statusDokumen,
         url: dokumenURL,
@@ -251,6 +253,7 @@ class EmployeeDetail extends Component {
     namaDokumen,
     kategoriDokumen,
     tanggalTerbitDokumen,
+    tanggalBerakhirDokumen,
     tanggal,
     statusDokumen,
     fileDokumen
@@ -269,6 +272,7 @@ class EmployeeDetail extends Component {
       const dokumenKaryawan = {
         namaDokumen,
         kategoriDokumen,
+        tanggalBerakhirDokumen,
         tanggalTerbitDokumen,
         statusDokumen,
         url: dokumenURL,

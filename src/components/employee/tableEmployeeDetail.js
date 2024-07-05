@@ -40,6 +40,10 @@ function TableEmployeeDetail(props) {
   const [tanggalTerbitDokumen, setTanggalTerbitDokumen] = useState(
     dayjs().locale("id").format("YYYY/MM/DD")
   );
+  const [tanggalBerakhirDokumen, setTanggalBerakhirDokumen] = useState(
+    dayjs().locale("id").format("YYYY/MM/DD")
+  );
+
   const [tanggal, setTanggal] = useState(
     dayjs().locale("id").format("YYYY/MM/DD")
   );
@@ -71,10 +75,14 @@ function TableEmployeeDetail(props) {
     if (!dayjsDate.isValid()) {
       return;
     }
-
-    const formattedDate = dayjsDate.format("YYYY/MM/DD");
-    setTanggalTerbitDokumen(formattedDate);
-    setTanggalTerbit(dayjsDate);
+    if (name == "terbitTanggal") {
+      const formattedDate = dayjsDate.format("YYYY/MM/DD");
+      setTanggalTerbitDokumen(formattedDate);
+      setTanggalTerbit(dayjsDate);
+    } else {
+      const formattedDate = dayjsDate.format("YYYY/MM/DD");
+      setTanggalBerakhirDokumen(formattedDate);
+    }
   };
 
   const handleFileChange = (event) => {
@@ -93,6 +101,7 @@ function TableEmployeeDetail(props) {
     setNamaDokumen("");
     setKategoriDokumen("");
     setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
+    setTanggalBerakhirDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
     setStatusDokumen(null);
     setFileDokumen(null);
   };
@@ -104,6 +113,7 @@ function TableEmployeeDetail(props) {
         namaDokumen,
         kategoriDokumen,
         tanggalTerbitDokumen,
+        tanggalBerakhirDokumen,
         tanggal,
         statusDokumen,
         fileDokumen
@@ -115,6 +125,7 @@ function TableEmployeeDetail(props) {
       setNamaDokumen("");
       setKategoriDokumen("");
       setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
+      setTanggalBerakhirDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
       setStatusDokumen(null);
       setFileDokumen(null);
     }
@@ -128,6 +139,7 @@ function TableEmployeeDetail(props) {
     setNamaDokumen(data.namaDokumen);
     setKategoriDokumen(data.kategoriDokumen);
     setTanggalTerbitDokumen(data.tanggalTerbitDokumen);
+    setTanggalBerakhirDokumen(data.tanggalBerakhirDokumen);
     setStatusDokumen(data.statusDokumen);
     setFileDokumen(data.url);
   };
@@ -139,6 +151,7 @@ function TableEmployeeDetail(props) {
       namaDokumen,
       kategoriDokumen,
       tanggalTerbitDokumen,
+      tanggalBerakhirDokumen,
       tanggal,
       statusDokumen,
       fileDokumen
@@ -150,6 +163,7 @@ function TableEmployeeDetail(props) {
     setNamaDokumen("");
     setKategoriDokumen("");
     setTanggalTerbitDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
+    setTanggalBerakhirDokumen(dayjs().locale("id").format("DD/MM/YYYY"));
     setStatusDokumen(null);
     setFileDokumen(null);
   };
@@ -229,15 +243,15 @@ function TableEmployeeDetail(props) {
       </div>
       <div
         className={` ${
-          isAddData ? "h-[16rem] mb-6 p-6" : "h-[0rem] "
+          isAddData ? "h-[23rem] mb-6 p-6" : "h-[0rem] "
         } duration-500 flex w-full flex-col justify-between items-start border border-slate-400 rounded-lg `}
       >
         <div
-          className={`flex w-full justify-between items-center rounded-lg mb-10  ${
+          className={`flex w-full justify-between items-center rounded-lg mb-2  ${
             isAddData ? "" : "hidden "
           }`}
         >
-          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+          <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
             <h4 className="font-semibold text-sm">Nama Dokumen</h4>
             <input
               type="text"
@@ -248,7 +262,7 @@ function TableEmployeeDetail(props) {
               }}
             />
           </div>
-          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+          <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
             <h4 className="font-semibold text-sm"> Kategori Dokumen</h4>
             <input
               type="text"
@@ -259,7 +273,7 @@ function TableEmployeeDetail(props) {
               }}
             />
           </div>
-          <div className="w-[10rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+          <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
             <h4 className="font-semibold text-sm">Tanggal Terbit</h4>
 
             <Space direction="vertical" size={12}>
@@ -270,14 +284,36 @@ function TableEmployeeDetail(props) {
                 )}
                 format={dateFormatList}
                 onChange={(date) => {
-                  handleChangeDate("startKontrak", date);
+                  handleChangeDate("terbitTanggal", date);
                 }}
-                className="bg-slate-700 text-white border w-full border-slate-500  p-3 hover:text-slate-800 active:text-slate-800"
+                className="bg-slate-700 text-white border w-[21rem] border-slate-500  p-3 hover:text-slate-800 active:text-slate-800"
               />
             </Space>
           </div>
+        </div>
+        <div
+          className={`flex w-full justify-between items-center rounded-lg mb-10  ${
+            isAddData ? "" : "hidden "
+          }`}
+        >
+          <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <h4 className="font-semibold text-sm">Tanggal Berakhir</h4>
 
-          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+            <Space direction="vertical" size={12}>
+              <DatePicker
+                defaultValue={dayjs(
+                  ubahFormatTanggal(tanggalBerakhirDokumen),
+                  dateFormatList[0]
+                )}
+                format={dateFormatList}
+                onChange={(date) => {
+                  handleChangeDate("endTanggal", date);
+                }}
+                className="bg-slate-700 text-white border w-[21rem] border-slate-500  p-3 hover:text-slate-800 active:text-slate-800"
+              />
+            </Space>
+          </div>
+          <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
             <h4 className="font-semibold text-sm">Status</h4>
             <div className="flex w-full justify-center items-center p-2 border border-slate-500 bg-slate-700 rounded-lg">
               <DropdownSearch
@@ -289,7 +325,7 @@ function TableEmployeeDetail(props) {
               />
             </div>
           </div>
-          <div className="w-[14rem] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
+          <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
             <h4 className="font-semibold text-sm"> File Dokumen</h4>
 
             <input
@@ -329,6 +365,7 @@ function TableEmployeeDetail(props) {
             <th className="px-4 py-4 font-medium rounded-l-xl">Nama Dokumen</th>
             <th className="px-4 py-4 font-medium ">Kategori Dokumen</th>
             <th className="px-4 py-4 font-medium ">Tanggal Terbit</th>
+            <th className="px-4 py-4 font-medium ">Tanggal Berakhir</th>
 
             <th className="px-4 py-4 font-medium">Tanggal Diunggah</th>
             <th className="px-4 py-4 font-medium ">Status</th>
@@ -350,6 +387,9 @@ function TableEmployeeDetail(props) {
               <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
                 {formatTanggal(data.tanggalTerbitDokumen)}
               </td>
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
+                {formatTanggal(data.tanggalBerakhirDokumen)}
+              </td>
 
               <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
                 {formatTanggal(data.tanggalUpload)}
@@ -357,9 +397,9 @@ function TableEmployeeDetail(props) {
               <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
                 {data.statusDokumen}
               </td>
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] max-w-[17rem] px-4 py-4 text-white">
+              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] max-w-[21rem] px-4 py-4 text-white">
                 <div className="flex w-full justify-between items-center">
-                  <div className="h-[3.2rem] w-[3.2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                  <div className="h-[2rem] w-[2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
                     <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
                     <button
                       className="btnCloud"
@@ -367,8 +407,8 @@ function TableEmployeeDetail(props) {
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
+                        width="18"
+                        height="18"
                         viewBox="0 0 24 24"
                       >
                         <path
@@ -382,7 +422,7 @@ function TableEmployeeDetail(props) {
                       </svg>
                     </button>
                   </div>
-                  <div className="h-[3.2rem] w-[3.2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                  <div className="h-[2rem] w-[2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
                     <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
                     <button
                       className="btnCloud-delete"
@@ -390,8 +430,8 @@ function TableEmployeeDetail(props) {
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
+                        width="18"
+                        height="18"
                         viewBox="0 0 24 24"
                       >
                         <path

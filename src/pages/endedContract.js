@@ -48,7 +48,10 @@ const EndedContract = () => {
           const employeeData = { id: doc.id, ...doc.data() };
 
           // Sub Collection Pengalaman
-          const experienceCollectionRef = collection(doc.ref, "experience");
+          const experienceCollectionRef = collection(
+            doc.ref,
+            "pengalamanKerja"
+          );
           const experienceSnapshot = await getDocs(experienceCollectionRef);
           let experienceData = [];
           experienceSnapshot.forEach((expDoc) => {
@@ -59,7 +62,7 @@ const EndedContract = () => {
           // Sub Collection Documentnya
           const documentsEmployeCollectionRef = collection(
             doc.ref,
-            "documentsEmploye"
+            "dokumenKaryawan"
           );
           const documentsEmployeSnapshot = await getDocs(
             documentsEmployeCollectionRef
@@ -72,8 +75,24 @@ const EndedContract = () => {
 
           employeesData.push(employeeData);
         }
-
-        console.log(employeesData);
+        let hasilCek = await cekDanKumpulkanData(employeesData);
+        let textDokumen = hasilCek.map((item) => {
+          let dokumenStr = item.documentsEmploye
+            .map(
+              (doc) =>
+                `     <b>Nama Dokumen :</b> ${
+                  doc.namaDokumen
+                }<b>, Tanggal Berakhir :</b> ${formatTanggal(
+                  doc.tanggalBerakhirDokumen
+                )}`
+            )
+            .join("\n ");
+          return `<b>Nama :</b> ${item.nama} \n<b>Posisi </b>: ${item.posisi}\n<b>Divisi </b>: ${item.divisi}\n<b>Dokumen :</b> \n ${dokumenStr}`;
+        });
+        let gabungText = textDokumen.join("\n\n");
+        console.log(employeesData, "data Karyawan");
+        console.log(hasilCek, "data Dokumen ");
+        console.log(gabungText, "text Dokumen ");
         const dataFormat = employeesData.map((data) => ({
           ...data,
           sisaKontrak: sisaMasaKontrakHari(tanggal, data.tanggalAkhirKontrak),
@@ -111,6 +130,11 @@ const EndedContract = () => {
 
         if (dataBerakhir.length > 0 && !isKirim) {
           await sendMessage(text);
+        }
+        if (hasilCek.length > 0) {
+          await sendMessage(
+            `<b>Dokumen Karyawan Dengan Masa Aktif Akan Berakhir </b> \n\n${gabungText}`
+          );
         }
         console.log(listKaryawan, "textSend");
       } catch (error) {
@@ -179,7 +203,6 @@ const EndedContract = () => {
 
   // Format data
 
-
   const sisaMasaKontrakHari = (startDate, endDate) => {
     const start = dayjs(startDate, "YYYY/MM/DD");
     const end = dayjs(endDate, "YYYY/MM/DD");
@@ -188,6 +211,50 @@ const EndedContract = () => {
 
     return diffInDays - 1;
   };
+  // Fungsi untuk menghitung selisih hari antara dua tanggal
+  function hitungSelisihHari(tanggal1, tanggal2) {
+    const satuHari = 24 * 60 * 60 * 1000; // Satu hari dalam milidetik
+    const tgl1 = new Date(tanggal1);
+    const tgl2 = new Date(tanggal2);
+    const selisih = Math.round(Math.abs((tgl1 - tgl2) / satuHari));
+    return selisih;
+  }
+
+  // Fungsi untuk melakukan pengecekan dan pengumpulan data
+  function cekDanKumpulkanData(arrayObjek) {
+    const hasil = [];
+
+    arrayObjek.forEach((objek) => {
+      const dataRelevan = {
+        nama: objek.nama,
+        posisi: objek.posisi,
+        divisi: objek.divisi,
+        documentsEmploye: [],
+      };
+
+      objek.documentsEmploye.forEach((dokumen) => {
+        const tanggalBerakhirDokumen = dokumen.tanggalBerakhirDokumen;
+        const selisihHari = hitungSelisihHari(
+          new Date(),
+          new Date(tanggalBerakhirDokumen)
+        );
+
+        if (selisihHari < 5) {
+          dataRelevan.documentsEmploye.push({
+            namaDokumen: dokumen.namaDokumen,
+            tanggalBerakhirDokumen: tanggalBerakhirDokumen,
+          });
+        }
+      });
+
+      if (dataRelevan.documentsEmploye.length > 0) {
+        hasil.push(dataRelevan);
+      }
+    });
+
+    return hasil;
+  }
+
   const formatTanggal = (tanggal) => {
     // Parsing tanggal dengan format "DD-MM-YYYY"
     const parsedDate = dayjs(tanggal, "YYYY/MM/DD");

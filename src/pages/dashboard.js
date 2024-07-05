@@ -15,7 +15,9 @@ class Dashboard extends Component {
       dataKosong: [],
       dataDivisi: [],
       dataEmployees: [],
+      dataDisplay: [],
       totalKaryawan: 0,
+      dataEmployeesBerakhir: [],
       totalAkanBerakhir: 0,
       totalDivisi: 0,
       tanggal: dayjs().locale("id").format("YYYY/MM/DD"),
@@ -83,10 +85,15 @@ class Dashboard extends Component {
       }));
 
       const dataBerakhir = dataFormat.filter((data) => data.sisaKontrak < 90);
+      const dataBerakhir6Bulan = dataFormat.filter(
+        (data) => data.sisaKontrak < 180
+      );
       console.log(dataFormat, "data Baru Format");
       this.checkKontrakBerakhir(dataBerakhir);
       this.setState({
-        dataEmployees: dataBerakhir,
+        dataEmployees: dataBerakhir6Bulan,
+        dataEmployeesBerakhir: dataBerakhir,
+        dataDisplay: dataBerakhir6Bulan ,
         totalKaryawan: dataFormat.length,
         totalAkanBerakhir: dataBerakhir.length,
       });
@@ -177,7 +184,13 @@ class Dashboard extends Component {
   };
 
   // Format data
-
+  handleTab = (key) => {
+    if (key == "tab1") {
+      this.setState({ dataDisplay: this.state.dataEmployees });
+    } else if (key == "tab2") {
+      this.setState({ dataDisplay: this.state.dataEmployeesBerakhir });
+    }
+  };
   removeDuplicates(dataArray) {
     // Gunakan objek untuk melacak nama yang sudah ada
     const uniqueNames = {};
@@ -241,7 +254,8 @@ class Dashboard extends Component {
         />
         <div className="flex justify-between w-full items-start gap-10">
           <TableDashboard
-            dataEmployees={this.state.dataEmployees}
+            dataEmployees={this.state.dataDisplay}
+            changeTab={this.handleTab}
             dataKandidat={this.state.candidateList}
           />
 

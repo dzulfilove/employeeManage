@@ -64,6 +64,7 @@ function TableDashboard(props) {
 
   const handleTab = (key) => {
     setTab(key);
+    props.changeTab(key);
   };
 
   const convertToTitleCase = (input) => {
@@ -88,11 +89,18 @@ function TableDashboard(props) {
           onSelect={handleTab}
           className={"custom-tab-bar"}
         >
-          <Tab eventKey="tab1" title="Kontrak Akan Berakhir"></Tab>
-          <Tab eventKey="tab2" title="Calon Kandidat"></Tab>
+          <Tab
+            eventKey="tab1"
+            title="Kontrak Akan Berakhir Dalam 6 Bulan"
+          ></Tab>
+          <Tab
+            eventKey="tab2"
+            title="Kontrak Akan Berakhir Dalam 3 Bulan"
+          ></Tab>
+          <Tab eventKey="tab3" title="Calon Kandidat"></Tab>
         </Tabs>
       </div>
-      {tab == "tab2" ? (
+      {tab == "tab3" ? (
         <>
           <table className="w-[100%] text-left text-sm font-normal">
             <thead>
