@@ -521,8 +521,10 @@ class FormLamaran extends Component {
             <>
               <div className="absolute z-[99999] w-full h-[100vh] flex justify-center items-center bg-white flex-col gap-4">
                 <div className="loader-form"></div>
-                <h3 className="text-base font-medium">Mohon Tunggu....</h3>
-                <h3 className="text-base font-medium">
+                <h3 className="text-sm font-medium absolute top-[58%]">
+                  Mohon Tunggu....
+                </h3>
+                <h3 className="text-sm font-normal absolute top-[62%]">
                   Jangan Tutup Halaman Ini
                 </h3>
               </div>

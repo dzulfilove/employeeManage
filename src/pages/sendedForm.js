@@ -53,7 +53,7 @@ class SendedForm extends Component {
           </div>
           <div className="w-[95%] gap-4 top-[25%] h-[20rem] shadow-xl pb-10 bg-white px-2 pt-4 flex rounded-xl justify-start flex-col items-center border border- absolute">
             <Lottie options={defaultOptions} height={150} width={150} />
-            <h3 className="text-xl font-medium text-center">
+            <h3 className="text-base font-medium text-center">
               Lamaran Berhasil Dikirimkan
             </h3>
           </div>
