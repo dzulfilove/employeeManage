@@ -86,14 +86,14 @@ class Dashboard extends Component {
 
       const dataBerakhir = dataFormat.filter((data) => data.sisaKontrak < 90);
       const dataBerakhir6Bulan = dataFormat.filter(
-        (data) => data.sisaKontrak < 180
+        (data) => data.sisaKontrak < 180 && data.sisaKontrak > 89
       );
       console.log(dataFormat, "data Baru Format");
       this.checkKontrakBerakhir(dataBerakhir);
       this.setState({
         dataEmployees: dataBerakhir6Bulan,
         dataEmployeesBerakhir: dataBerakhir,
-        dataDisplay: dataBerakhir6Bulan ,
+        dataDisplay: dataBerakhir6Bulan,
         totalKaryawan: dataFormat.length,
         totalAkanBerakhir: dataBerakhir.length,
       });

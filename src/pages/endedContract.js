@@ -100,6 +100,9 @@ const EndedContract = () => {
         }));
 
         const dataBerakhir = dataFormat.filter((data) => data.sisaKontrak < 90);
+        const dataBerakhir6Bulan = dataFormat.filter(
+          (data) => data.sisaKontrak < 180 && data.sisaKontrak > 89
+        );
         console.log(dataBerakhir, "data Baru Format");
 
         setDataEmployees(dataFormat);
@@ -125,11 +128,36 @@ const EndedContract = () => {
           )
           .join("\n-----------------------------------------------\n\n");
 
+        const listKaryawan6Bulan = dataBerakhir6Bulan
+          .map(
+            (p) =>
+              `<b>Nama</b> : ${p.nama}\n<b>Posisi :</b> ${
+                p.posisi
+              }\n<b>Divisi :</b>${p.divisi}\n<b>Lokasi Kerja :</b>${
+                p.cabang
+              }\n<b>Tanggal Awal Kontrak : </b> ${formatTanggal(
+                p.tanggalAwalKontrak
+              )}\n<b>Tanggal Akhir Kontrak : </b> ${formatTanggal(
+                p.tanggalAkhirKontrak
+              )} \n<b>Sisa Kontrak : </b> ${sisaMasaKontrak(
+                tanggal,
+                p.tanggalAkhirKontrak
+              )}\n<b>Status : </b>${p.statusKaryawan}`
+          )
+          .join("\n-----------------------------------------------\n\n");
+
         const text = ` <b>Karyawan Dengan Sisa Masa Kontrak Kurang Dari 3 Bulan: </b>
           \n\n${listKaryawan}`;
 
+        const text6Bulan = ` <b>Karyawan Dengan Sisa Masa Kontrak Kurang Dari 6 Bulan: </b>
+          \n\n${listKaryawan6Bulan}`;
+
         if (dataBerakhir.length > 0 && !isKirim) {
           await sendMessage(text);
+        }
+
+        if (dataBerakhir6Bulan.length > 0 && !isKirim) {
+          await sendMessage(text6Bulan);
         }
         if (hasilCek.length > 0) {
           await sendMessage(
