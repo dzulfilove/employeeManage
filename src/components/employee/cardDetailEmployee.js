@@ -758,7 +758,10 @@ function CardDetailEmployee(props) {
                     <h4 className="font-semibold text-sm">Tanggal Lahir</h4>
                     <Space direction="vertical" size={12}>
                       <DatePicker
-                        defaultValue={dayjs(tanggalLahir, dateFormatList[0])}
+                        defaultValue={dayjs(
+                          ubahFormatTanggal(tanggalLahir),
+                          dateFormatList[0]
+                        )}
                         format={dateFormatList}
                         onChange={(date) => {
                           handleChangeDate("tanggalLahir", date);

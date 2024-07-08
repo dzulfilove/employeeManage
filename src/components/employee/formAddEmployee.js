@@ -216,7 +216,7 @@ function FormAddEmployee(props) {
           icon: "success",
         }).then((result) => {
           if (result.isConfirmed) {
-            <Navigate to="/employee" />;
+            window.location.href = "/employee";
           }
         });
       } catch (error) {

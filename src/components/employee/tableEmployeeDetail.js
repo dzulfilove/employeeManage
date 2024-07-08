@@ -112,8 +112,8 @@ function TableEmployeeDetail(props) {
       props.simpanDocument(
         namaDokumen,
         kategoriDokumen,
-        tanggalTerbitDokumen,
-        tanggalBerakhirDokumen,
+        ubahFormatTanggal(tanggalTerbitDokumen),
+        ubahFormatTanggal(tanggalBerakhirDokumen),
         tanggal,
         statusDokumen,
         fileDokumen
@@ -150,8 +150,8 @@ function TableEmployeeDetail(props) {
       idData,
       namaDokumen,
       kategoriDokumen,
-      tanggalTerbitDokumen,
-      tanggalBerakhirDokumen,
+      ubahFormatTanggal(tanggalTerbitDokumen),
+      ubahFormatTanggal(tanggalBerakhirDokumen),
       tanggal,
       statusDokumen,
       fileDokumen
