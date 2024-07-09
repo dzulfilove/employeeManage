@@ -266,7 +266,7 @@ class FormLamaran extends Component {
       });
     }
     if (cek == false) {
-      this.setState({ isProses: true });
+      // this.setState({ isProses: true });
 
       try {
         const fotoTerbaruURL = await this.handleFoto(fotoTerbaruFile);
@@ -351,11 +351,19 @@ class FormLamaran extends Component {
         await batch.commit();
 
         const foto = fotoTerbaruURL;
+        const textPengalaman = listPengalaman
+          .map(
+            (p, i) =>
+              `<b>${i + 1}. ${p.posisiPengalaman}</b>\n   <b>Di ${
+                p.lokasiPengalaman
+              }</b>${p.deskripsiPengalaman}`
+          )
+          .join("\n");
         const text = `<b>Ada Pelamar ${posisi} Baru</b>\n\n<b>Tanggal:</b> ${this.formatTanggal(
           tanggal
         )}\n<b>Nama: </b> ${nama}\n<b>Email:</b> ${email}\n<b>No. Telepon:</b> ${nomorWhatsapp}\n<b>Pendidikan Terakhir:</b> ${riwayatPendidikan} ${jurusan}\n<b>Posisi Yang Dilamar:</b> ${posisi}\n<b>Bersedia Menyimpan Ijazah:</b> ${
           isJaminanIjazah == true ? "Ya" : "Tidak"
-        }\n<b>Link CV:</b> ${cvTerbaruURL} `;
+        }\n<b>Pengalaman Kerja:</b>\n${textPengalaman}\n<b>Link CV:</b> ${cvTerbaruURL} `;
 
         await this.sendMessage(text, foto);
         Swal.fire({
