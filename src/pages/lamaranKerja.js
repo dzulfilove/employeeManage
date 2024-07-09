@@ -266,7 +266,7 @@ class FormLamaran extends Component {
       });
     }
     if (cek == false) {
-      // this.setState({ isProses: true });
+      this.setState({ isProses: true });
 
       try {
         const fotoTerbaruURL = await this.handleFoto(fotoTerbaruFile);
