@@ -267,7 +267,7 @@ const EndedContract = () => {
           new Date(tanggalBerakhirDokumen)
         );
 
-        if (selisihHari < 5) {
+        if (selisihHari < 5 && dokumen.kategoriDokumen == "Perizinan") {
           dataRelevan.documentsEmploye.push({
             namaDokumen: dokumen.namaDokumen,
             tanggalBerakhirDokumen: tanggalBerakhirDokumen,

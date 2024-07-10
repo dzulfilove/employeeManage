@@ -265,14 +265,18 @@ function TableEmployee(props) {
                   </td>
                   <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                     <Link to={`/employee-detail/${data.id}`}>
-                      {data.tanggalAkhirKontrak
+                      {data.statusKaryawan == "Karyawan Tetap"
+                        ? "Tidak Ada"
+                        : data.tanggalAkhirKontrak
                         ? formatTanggal(data.tanggalAkhirKontrak)
                         : ""}
                     </Link>
                   </td>
                   <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                     <Link to={`/employee-detail/${data.id}`}>
-                      {sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
+                      {data.statusKaryawan == "Karyawan Tetap"
+                        ? "Selamanya"
+                        : sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
                     </Link>
                   </td>{" "}
                   <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
@@ -322,14 +326,18 @@ function TableEmployee(props) {
                   </td>
                   <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                     <Link to={`/employee-detail/${data.id}`}>
-                      {data.tanggalAkhirKontrak
+                      {data.statusKaryawan == "Karyawan Tetap"
+                        ? "Selamanya"
+                        : data.tanggalAkhirKontrak
                         ? formatTanggal(data.tanggalAkhirKontrak)
                         : ""}
                     </Link>
                   </td>
                   <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                     <Link to={`/employee-detail/${data.id}`}>
-                      {sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
+                      {data.statusKaryawan == "Karyawan Tetap"
+                        ? "Selamanya"
+                        : sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
                     </Link>
                   </td>{" "}
                   <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">

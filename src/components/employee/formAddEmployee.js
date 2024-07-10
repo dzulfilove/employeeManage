@@ -176,6 +176,7 @@ function FormAddEmployee(props) {
         } else {
           posisiKerja = posisi;
         }
+
         // Persiapkan dokumen utama untuk employeesApplicant
         const employee = {
           email,
@@ -190,13 +191,15 @@ function FormAddEmployee(props) {
           divisi: divisi,
           masaKerja: tahunKerja,
           umur: umur,
-          tanggalAwalKontrak: tanggalAwal,
+          tanggalAwalKontrak:
+            status == "Karyawan Tetap" ? tanggalAwalMasuk : tanggalAwal,
           tanggalAwalMasuk: tanggalAwalMasuk,
           tanggalLahir,
           kontakLain,
           tanggalAkhirKontrak: tanggalAkhirKontrak,
           fotoTerbaru: fotoTerbaruURL,
           statusKaryawan: status,
+
           noRekening: noRekening,
         };
 

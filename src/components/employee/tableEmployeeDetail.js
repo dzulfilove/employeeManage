@@ -64,6 +64,10 @@ function TableEmployeeDetail(props) {
     { text: "Aktif", value: "Aktif" },
     { text: "Tidak Aktif", value: "Tidak Aktif" },
   ];
+  const optionKategori = [
+    { text: "Perizinan", value: "Perizinan" },
+    { text: "Pribadi", value: "Pribadi" },
+  ];
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -132,15 +136,21 @@ function TableEmployeeDetail(props) {
   };
 
   const handleEdit = (data) => {
+    const statusSelect = optionStatus.filter(
+      (item) => item.text == data.statusDokumen
+    );
+    const kategoriSelect = optionKategori.filter(
+      (item) => item.text == data.kategoriDokumen
+    );
     setData(data);
     setIsAddData(true);
     setIsEditData(true);
     setIdData(data.id);
     setNamaDokumen(data.namaDokumen);
-    setKategoriDokumen(data.kategoriDokumen);
+    setKategoriDokumen(kategoriSelect);
     setTanggalTerbitDokumen(data.tanggalTerbitDokumen);
     setTanggalBerakhirDokumen(data.tanggalBerakhirDokumen);
-    setStatusDokumen(data.statusDokumen);
+    setStatusDokumen(statusSelect[0]);
     setFileDokumen(data.url);
   };
   const handleUpdate = (e) => {
@@ -264,14 +274,17 @@ function TableEmployeeDetail(props) {
           </div>
           <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
             <h4 className="font-semibold text-sm"> Kategori Dokumen</h4>
-            <input
-              type="text"
-              className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-              value={kategoriDokumen}
-              onChange={(e) => {
-                setKategoriDokumen(e.target.value);
-              }}
-            />
+
+            <div className="w-full flex p-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]">
+              <DropdownSearch
+                change={(data) => {
+                  setKategoriDokumen(data);
+                }}
+                options={optionKategori}
+                value={kategoriDokumen}
+                name={"Kategori Dokumen"}
+              />
+            </div>
           </div>
           <div className="w-[33%] gap-2 flex flex-col justify-start items-start p-2 text-white gap-4 ">
             <h4 className="font-semibold text-sm">Tanggal Terbit</h4>
@@ -321,7 +334,7 @@ function TableEmployeeDetail(props) {
                 change={(data) => {
                   setStatusDokumen(data.text);
                 }}
-                name={"Status"}
+                name={"Status Dokumen"}
               />
             </div>
           </div>
@@ -388,7 +401,9 @@ function TableEmployeeDetail(props) {
                 {formatTanggal(data.tanggalTerbitDokumen)}
               </td>
               <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">
-                {formatTanggal(data.tanggalBerakhirDokumen)}
+                {data.kategoriDokumen != "Perizinan"
+                  ? "Tidak Ada"
+                  : formatTanggal(data.tanggalBerakhirDokumen)}
               </td>
 
               <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-4 text-white">

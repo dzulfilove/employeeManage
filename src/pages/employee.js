@@ -102,22 +102,25 @@ class Employee extends Component {
           data.tanggalAkhirKontrak
         ),
         lamaKerja: this.sisaMasaKontrak(
-          data.tanggalAwalKontrak,
+          data.tanggalAwalMasuk,
           this.state.tanggal
         ),
       }));
 
-      const dataBerakhir = dataFormat.filter(
+      const dataKontrak = dataFormat.filter(
+        (item) => item.statusKaryawan !== "Karyawan Tetap"
+      );
+      const dataBerakhir = dataKontrak.filter(
         (data) =>
           data.sisaKontrak < 180 &&
           data.statusKaryawan !== "Karyawan Tidak Aktif"
       );
-      const sudahBerakhir = dataFormat.filter(
+      const sudahBerakhir = dataKontrak.filter(
         (item) => item.statusKaryawan == "Karyawan Tidak Aktif"
       );
-      const dataBaru = dataFormat.filter(
+      const dataBaru = dataKontrak.filter(
         (data) =>
-          data.lamaKerja <= 30 && data.statusKaryawan !== "Karyawan Tidak Aktif"
+          data.lamaKerja <= 60 && data.statusKaryawan !== "Karyawan Tidak Aktif"
       );
       console.log(dataFormat, "data Baru Format");
       this.setState({

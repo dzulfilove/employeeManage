@@ -563,7 +563,9 @@ function CardDetailEmployee(props) {
                         sisaMasaKontrak(
                           tanggal,
                           props.data.tanggalAkhirKontrak
-                        ) < 90 && isEdit == false
+                        ) < 90 &&
+                        isEdit == false &&
+                        props.data.statusKaryawan !== "Karyawan Tetap"
                           ? "w-[12rem] h-[12rem]"
                           : "w-[15rem] h-[15rem]"
                       } z-[99] `}
@@ -609,6 +611,7 @@ function CardDetailEmployee(props) {
                         props.data.tanggalAkhirKontrak
                       ) < 90 &&
                         props.data.statusKaryawan !== "Karyawan Tidak Aktif" &&
+                        props.data.statusKaryawan !== "Karyawan Tetap" &&
                         isEdit == false && (
                           <>
                             <button
@@ -624,6 +627,7 @@ function CardDetailEmployee(props) {
                           </>
                         )}
                       {props.data.statusKaryawan !== "Karyawan Tidak Aktif" &&
+                        props.data.statusKaryawan !== "Karyawan Tetap" &&
                         isEdit == false && (
                           <>
                             <button
@@ -1086,17 +1090,29 @@ function CardDetailEmployee(props) {
                     <h4 className="font-semibold text-sm">
                       Tanggal Akhir Kontrak
                     </h4>
-                    <div
-                      className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
-                        props.data.tanggalAkhirKontrak
-                          ? "bg-slate-700 border-slate-500"
-                          : "text-red-500 border-red-600"
-                      }`}
-                    >
-                      {props.data.tanggalAkhirKontrak
-                        ? formatTanggal(props.data.tanggalAkhirKontrak)
-                        : "Tidak ada data"}
-                    </div>
+                    {props.data.statusKaryawan !== "Karyawan Tetap" ? (
+                      <>
+                        <div
+                          className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xl ${
+                            props.data.tanggalAkhirKontrak
+                              ? "bg-slate-700 border-slate-500"
+                              : "text-red-500 border-red-600"
+                          }`}
+                        >
+                          {props.data.tanggalAkhirKontrak
+                            ? formatTanggal(props.data.tanggalAkhirKontrak)
+                            : "Tidak ada data"}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div
+                          className={`w-full gap-2 flex flex-col text-sm font-normal justify-start items-start p-2 border rounded-xlbg-slate-700 border-slate-500`}
+                        >
+                          Selamanya
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className="w-full gap-2 flex justify-between items-start p-2">
