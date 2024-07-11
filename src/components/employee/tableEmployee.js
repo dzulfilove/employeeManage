@@ -276,6 +276,8 @@ function TableEmployee(props) {
                     <Link to={`/employee-detail/${data.id}`}>
                       {data.statusKaryawan == "Karyawan Tetap"
                         ? "Selamanya"
+                        : data.sisaKontrak < 0
+                        ? "Kontrak Berakhir"
                         : sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
                     </Link>
                   </td>{" "}
@@ -337,6 +339,8 @@ function TableEmployee(props) {
                     <Link to={`/employee-detail/${data.id}`}>
                       {data.statusKaryawan == "Karyawan Tetap"
                         ? "Selamanya"
+                        : data.sisaKontrak < 0
+                        ? "Kontrak Berakhir"
                         : sisaMasaKontrak(tanggal, data.tanggalAkhirKontrak)}
                     </Link>
                   </td>{" "}

@@ -84,11 +84,19 @@ class Dashboard extends Component {
         ),
       }));
 
-      const dataBerakhir = dataFormat.filter((data) => data.sisaKontrak < 90);
+      const dataBerakhir = dataFormat.filter(
+        (data) =>
+          data.sisaKontrak < 90 && data.statusKaryawan != "Karyawan Tetap"
+      );
       const dataBerakhir6Bulan = dataFormat.filter(
-        (data) => data.sisaKontrak < 180 && data.sisaKontrak > 89
+        (data) =>
+          data.sisaKontrak < 180 &&
+          data.sisaKontrak > 89 &&
+          data.statusKaryawan != "Karyawan Tetap"
       );
       console.log(dataFormat, "data Baru Format");
+      console.log(dataBerakhir, "data Hasil akhir");
+
       this.checkKontrakBerakhir(dataBerakhir);
       this.setState({
         dataEmployees: dataBerakhir6Bulan,
@@ -227,16 +235,22 @@ class Dashboard extends Component {
       }
     });
     const hasilGabung = namaArray.join(", ");
-    if (namaArray.length > 0) {
-      Swal.fire({
-        title: "Perhatian",
-        text: `Ada Beberapa Karyawan Dengan Kontrak Kurang dari 5 Hari, Yakni ${hasilGabung}. Mohon Lakukan Pembaruan Data Kontrak Jika Karyawan Memperpanjang Kontrak Kerja`,
-        icon: "warning",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = "/employee";
-        }
-      });
+    const isAlert = sessionStorage.getItem("isAlert");
+
+    if (!isAlert) {
+      if (namaArray.length > 0) {
+        Swal.fire({
+          title: "Perhatian",
+          text: `Ada Beberapa Karyawan Dengan Kontrak Kurang dari 5 Hari, Yakni ${hasilGabung}. Mohon Lakukan Pembaruan Data Kontrak Jika Karyawan Memperpanjang Kontrak Kerja`,
+          icon: "warning",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            sessionStorage.setItem("isAlert", true);
+
+            window.location.href = "/employee";
+          }
+        });
+      }
     }
   };
   render() {
