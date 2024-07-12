@@ -113,6 +113,7 @@ class Employee extends Component {
       const dataBerakhir = dataKontrak.filter(
         (data) =>
           data.sisaKontrak < 180 &&
+          data.sisaKontrak > 0 &&
           data.statusKaryawan !== "Karyawan Tidak Aktif"
       );
       const sudahBerakhir = dataKontrak.filter(

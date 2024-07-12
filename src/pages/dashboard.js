@@ -86,7 +86,9 @@ class Dashboard extends Component {
 
       const dataBerakhir = dataFormat.filter(
         (data) =>
-          data.sisaKontrak < 90 && data.statusKaryawan != "Karyawan Tetap"
+          data.sisaKontrak < 90 &&
+          data.sisaKontrak > 0 &&
+          data.statusKaryawan != "Karyawan Tetap"
       );
       const dataBerakhir6Bulan = dataFormat.filter(
         (data) =>
