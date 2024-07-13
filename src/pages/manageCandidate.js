@@ -306,11 +306,11 @@ class ManageCandidate extends Component {
       <DndProvider backend={HTML5Backend}>
         <ToastContainer />
         <div>
-          <div className="flex w-full justify-start p-4 items-center text-white text-2xl border-b border-b-teal-500 pb-10 ">
+          <div className="flex w-full mb-10 justify-start p-4 items-center text-white text-2xl border-b border-b-teal-500 pb-10 ">
             Manajemen Calon Kandidat Karyawan
           </div>
 
-          <div className="w-full flex flex-col  mt-10 justify-between items-start">
+          <div className="w-full flex flex-col  mt-10 justify-between items-start pb-16">
             <div>
               <button className="button-add" onClick={this.handleSaveChanges}>
                 Simpan Perubahan
@@ -324,17 +324,19 @@ class ManageCandidate extends Component {
               <div
                 data-aos="fade-down"
                 data-aos-delay="50"
-                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
+                className="w-[14rem]  h-auto  flex flex-col justify-start items-center relative gap-10 rounded-lg p-4 overflow-hidden"
               >
                 <div className="w-[14rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
                 <div className="w-full p-2  text-white bg-transparent shadow-xl text-base  border-b border-b-teal-500 pb-4 mt-2 flex justify-center items-center">
                   <h4>Tahap Awal Seleksi</h4>
                 </div>
-                <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                  {tahapSeleksiAwal.map((item, index) => (
-                    <SubCard key={index} name={item} />
-                  ))}
+                <div className="flex  gap-4 flex-col justify-start items-center w-full z-[99]">
+                  <div className="max-h-[25rem] overflow-y-scroll w-full flex gap-4 flex-col justify-start items-center px-2">
+                    {tahapSeleksiAwal.map((item, index) => (
+                      <SubCard key={index} name={item} />
+                    ))}
+                  </div>
                   <MainCard
                     onDrop={(item) =>
                       this.handleDropGeneric(item, "tahapSeleksiAwal")
@@ -345,7 +347,7 @@ class ManageCandidate extends Component {
               <div
                 data-aos="fade-down"
                 data-aos-delay="150"
-                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+                className="w-[14rem] h-full flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
               >
                 <div className="w-[14rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
@@ -353,9 +355,12 @@ class ManageCandidate extends Component {
                   <h4>Tahap Administrasi</h4>
                 </div>
                 <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                  {tahapAdministrasi.map((item, index) => (
-                    <SubCard key={index} name={item} />
-                  ))}
+                  <div className="max-h-[25rem] overflow-y-scroll w-full flex gap-4 flex-col justify-start items-center px-2">
+                    {tahapAdministrasi.map((item, index) => (
+                      <SubCard key={index} name={item} />
+                    ))}
+                  </div>
+
                   <MainCard
                     onDrop={(item) =>
                       this.handleDropGeneric(item, "tahapAdministrasi")
@@ -366,7 +371,7 @@ class ManageCandidate extends Component {
               <div
                 data-aos="fade-down"
                 data-aos-delay="250"
-                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+                className="w-[14rem] h-full flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
               >
                 <div className="w-[14rem]  absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
@@ -374,9 +379,12 @@ class ManageCandidate extends Component {
                   <h4>Tahap Tes</h4>
                 </div>
                 <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                  {tahapTes.map((item, index) => (
-                    <SubCard key={index} name={item} />
-                  ))}
+                  <div className="max-h-[25rem] overflow-y-scroll w-full flex gap-4 flex-col justify-start items-center px-2">
+                    {tahapTes.map((item, index) => (
+                      <SubCard key={index} name={item} />
+                    ))}
+                  </div>
+
                   <MainCard
                     onDrop={(item) => this.handleDropGeneric(item, "tahapTes")}
                   />
@@ -393,9 +401,12 @@ class ManageCandidate extends Component {
                   <h4>Tahap Interview</h4>
                 </div>
                 <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                  {tahapInterview.map((item, index) => (
-                    <SubCard key={index} name={item} />
-                  ))}
+                  <div className="max-h-[25rem] overflow-y-scroll w-full flex gap-4 flex-col justify-start items-center px-2">
+                    {tahapInterview.map((item, index) => (
+                      <SubCard key={index} name={item} />
+                    ))}
+                  </div>
+
                   <MainCard
                     onDrop={(item) =>
                       this.handleDropGeneric(item, "tahapInterview")
@@ -406,7 +417,7 @@ class ManageCandidate extends Component {
               <div
                 data-aos="fade-down"
                 data-aos-delay="350"
-                className="w-[14rem] h-auto flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
+                className="w-[14rem] h-full flex flex-col justify-start items-center relative gap-10 rounded-lg p-4"
               >
                 <div className="w-[14rem] absolute bg-slate-400 opacity-15 h-full flex flex-col justify-start gap-10 rounded-lg"></div>
 
@@ -414,9 +425,12 @@ class ManageCandidate extends Component {
                   <h4>Karyawan</h4>
                 </div>
                 <div className="flex gap-4 flex-col justify-start items-center w-full z-[99]">
-                  {employees.map((item, index) => (
-                    <SubCard key={index} name={item} />
-                  ))}
+                  <div className="max-h-[25rem] overflow-y-scroll w-full flex gap-4 flex-col justify-start items-center px-2">
+                    {employees.map((item, index) => (
+                      <SubCard key={index} name={item} />
+                    ))}
+                  </div>
+
                   <MainCard
                     onDrop={(item) => this.handleDropGeneric(item, "employees")}
                   />
