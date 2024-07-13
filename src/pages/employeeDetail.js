@@ -207,7 +207,7 @@ class EmployeeDetail extends Component {
 
       const dokumenKaryawan = {
         namaDokumen,
-        kategoriDokumen,
+        kategoriDokumen: kategoriDokumen.text,
         tanggalTerbitDokumen,
         tanggalBerakhirDokumen,
         tanggalUpload: tanggal,
@@ -268,17 +268,17 @@ class EmployeeDetail extends Component {
         // Gunakan URL yang sudah ada
         dokumenURL = fileDokumen;
       }
-
+      const kategoriData = kategoriDokumen;
       const dokumenKaryawan = {
         namaDokumen,
-        kategoriDokumen,
+        kategoriDokumen: kategoriDokumen.value,
         tanggalBerakhirDokumen,
         tanggalTerbitDokumen,
-        statusDokumen,
+        statusDokumen: statusDokumen.text,
         url: dokumenURL,
       };
 
-      console.log(dokumenKaryawan, "data");
+      console.log(kategoriDokumen, "data");
       console.log("data", idData);
       // Perbarui dokumen di subkoleksi dokumenKaryawan
       const db = getFirestore();

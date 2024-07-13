@@ -116,8 +116,8 @@ function TableEmployeeDetail(props) {
       props.simpanDocument(
         namaDokumen,
         kategoriDokumen,
-        ubahFormatTanggal(tanggalTerbitDokumen),
-        ubahFormatTanggal(tanggalBerakhirDokumen),
+        tanggalTerbitDokumen,
+        tanggalBerakhirDokumen,
         tanggal,
         statusDokumen,
         fileDokumen
@@ -147,11 +147,12 @@ function TableEmployeeDetail(props) {
     setIsEditData(true);
     setIdData(data.id);
     setNamaDokumen(data.namaDokumen);
-    setKategoriDokumen(kategoriSelect);
+    setKategoriDokumen(kategoriSelect[0]);
     setTanggalTerbitDokumen(data.tanggalTerbitDokumen);
     setTanggalBerakhirDokumen(data.tanggalBerakhirDokumen);
     setStatusDokumen(statusSelect[0]);
     setFileDokumen(data.url);
+    console.log(kategoriSelect, "kateoriaskdwjk");
   };
   const handleUpdate = (e) => {
     e.preventDefault();
@@ -160,12 +161,13 @@ function TableEmployeeDetail(props) {
       idData,
       namaDokumen,
       kategoriDokumen,
-      ubahFormatTanggal(tanggalTerbitDokumen),
-      ubahFormatTanggal(tanggalBerakhirDokumen),
+      tanggalTerbitDokumen,
+      tanggalBerakhirDokumen,
       tanggal,
       statusDokumen,
       fileDokumen
     );
+    console.log("kategori", kategoriDokumen);
     setIsAddData(false);
     setIsEditData(false);
     setData({});

@@ -99,9 +99,17 @@ const EndedContract = () => {
           lamaKerja: sisaMasaKontrakHari(data.tanggalAwalKontrak, tanggal),
         }));
 
-        const dataBerakhir = dataFormat.filter((data) => data.sisaKontrak < 90);
+        const dataBerakhir = dataFormat.filter(
+          (data) =>
+            data.sisaKontrak < 90 &&
+            data.sisaKontrak > 0 &&
+            data.statusKaryawan != "Karyawan Tetap"
+        );
         const dataBerakhir6Bulan = dataFormat.filter(
-          (data) => data.sisaKontrak < 180 && data.sisaKontrak > 89
+          (data) =>
+            data.sisaKontrak < 180 &&
+            data.sisaKontrak > 89 &&
+            data.statusKaryawan != "Karyawan Tetap"
         );
         console.log(dataBerakhir, "data Baru Format");
 
@@ -146,13 +154,16 @@ const EndedContract = () => {
           )
           .join("\n-----------------------------------------------\n\n");
 
+        const dataJumlah = groupByPosition(dataBerakhir6Bulan);
         const text = ` <b>Karyawan Dengan Sisa Masa Kontrak Kurang Dari 3 Bulan: </b>
           \n\n${listKaryawan}`;
 
         const text6Bulan = ` <b>Karyawan Dengan Sisa Masa Kontrak Kurang Dari 6 Bulan: </b>
           \n\n${listKaryawan6Bulan}`;
-
+        const textHeader = `<b>Daftar Kontrak Karyawan Akan Berakhir Berdasarkan Posisi</b>\n\n-------------------------------------------------\n${dataJumlah}`;
+        console.log(dataBerakhir6Bulan, "6 bulan");
         if (dataBerakhir.length > 0 && !isKirim) {
+          await sendMessage(textHeader);
           await sendMessage(text);
         }
 
@@ -281,6 +292,23 @@ const EndedContract = () => {
     });
 
     return hasil;
+  }
+
+  function groupByPosition(arr) {
+    const grouped = arr.reduce((acc, obj) => {
+      if (!acc[obj.posisi]) {
+        acc[obj.posisi] = 0;
+      }
+      acc[obj.posisi]++;
+      return acc;
+    }, {});
+
+    let result = "";
+    for (const [posisi, count] of Object.entries(grouped)) {
+      result += `${posisi} : ${count} orang\n`;
+    }
+
+    return result.trim();
   }
 
   const formatTanggal = (tanggal) => {
