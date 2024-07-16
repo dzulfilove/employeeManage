@@ -32,19 +32,27 @@ import FormLamaran from "./pages/lamaranKerja";
 import SendedForm from "./pages/sendedForm";
 import CandidateDetail from "./pages/candidateDetail";
 import EndedContract from "./pages/endedContract";
+import EksEmployee from "./pages/eksEmployee";
 const App = () => {
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
   const isLamaran = sessionStorage.getItem("isLamaran");
   // const isLoggedIn = true;
   const menus = [
-    { name: "Dashboard", link: "", icon: MdOutlineDashboard },
-    { name: "Kandidat", link: "candidate", icon: BsPersonLinesFill },
-    { name: "Karyawan", link: "employee", icon: BsPersonWorkspace },
+    { name: "Dashboard", link: "", icon: MdOutlineDashboard, main: false },
+    {
+      name: "Kandidat",
+      link: "candidate",
+      icon: BsPersonLinesFill,
+      main: true,
+    },
+    { name: "Karyawan", link: "employee", icon: BsPersonWorkspace, main: true },
   ];
 
   const [open, setOpen] = useState(true);
+  const [openKaryawan, setOpenKaryawan] = useState(true);
   const [menu, setMenu] = useState("dashboard");
   const [isSubMenu, setIsSubMenu] = useState(false);
+  const [isSubMenuKaryawan, setIsSubMenuKaryawan] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 700 });
@@ -116,7 +124,7 @@ const App = () => {
                             open ? "overflow-y-hidden" : ""
                           }`}
                         >
-                          {menu.name !== "Kandidat" ? (
+                          {menu.main == false ? (
                             <>
                               <Link
                                 to={`/${menu.link}`}
@@ -154,39 +162,83 @@ const App = () => {
                             </>
                           ) : (
                             <>
-                              <button
-                                onClick={() => setIsSubMenu(!isSubMenu)}
-                                className={` ${
-                                  menu?.margin && "mt-5"
-                                } z-[9] group flex ${
-                                  open == true
-                                    ? "justify-start w-[10rem] px-4 gap-3.5"
-                                    : " p-2 justify-center w-[4rem]"
-                                } items-center  text-lg button  font-medium rounded-md  transition duration-300 ease-in-out`}
-                              >
-                                <div className="button-content">
-                                  {React.createElement(menu.icon, {
-                                    size: "20",
-                                  })}
-                                </div>
-                                <h2
-                                  style={{
-                                    transitionDelay: `${1 + 3}00ms`,
-                                  }}
-                                  className={`whitespace-pre duration-500 button-content text-base ${
-                                    !open && "opacity-0 hidden translate-x-28  "
-                                  }`}
-                                >
-                                  {menu.name}
-                                </h2>
-                                <h2
-                                  className={`${
-                                    open && "hidden"
-                                  } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-                                >
-                                  {menu.name}
-                                </h2>
-                              </button>
+                              {menu.name == "Kandidat" ? (
+                                <>
+                                  <button
+                                    onClick={() => setIsSubMenu(!isSubMenu)}
+                                    className={` ${
+                                      menu?.margin && "mt-5"
+                                    } z-[9] group flex ${
+                                      open == true
+                                        ? "justify-start w-[10rem] px-4 gap-3.5"
+                                        : " p-2 justify-center w-[4rem]"
+                                    } items-center  text-lg button  font-medium rounded-md  transition duration-300 ease-in-out`}
+                                  >
+                                    <div className="button-content">
+                                      {React.createElement(menu.icon, {
+                                        size: "20",
+                                      })}
+                                    </div>
+                                    <h2
+                                      style={{
+                                        transitionDelay: `${1 + 3}00ms`,
+                                      }}
+                                      className={`whitespace-pre duration-500 button-content text-base ${
+                                        !open &&
+                                        "opacity-0 hidden translate-x-28  "
+                                      }`}
+                                    >
+                                      {menu.name}
+                                    </h2>
+                                    <h2
+                                      className={`${
+                                        open && "hidden"
+                                      } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                    >
+                                      {menu.name}
+                                    </h2>
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      setIsSubMenuKaryawan(!isSubMenuKaryawan)
+                                    }
+                                    className={` ${
+                                      menu?.margin && "mt-5"
+                                    } z-[9] group flex ${
+                                      open == true
+                                        ? "justify-start w-[10rem] px-4 gap-3.5"
+                                        : " p-2 justify-center w-[4rem]"
+                                    } items-center  text-lg button  font-medium rounded-md  transition duration-300 ease-in-out`}
+                                  >
+                                    <div className="button-content">
+                                      {React.createElement(menu.icon, {
+                                        size: "20",
+                                      })}
+                                    </div>
+                                    <h2
+                                      style={{
+                                        transitionDelay: `${1 + 3}00ms`,
+                                      }}
+                                      className={`whitespace-pre duration-500 button-content text-base ${
+                                        !open &&
+                                        "opacity-0 hidden translate-x-28  "
+                                      }`}
+                                    >
+                                      {menu.name}
+                                    </h2>
+                                    <h2
+                                      className={`${
+                                        open && "hidden"
+                                      } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                    >
+                                      {menu.name}
+                                    </h2>
+                                  </button>
+                                </>
+                              )}
                             </>
                           )}
 
@@ -198,24 +250,52 @@ const App = () => {
                             >
                               <ul>
                                 <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
-                                  <a
-                                    href="/all-candidate"
+                                  <Link
+                                    to="/all-candidate"
                                     className=" button-content  text-slate-300 text-base"
                                   >
                                     Semua Kandidat
-                                  </a>
+                                  </Link>
                                 </li>
                                 <li className=" mt-4  py-2 button  text-slate-300 flex items-center justify-start pl-10">
-                                  <a
-                                    href="/manage-candidate"
+                                  <Link
+                                    to="/manage-candidate"
                                     className=" button-content text-slate-300 "
                                   >
                                     Kelola kandidat
-                                  </a>
+                                  </Link>
                                 </li>
                               </ul>
                             </div>
                           )}
+                          {isSubMenuKaryawan &&
+                            menu.name == "Karyawan" &&
+                            openKaryawan && (
+                              <div
+                                data-aos="slide-down"
+                                className=" top-full left-0 w-48  shadow-md py-2  rounded text-base overlow-hidden text-base"
+                                onAnimationEnd={() => setIsSubMenu(false)}
+                              >
+                                <ul>
+                                  <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
+                                    <Link
+                                      to="/employee"
+                                      className=" button-content  text-slate-300 text-base"
+                                    >
+                                      Karyawan Aktif
+                                    </Link>
+                                  </li>
+                                  <li className=" mt-4  py-2 button  text-slate-300 flex items-center justify-start pl-10">
+                                    <Link
+                                      to="/employee-nonaktif"
+                                      className=" button-content text-slate-300 "
+                                    >
+                                      Karyawan Non Aktif
+                                    </Link>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
                         </div>
                       ))}
                       <div
@@ -256,32 +336,6 @@ const App = () => {
                             Logout
                           </h2>
                         </button>
-                        {isSubMenu && menu.name == "Kandidat" && open && (
-                          <div
-                            data-aos="slide-down"
-                            className=" top-full left-0 w-48  shadow-md py-2  rounded text-base overlow-hidden"
-                            onAnimationEnd={() => setIsSubMenu(false)}
-                          >
-                            <ul>
-                              <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
-                                <Link
-                                  to={"/all-candidate"}
-                                  className=" button-content  text-slate-300 "
-                                >
-                                  Semua Kandidat
-                                </Link>
-                              </li>
-                              <li className=" mt-4  py-2 button  text-slate-300 flex items-center justify-start pl-10">
-                                <Link
-                                  to="/manage-candidate"
-                                  className=" button-content text-slate-300 "
-                                >
-                                  Kelola kandidat
-                                </Link>
-                              </li>
-                            </ul>
-                          </div>
-                        )}
                       </div>
                     </>
                   ) : (
@@ -327,6 +381,10 @@ const App = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/all-candidate" element={<Candidate />} />
                     <Route path="/employee" element={<Employee />} />
+                    <Route
+                      path="/employee-nonaktif"
+                      element={<EksEmployee />}
+                    />
                     <Route path="/lamar-kerja" element={<FormLamaran />} />
                     <Route
                       path="/employee-detail/:id"

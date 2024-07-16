@@ -7,7 +7,9 @@ import Select from "react-tailwindcss-select";
 import "dayjs/locale/id";
 import DropdownSearch from "../features/dropdown";
 import { Link } from "react-router-dom";
-
+import LoadingData from "../features/loading";
+import animationData from "../../styles/noData.json";
+import Lottie from "react-lottie";
 function TableCandidate(props) {
   const {
     candidateList,
@@ -30,7 +32,11 @@ function TableCandidate(props) {
   const [isSelect, setIsSelect] = useState("");
   const [lengthData, setLengthData] = useState(0);
   const currentData = dataTable.slice(indexOfFirstData, indexOfLastData);
-
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+  };
   useEffect(() => {
     setDataTable(candidateList || []);
   }, [candidateList]);
@@ -189,80 +195,136 @@ function TableCandidate(props) {
             <th className="px-4 py-4 font-medium rounded-l-xl">Foto</th>
             <th className="px-4 py-4 font-medium ">Nama</th>
             <th className="px-4 py-4 font-medium">Posisi</th>
+            {props.getData == false && (
+              <>
+                <th className="px-4 py-4 font-medium ">Tahap Seleksi</th>
+              </>
+            )}
             <th className="px-4 py-4 font-medium ">Tanggal Melamar</th>
             <th className="px-4 py-4 font-medium ">Tahap Seleksi</th>
             <th className="px-4 py-4 font-medium "> Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {currentData.map((kandidat) => (
-            <tr onClick={() => {}} className="">
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                <img
-                  src={kandidat.fotoTerbaru}
-                  className="object-cover w-[4rem] h-[4rem] rounded-full"
-                />
-              </td>
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                {kandidat.nama}
-              </td>
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                {kandidat.posisi}
-              </td>
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                {formatTanggal(kandidat.tanggalMelamar)}
-              </td>
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                {convertToTitleCase(kandidat.statusTahap)}
-              </td>
-              <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                <div className="flex w-full justify-between items-center max-w-[18rem] ">
-                  {" "}
-                  <Link
-                    to={`/candidate-detail/${kandidat.id}`}
-                    className="animated-button-doc"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="arr-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
-                    </svg>
-                    <span className="text">Lihat Kandidat</span>
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="arr-1"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
-                    </svg>
-                  </Link>
-                  <div className="h-[3.2rem] w-[3.2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
-                    <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
-                    <button
-                      className="btnCloud-delete"
-                      onClick={() => handleDelete(kandidat)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill="white"
-                          fill-rule="evenodd"
-                          d="M8.106 2.553A1 1 0 0 1 9 2h6a1 1 0 0 1 .894.553L17.618 6H20a1 1 0 1 1 0 2h-1v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8H4a1 1 0 0 1 0-2h2.382zM14.382 4l1 2H8.618l1-2zM11 11a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm4 0a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                    </button>
+          {props.getData == false ? (
+            <>
+              <tr className="hover:cursor-pointer">
+                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[1%]"></td>
+                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[1%]"></td>
+                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[1%]"></td>
+                <td className="border-b border-blue-gray-300 h-[4rem] px-4 py-2 text-white w-[0%]">
+                  <div className=" self-center  flex justify-center items-center">
+                    <div className="w-[100%] gap-4  h-[20rem] pb-10 bg-transparent px-2 pt-4 flex rounded-xl justify-center flex-col items-center">
+                      <LoadingData />
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[1%]"></td>
+                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[1%]"></td>
+                <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[1%]"></td>
+              </tr>
+            </>
+          ) : (
+            <>
+              {currentData.length > 0 ? (
+                <>
+                  {currentData.map((kandidat) => (
+                    <tr onClick={() => {}} className="">
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                        <img
+                          src={kandidat.fotoTerbaru}
+                          className="object-cover w-[4rem] h-[4rem] rounded-full"
+                        />
+                      </td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                        {kandidat.nama}
+                      </td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                        {kandidat.posisi}
+                      </td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                        {formatTanggal(kandidat.tanggalMelamar)}
+                      </td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                        {convertToTitleCase(kandidat.statusTahap)}
+                      </td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                        <div className="flex w-full justify-between items-center max-w-[18rem] ">
+                          {" "}
+                          <Link
+                            to={`/candidate-detail/${kandidat.id}`}
+                            className="animated-button-doc"
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              className="arr-2"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+                            </svg>
+                            <span className="text">Lihat Kandidat</span>
+                            <svg
+                              viewBox="0 0 24 24"
+                              className="arr-1"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+                            </svg>
+                          </Link>
+                          <div className="h-[3.2rem] w-[3.2rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                            <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
+                            <button
+                              className="btnCloud-delete"
+                              onClick={() => handleDelete(kandidat)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="white"
+                                  fill-rule="evenodd"
+                                  d="M8.106 2.553A1 1 0 0 1 9 2h6a1 1 0 0 1 .894.553L17.618 6H20a1 1 0 1 1 0 2h-1v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8H4a1 1 0 0 1 0-2h2.382zM14.382 4l1 2H8.618l1-2zM11 11a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm4 0a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <tr className="hover:cursor-pointer">
+                    <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                    <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                    <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                    <td className="border-b border-blue-gray-300 h-[4rem] px-4 py-2 text-white w-[0%]">
+                      <div className=" self-center  flex justify-center items-center">
+                        <div className="w-[100%]  h-[20rem] pb-10 bg-transparent px-2 flex rounded-xl justify-center flex-col items-center">
+                          <Lottie
+                            options={defaultOptions}
+                            height={250}
+                            width={250}
+                          />
+                          <h3 className="text-base text-white font-medium text-center">
+                            Belum Ada Data
+                          </h3>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                    <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                    <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                  </tr>
+                </>
+              )}
+            </>
+          )}
         </tbody>
       </table>
 

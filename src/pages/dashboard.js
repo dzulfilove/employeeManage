@@ -13,6 +13,7 @@ class Dashboard extends Component {
 
     this.state = {
       dataKosong: [],
+      isGetData: false,
       dataDivisi: [],
       dataEmployees: [],
       dataDisplay: [],
@@ -70,9 +71,11 @@ class Dashboard extends Component {
 
         employeesData.push(employeeData);
       }
-
+      const dataKaryawan = employeesData.filter(
+        (item) => item.statusKaryawan != "Karyawan Tidak Aktif"
+      );
       console.log(employeesData);
-      const dataFormat = employeesData.map((data) => ({
+      const dataFormat = dataKaryawan.map((data) => ({
         ...data,
         sisaKontrak: this.sisaMasaKontrak(
           this.state.tanggal,
@@ -104,6 +107,7 @@ class Dashboard extends Component {
         dataEmployees: dataBerakhir6Bulan,
         dataEmployeesBerakhir: dataBerakhir,
         dataDisplay: dataBerakhir6Bulan,
+        isGetData: true,
         totalKaryawan: dataFormat.length,
         totalAkanBerakhir: dataBerakhir.length,
       });
@@ -183,6 +187,7 @@ class Dashboard extends Component {
         this.setState(
           {
             candidateList: kandidatKaryawan,
+            isGetData: true,
             totalkandidat: kandidatKaryawan.length,
           },
           resolve
@@ -272,6 +277,7 @@ class Dashboard extends Component {
           <TableDashboard
             dataEmployees={this.state.dataDisplay}
             changeTab={this.handleTab}
+            getData={this.state.isGetData}
             dataKandidat={this.state.candidateList}
           />
 

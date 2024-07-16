@@ -4,8 +4,9 @@ import { Tabs, Tab } from "react-bootstrap";
 import dayjs from "dayjs";
 import "../../styles/tab.css";
 import "dayjs/locale/id";
-import animationData from "../../styles/animationData.json";
+import animationData from "../../styles/noData.json";
 import Lottie from "react-lottie";
+import LoadingData from "../features/loading";
 function TableDashboard(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(5);
@@ -117,32 +118,7 @@ function TableDashboard(props) {
               </tr>
             </thead>
             <tbody>
-              {props.dataKandidat.length > 0 ? (
-                <>
-                  {props.dataKandidat.map((item) => (
-                    <tr onClick={() => {}} className="hover:cursor-pointer">
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {item.nama}
-                      </td>
-
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {item.divisi}
-                      </td>
-
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {item.posisi}
-                      </td>
-
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {formatTanggal(item.tanggalMelamar)}
-                      </td>
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {convertToTitleCase(item.statusTahap)}
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
+              {props.getData == false ? (
                 <>
                   <tr onClick={() => {}} className="hover:cursor-pointer">
                     <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] w-[12%] px-4 py-2 text-white"></td>
@@ -152,14 +128,7 @@ function TableDashboard(props) {
                     <td className="border-b border-blue-gray-300 h-[4rem] px-4 py-2 text-white w-[0%]">
                       <div className=" self-center  flex justify-center items-center">
                         <div className="w-[100%] gap-4  h-[20rem] pb-10 bg-transparent px-2 pt-4 flex rounded-xl justify-center flex-col items-center">
-                          <Lottie
-                            options={defaultOptions}
-                            height={150}
-                            width={150}
-                          />
-                          <h3 className="text-xl text-white font-medium text-center">
-                            Belum Ada Data
-                          </h3>
+                          <LoadingData />
                         </div>
                       </div>
                     </td>
@@ -167,6 +136,37 @@ function TableDashboard(props) {
                     <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
                     <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
                   </tr>
+                </>
+              ) : (
+                <>
+                  {props.dataKandidat.length > 0 ? (
+                    <>
+                      {props.dataKandidat.map((item) => (
+                        <tr onClick={() => {}} className="hover:cursor-pointer">
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {item.nama}
+                          </td>
+
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {item.divisi}
+                          </td>
+
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {item.posisi}
+                          </td>
+
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {formatTanggal(item.tanggalMelamar)}
+                          </td>
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {convertToTitleCase(item.statusTahap)}
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </>
               )}
             </tbody>
@@ -188,35 +188,7 @@ function TableDashboard(props) {
                 </th>
               </tr>
             </thead>
-            {props.dataEmployees.length > 0 ? (
-              <>
-                <tbody>
-                  {currentData.map((data) => (
-                    <tr onClick={() => {}} className="hover:cursor-pointer">
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {data.nama}
-                      </td>
-
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {data.divisi}
-                      </td>
-
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {data.posisi}
-                      </td>
-
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {formatTanggal(data.tanggalAwalKontrak)} -{" "}
-                        {formatTanggal(data.tanggalAkhirKontrak)}
-                      </td>
-                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
-                        {convertDays(data.sisaKontrak)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </>
-            ) : (
+            {props.getData == false ? (
               <>
                 <tr onClick={() => {}} className="hover:cursor-pointer">
                   <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] w-[12%] px-4 py-2 text-white"></td>
@@ -226,14 +198,7 @@ function TableDashboard(props) {
                   <td className="border-b border-blue-gray-300 h-[4rem] px-4 py-2 text-white w-[0%]">
                     <div className=" self-center  flex justify-center items-center">
                       <div className="w-[100%] gap-4  h-[20rem] pb-10 bg-transparent px-2 pt-4 flex rounded-xl justify-center flex-col items-center">
-                        <Lottie
-                          options={defaultOptions}
-                          height={150}
-                          width={150}
-                        />
-                        <h3 className="text-base text-white font-medium text-center">
-                          Belum Ada Data
-                        </h3>
+                        <LoadingData />
                       </div>
                     </div>
                   </td>
@@ -241,6 +206,64 @@ function TableDashboard(props) {
                   <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
                   <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
                 </tr>
+              </>
+            ) : (
+              <>
+                {props.dataEmployees.length > 0 ? (
+                  <>
+                    <tbody>
+                      {currentData.map((data) => (
+                        <tr onClick={() => {}} className="hover:cursor-pointer">
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {data.nama}
+                          </td>
+
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {data.divisi}
+                          </td>
+
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {data.posisi}
+                          </td>
+
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {formatTanggal(data.tanggalAwalKontrak)} -{" "}
+                            {formatTanggal(data.tanggalAkhirKontrak)}
+                          </td>
+                          <td className="border-b border-blue-gray-300 h-[4rem] max-h-[6rem] px-4 py-2 text-white">
+                            {convertDays(data.sisaKontrak)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </>
+                ) : (
+                  <>
+                    <tr onClick={() => {}} className="hover:cursor-pointer">
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] w-[12%] px-4 py-2 text-white"></td>
+
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 w-[12%] text-white"></td>
+
+                      <td className="border-b border-blue-gray-300 h-[4rem] px-4 py-2 text-white w-[0%]">
+                        <div className=" self-center  flex justify-center items-center">
+                          <div className="w-[100%] gap-4  h-[20rem] pb-10 bg-transparent px-2 pt-4 flex rounded-xl justify-center flex-col items-center">
+                            <Lottie
+                              options={defaultOptions}
+                              height={150}
+                              width={150}
+                            />
+                            <h3 className="text-base text-white font-medium text-center">
+                              Belum Ada Data
+                            </h3>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                      <td className="border-b border-blue-gray-300 h-[4rem] max-h-[1rem] px-4 py-2 text-white w-[12%]"></td>
+                    </tr>
+                  </>
+                )}
               </>
             )}
           </table>

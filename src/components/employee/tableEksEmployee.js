@@ -10,10 +10,10 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 import DropdownSearch from "../features/dropdown";
 import LoadingData from "../features/loading";
-import animationData from "../../styles/noData.json";
 import Lottie from "react-lottie";
+import animationData from "../../styles/noData.json";
 
-function TableEmployee(props) {
+function TableEksEmployee(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(5);
   const [lengthData, setLengthData] = useState(props.data.length);
@@ -161,9 +161,8 @@ function TableEmployee(props) {
         >
           <Tab eventKey="tab1" title="Semua Karyawan"></Tab>
 
-          <Tab eventKey="tab2" title="Akan Berakhir"></Tab>
-          <Tab eventKey="tab3" title="Berakhir"></Tab>
-          <Tab eventKey="tab4" title="Baru"></Tab>
+          <Tab eventKey="tab2" title="Baru"></Tab>
+          <Tab eventKey="tab3" title="Lama"></Tab>
         </Tabs>
         <div className="search">
           <div className="search-box">
@@ -228,8 +227,8 @@ function TableEmployee(props) {
             <th className="px-4 py-4 font-medium">Lokasi Kerja</th>
             <th className="px-4 py-4 font-medium ">Awal Kontrak</th>
             <th className="px-4 py-4 font-medium ">Akhir Kontrak</th>
-            <th className="px-4 py-4 font-medium ">Sisa Masa Kerja</th>
-            <th className="px-4 py-4 font-medium rounded-r-xl">Status </th>
+            <th className="px-4 py-4 font-medium ">Berhenti Kontrak</th>
+            <th className="px-4 py-4 font-medium ">Masa Kerja</th>
           </tr>
         </thead>
         <tbody>
@@ -300,30 +299,22 @@ function TableEmployee(props) {
                           </td>
                           <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                             <Link to={`/employee-detail/${data.id}`}>
-                              {data.statusKaryawan == "Karyawan Tetap"
-                                ? "Tidak Ada"
-                                : data.tanggalAkhirKontrak
-                                ? formatTanggal(data.tanggalAkhirKontrak)
-                                : ""}
+                              {formatTanggal(data.tanggalAkhirKontrak)}
                             </Link>
                           </td>
                           <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                             <Link to={`/employee-detail/${data.id}`}>
-                              {data.statusKaryawan == "Karyawan Tetap"
-                                ? "Selamanya"
-                                : data.sisaKontrak < 0
-                                ? "Kontrak Berakhir"
-                                : sisaMasaKontrak(
-                                    tanggal,
-                                    data.tanggalAkhirKontrak
-                                  )}
+                              {formatTanggal(data.tanggalBerhentiKontrak)}
+                            </Link>
+                          </td>
+                          <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                            <Link to={`/employee-detail/${data.id}`}>
+                              {sisaMasaKontrak(
+                                data.tanggalAwalMasuk,
+                                data.tanggalBerhentiKontrak
+                              )}
                             </Link>
                           </td>{" "}
-                          <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
-                            <Link to={`/employee-detail/${data.id}`}>
-                              {data.statusKaryawan ? data.statusKaryawan : ""}
-                            </Link>
-                          </td>
                         </tr>
                       ))}
                     </>
@@ -368,30 +359,22 @@ function TableEmployee(props) {
                           </td>
                           <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                             <Link to={`/employee-detail/${data.id}`}>
-                              {data.statusKaryawan == "Karyawan Tetap"
-                                ? "Selamanya"
-                                : data.tanggalAkhirKontrak
-                                ? formatTanggal(data.tanggalAkhirKontrak)
-                                : ""}
+                              {formatTanggal(data.tanggalAkhirKontrak)}
                             </Link>
                           </td>
                           <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                             <Link to={`/employee-detail/${data.id}`}>
-                              {data.statusKaryawan == "Karyawan Tetap"
-                                ? "Selamanya"
-                                : data.sisaKontrak < 0
-                                ? "Kontrak Berakhir"
-                                : sisaMasaKontrak(
-                                    tanggal,
-                                    data.tanggalAkhirKontrak
-                                  )}
+                              {formatTanggal(data.tanggalBerhentiKontrak)}
+                            </Link>
+                          </td>
+                          <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                            <Link to={`/employee-detail/${data.id}`}>
+                              {sisaMasaKontrak(
+                                data.tanggalAwalMasuk,
+                                data.tanggalBerhentiKontrak
+                              )}
                             </Link>
                           </td>{" "}
-                          <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
-                            <Link to={`/employee-detail/${data.id}`}>
-                              {data.statusKaryawan ? data.statusKaryawan : ""}
-                            </Link>
-                          </td>
                         </tr>
                       ))}
                     </>
@@ -478,4 +461,4 @@ function TableEmployee(props) {
   );
 }
 
-export default TableEmployee;
+export default TableEksEmployee;

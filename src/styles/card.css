@@ -264,3 +264,80 @@
   backdrop-filter: blur(10.6px);
   -webkit-backdrop-filter: blur(10.6px);
 }
+
+.card-eks {
+  width: 22rem;
+  height: 13rem;
+
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-eks .content-eks {
+  width: 33rem;
+  height: 15rem;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content-eks::before {
+  opacity: 0;
+  transition: opacity 300ms;
+  content: " ";
+  display: block;
+  background: white;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  filter: blur(50px);
+}
+
+.card-eks:hover .content::before {
+  opacity: 1;
+}
+
+.card-eks::before {
+  opacity: 0;
+  content: " ";
+  position: absolute;
+  display: block;
+  width: 23rem;
+  height: 14rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #ff2288,
+    #387ef0,
+    transparent
+  );
+  transition: opacity 200ms;
+  animation: rotation_9018 2000ms infinite linear;
+  animation-play-state: paused;
+}
+
+.card-eks:hover::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.card-eks::after {
+  position: absolute;
+  content: " ";
+  display: block;
+  width: 25rem;
+  height: 15rem;
+  background: #17171733;
+  backdrop-filter: blur(50px);
+}
+@keyframes rotation_9018 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

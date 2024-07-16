@@ -15,6 +15,7 @@ class Candidate extends Component {
       tahapSeleksiAwal: [],
       tahapAdministrasi: [],
       tahapTes: [],
+      isGetData: false,
       tahapInterview: [],
       dataPosisi: [],
     };
@@ -52,7 +53,12 @@ class Candidate extends Component {
       }
 
       await new Promise((resolve) => {
-        this.setState({ candidateList: kandidatKaryawan }, resolve);
+        this.setState(
+          {
+            candidateList: kandidatKaryawan,
+          },
+          resolve
+        );
       });
     } catch (error) {
       console.error("Error fetching employees:", error.message);
@@ -75,6 +81,8 @@ class Candidate extends Component {
       tahapSeleksiAwal: tahapAwal,
       tahapAdministrasi: administrasi,
       tahapTes: tahapTes,
+      isGetData: true,
+
       tahapInterview: tahapInterview,
     });
   };
@@ -194,6 +202,7 @@ class Candidate extends Component {
             tahapSeleksiAwal={tahapSeleksiAwal}
             tahapAdministrasi={tahapAdministrasi}
             tahapTes={tahapTes}
+            getData={this.state.isGetData}
             tahapInterview={tahapInterview}
             deleteData={this.deleteEmployeeData}
           />

@@ -187,8 +187,14 @@ function CardDetailEmployee(props) {
   const perpanjangKontrak = async () => {
     const tanggalStart = tambahSatuTahun(props.data.tanggalAwalKontrak);
     const tanggalEnd = tambahSatuTahun(props.data.tanggalAkhirKontrak);
-    const waktuKerja = parseInt(props.data.masaKerja) + 1;
-
+    let waktuKerja = parseInt(props.data.masaKerja) + 0;
+    const lamaKerja = sisaMasaKontrak(
+      props.data.tanggalAwalKontrak,
+      props.data.tanggalAkhirKontrak
+    );
+    if (lamaKerja > 355) {
+      waktuKerja = parseInt(props.data.masaKerja) + 1;
+    }
     try {
       const eventRef = doc(db, "employees", props.id);
       await updateDoc(eventRef, {
@@ -216,6 +222,7 @@ function CardDetailEmployee(props) {
       const eventRef = doc(db, "employees", props.id);
       await updateDoc(eventRef, {
         statusKaryawan: "Karyawan Tidak Aktif",
+        tanggalBerhentiKontrak: tanggal,
       });
       Swal.fire({
         title: "Berhasil",
@@ -489,6 +496,7 @@ function CardDetailEmployee(props) {
       return false;
     }
   };
+
   const formatRupiah = (angka) => {
     const nilai = parseFloat(angka);
     return nilai.toLocaleString("id-ID", {
