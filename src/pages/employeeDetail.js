@@ -35,6 +35,7 @@ class EmployeeDetail extends Component {
       dataLokasi: [],
       dataPosisi: [],
       dataEmployee: {},
+      isLoad: false,
       refPerusahaan: idPerusahaan,
       employeeDocuments: [],
     };
@@ -196,7 +197,7 @@ class EmployeeDetail extends Component {
     statusDokumen,
     fileDokumen
   ) => {
-    this.setState({ isProses: true });
+    this.setState({ isProses: true, isLoad: true });
 
     try {
       if (!fileDokumen) {
@@ -244,7 +245,7 @@ class EmployeeDetail extends Component {
       });
     }
 
-    this.setState({ isProses: false });
+    this.setState({ isProses: false, isLoad: false });
   };
 
   handleUpdateDokumen = async (
@@ -382,24 +383,46 @@ class EmployeeDetail extends Component {
           Data Detail Karyawan
         </div>
 
-        <CardDetailEmployee
-          data={this.state.dataEmployee}
-          dataDivisi={this.state.dataDivisi}
-          dataLokasi={this.state.dataLokasi}
-          dataPosisi={this.state.dataPosisi}
-          id={this.state.idEmployee}
-          getDataEmployee={this.getEmployee}
-          getDataPosisi={this.getAllPosisi}
-        />
+        {this.state.isLoad == true ? (
+          <>
+            <div className="w-[90%] flex flex-col justify-start items-center p-6 gap-12  rounded-lg relative playing overflow-hidden mt-10">
+              <div class="cssload-container">
+                <ul class="cssload-flex-container">
+                  <li>
+                    <span class="cssload-loading cssload-one"></span>
+                    <span class="cssload-loading cssload-two"></span>
+                    <span class="cssload-loading-center"></span>
+                  </li>
+                </ul>
+              </div>
+              <h3 className="text-base text-slate-100">
+                {" "}
+                Data Sedang Ditambahkan
+              </h3>
+            </div>
+          </>
+        ) : (
+          <>
+            <CardDetailEmployee
+              data={this.state.dataEmployee}
+              dataDivisi={this.state.dataDivisi}
+              dataLokasi={this.state.dataLokasi}
+              dataPosisi={this.state.dataPosisi}
+              id={this.state.idEmployee}
+              getDataEmployee={this.getEmployee}
+              getDataPosisi={this.getAllPosisi}
+            />
 
-        <div className="flex justify-center w-full items-start gap-16">
-          <TableEmployeeDetail
-            data={this.state.employeeDocuments}
-            simpanDocument={this.handleSubmitDokumen}
-            updateDocument={this.handleUpdateDokumen}
-            deleteDocument={this.handleDeleteDokumen}
-          />
-        </div>
+            <div className="flex justify-center w-full items-start gap-16">
+              <TableEmployeeDetail
+                data={this.state.employeeDocuments}
+                simpanDocument={this.handleSubmitDokumen}
+                updateDocument={this.handleUpdateDokumen}
+                deleteDocument={this.handleDeleteDokumen}
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   }

@@ -28,6 +28,7 @@ const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
 function FormAddEmployee(props) {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isLoad, setIsLoad] = useState(false);
   const [preview, setPreview] = useState(
     "https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   );
@@ -149,6 +150,7 @@ function FormAddEmployee(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoad(true);
     const cek = await handleCheckEmptyFields();
     const umur = await hitungSelisihTahun(tanggalLahir, tanggal);
     const tahunKerja = await hitungSelisihTahun(tanggalAwalMasuk, tanggal);
@@ -212,7 +214,7 @@ function FormAddEmployee(props) {
           "Data pelamar dan pengalaman kerja berhasil disimpan:",
           employee
         );
-
+        setIsLoad(false);
         Swal.fire({
           title: "Berhasil!",
           text: "Data Karyawan berhasil Ditambahkan",
@@ -294,300 +296,329 @@ function FormAddEmployee(props) {
   };
   return (
     <div className="flex w-full  justify-center items-center mb-20">
-      <div className="w-[90%] flex justify-start items-center p-6 gap-12  rounded-lg relative playing border-2 border-slate-600 overflow-hidden shadow-xl mt-10">
-        <div className="w-full flex justify-start items-center left-0 m-0 p-0  bg-white rounded-lg absolute opacity-5 h-full"></div>
-        <div className="w-[25rem] h-[25rem] opacity-10 rounded-full blur-3xl bg-teal-400 absolute left-[5%] top-[5%]"></div>
+      {isLoad == true ? (
+        <>
+          <div className="w-[90%] flex flex-col justify-start items-center p-6 gap-12  rounded-lg relative playing overflow-hidden mt-10">
+            <div class="cssload-container">
+              <ul class="cssload-flex-container">
+                <li>
+                  <span class="cssload-loading cssload-one"></span>
+                  <span class="cssload-loading cssload-two"></span>
+                  <span class="cssload-loading-center"></span>
+                </li>
+              </ul>
+            </div>
+            <h3 className="text-base text-slate-100">
+              {" "}
+              Data Sedang Ditambahkan
+            </h3>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="w-[90%] flex justify-start items-center p-6 gap-12  rounded-lg relative playing border-2 border-slate-600 overflow-hidden shadow-xl mt-10">
+            <div className="w-full flex justify-start items-center left-0 m-0 p-0  bg-white rounded-lg absolute opacity-5 h-full"></div>
+            <div className="w-[25rem] h-[25rem] opacity-10 rounded-full blur-3xl bg-teal-400 absolute left-[5%] top-[5%]"></div>
 
-        <div className="flex flex-col justify-center items-center p-4 w-[40%] gap-8 text-white">
-          <div className="card-profile">
-            <div className="content-profile">
-              <div className="back">
-                <div className="back-content">
-                  <div className="flex justify-center items-center rounded-full bg-teal-500 w-[15rem] h-[15rem] z-[99]">
-                    <img
-                      className="object-cover h-full w-full rounded-full"
-                      src={preview}
+            <div className="flex flex-col justify-center items-center p-4 w-[40%] gap-8 text-white">
+              <div className="card-profile">
+                <div className="content-profile">
+                  <div className="back">
+                    <div className="back-content">
+                      <div className="flex justify-center items-center rounded-full bg-teal-500 w-[15rem] h-[15rem] z-[99]">
+                        <img
+                          className="object-cover h-full w-full rounded-full"
+                          src={preview}
+                        />
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="border border-slate-300 text-md rounded-lg w-[15rem] mt-4"
+                        onChange={handleFileChange}
+                      />
+
+                      <button
+                        className="button-add  mt-4 w-[15rem] text-md"
+                        onClick={handleSubmit}
+                      >
+                        Simpan Data
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              data-aos="fade-down"
+              data-aos-delay="350"
+              className="flex flex-col justify-start items-start p-6 w-[60%] gap-2 text-white overflow-y-scroll  h-[45rem]"
+            >
+              <div className="w-full gap-2 flex justify-between items-center p-2">
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Nama</h4>
+
+                  <input
+                    type="text"
+                    className="w-full flex p-2 text-sm capitalize bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Email</h4>
+                  <input
+                    type="text"
+                    className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="w-full gap-2 flex justify-between items-center p-2">
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">NIK</h4>
+                  <input
+                    type="number"
+                    className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={nik}
+                    onChange={(e) => {
+                      setNik(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Posisi</h4>
+                  <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
+                    <DropdownSearch
+                      options={props.dataPosisi}
+                      change={(data) => {
+                        setPosisi(data.text);
+                      }}
+                      name={"Posisi"}
                     />
                   </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="border border-slate-300 text-md rounded-lg w-[15rem] mt-4"
-                    onChange={handleFileChange}
-                  />
 
-                  <button
-                    className="button-add  mt-4 w-[15rem] text-md"
-                    onClick={handleSubmit}
-                  >
-                    Simpan Data
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </button>
+                  {posisi == "Lainnya" && (
+                    <>
+                      <input
+                        type="text"
+                        className="w-full flex p-2 text-sm mt-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                        value={posisiLain}
+                        placeholder="Masukkan Posisi / Jabatan Kerja"
+                        onChange={(e) => {
+                          setPosisiLain(e.target.value);
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="w-full gap-2 flex justify-between items-start p-2">
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">No. WhatsApp</h4>
+                  <input
+                    type="number"
+                    className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={noTelpon}
+                    onChange={(e) => {
+                      setNoTelpon(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Alamat</h4>
+
+                  <textarea
+                    className="w-full p-2 bg-slate-700 text-white border-slate-500 border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal"
+                    value={alamat}
+                    onChange={(e) => {
+                      setAlamat(e.target.value);
+                    }}
+                    placeholder="Alamat"
+                  />
+                </div>
+              </div>
+              <div className="w-full gap-2 flex justify-between items-start p-2">
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">
+                    Kontak Lain Yang Dapat Dihubungi
+                  </h4>
+                  <input
+                    type="number"
+                    className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={kontakLain}
+                    onChange={(e) => {
+                      setKontakLain(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2 ">
+                  <h4 className="font-semibold text-sm">Tanggal Lahir</h4>
+                  <Space direction="vertical" size={12}>
+                    <DatePicker
+                      defaultValue={dayjs(tanggalLahir, dateFormatList[0])}
+                      format={dateFormatList}
+                      onChange={(date) => {
+                        handleChangeDate("tanggalLahir", date);
+                      }}
+                      className="bg-slate-700 text-white border border-slate-500 w-[15rem] p-3 hover:text-slate-800 active:text-slate-800"
+                    />
+                  </Space>
+                </div>
+              </div>
+              <div className="w-full gap-2 flex justify-between items-start p-2">
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Lokasi Kerja</h4>
+                  <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
+                    <DropdownSearch
+                      options={props.dataLokasi}
+                      change={(data) => {
+                        setLokasi(data.text);
+                      }}
+                      name={"Lokasi Kerja"}
+                    />
+                  </div>
+                </div>
+
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Divisi</h4>
+                  <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
+                    <DropdownSearch
+                      options={props.dataDivisi}
+                      change={(data) => {
+                        setDivisi(data.text);
+                      }}
+                      name={"Divisi"}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="w-full gap-6 p-4 flex justify-between items-start ">
+                <div className="w-[50%] flex justify-start gap-6 flex-col">
+                  <h4 className="font-semibold text-sm">
+                    Tanggal Awal Kontrak
+                  </h4>
+                  <Space direction="vertical" size={12}>
+                    <DatePicker
+                      defaultValue={dayjs(tanggalAwal, dateFormatList[0])}
+                      format={dateFormatList}
+                      onChange={(date) => {
+                        handleChangeDate("startKontrak", date);
+                      }}
+                      className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
+                    />
+                  </Space>
+                </div>
+                <div className="w-[50%] flex justify-start  gap-6 flex-col">
+                  <h4 className="font-semibold text-sm">
+                    Tanggal Akhir Kontrak
+                  </h4>
+                  <Space direction="vertical" size={12}>
+                    <DatePicker
+                      defaultValue={dayjs(tanggalAkhir, dateFormatList[0])}
+                      format={dateFormatList}
+                      onChange={(date) => {
+                        handleChangeDate("endKontrak", date);
+                      }}
+                      className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
+                    />
+                  </Space>
+                </div>
+              </div>
+              <div className="w-full gap-6 p-4 flex justify-between items-start ">
+                <div className="w-[50%] flex justify-start gap-6 flex-col">
+                  <h4 className="font-semibold text-sm">Tanggal TMT</h4>
+                  <Space direction="vertical" size={12}>
+                    <DatePicker
+                      defaultValue={dayjs(tanggalAwal, dateFormatList[0])}
+                      format={dateFormatList}
+                      onChange={(date) => {
+                        handleChangeDate("tanggalMasuk", date);
+                      }}
+                      className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
+                    />
+                  </Space>
+                </div>
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">
+                    {" "}
+                    Pendidikan Terakhir
+                  </h4>
+                  <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
+                    <DropdownSearch
+                      options={optionPendidikan}
+                      change={(data) => {
+                        setRiwayatPendidikan(data.text);
+                      }}
+                      name={"Pendidikan terakhir"}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="w-full gap-2 flex justify-between items-start p-2">
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Lama Bekerja</h4>
+                  <input
+                    type="number"
+                    className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={masakerja}
+                    onChange={(e) => {
+                      setMasaKerja(e.target.value);
+                    }}
+                  />
+                </div>
+
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Nomor Rekening</h4>
+                  <input
+                    type="number"
+                    className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={noRekening}
+                    onChange={(e) => {
+                      setNoRekening(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="w-full gap-2 flex justify-between items-start p-2">
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Gaji</h4>
+                  <input
+                    type="number"
+                    className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
+                    value={gaji}
+                    onChange={(e) => {
+                      setGaji(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
+                  <h4 className="font-semibold text-sm">Status Karyawan</h4>
+                  <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
+                    <DropdownSearch
+                      options={optionStatus}
+                      change={(data) => {
+                        setStatus(data.text);
+                      }}
+                      name={"Status Karyawan"}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          data-aos="fade-down"
-          data-aos-delay="350"
-          className="flex flex-col justify-start items-start p-6 w-[60%] gap-2 text-white overflow-y-scroll  h-[45rem]"
-        >
-          <div className="w-full gap-2 flex justify-between items-center p-2">
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Nama</h4>
-
-              <input
-                type="text"
-                className="w-full flex p-2 text-sm capitalize bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Email</h4>
-              <input
-                type="text"
-                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="w-full gap-2 flex justify-between items-center p-2">
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">NIK</h4>
-              <input
-                type="number"
-                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={nik}
-                onChange={(e) => {
-                  setNik(e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Posisi</h4>
-              <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                <DropdownSearch
-                  options={props.dataPosisi}
-                  change={(data) => {
-                    setPosisi(data.text);
-                  }}
-                  name={"Posisi"}
-                />
-              </div>
-
-              {posisi == "Lainnya" && (
-                <>
-                  <input
-                    type="text"
-                    className="w-full flex p-2 text-sm mt-2 bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                    value={posisiLain}
-                    placeholder="Masukkan Posisi / Jabatan Kerja"
-                    onChange={(e) => {
-                      setPosisiLain(e.target.value);
-                    }}
-                  />
-                </>
-              )}
-            </div>
-          </div>
-          <div className="w-full gap-2 flex justify-between items-start p-2">
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">No. WhatsApp</h4>
-              <input
-                type="number"
-                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={noTelpon}
-                onChange={(e) => {
-                  setNoTelpon(e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Alamat</h4>
-
-              <textarea
-                className="w-full p-2 bg-slate-700 text-white border-slate-500 border rounded-lg min-h-[3rem] h-[5rem] resize-none font-normal"
-                value={alamat}
-                onChange={(e) => {
-                  setAlamat(e.target.value);
-                }}
-                placeholder="Alamat"
-              />
-            </div>
-          </div>
-          <div className="w-full gap-2 flex justify-between items-start p-2">
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">
-                Kontak Lain Yang Dapat Dihubungi
-              </h4>
-              <input
-                type="number"
-                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={kontakLain}
-                onChange={(e) => {
-                  setKontakLain(e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2 ">
-              <h4 className="font-semibold text-sm">Tanggal Lahir</h4>
-              <Space direction="vertical" size={12}>
-                <DatePicker
-                  defaultValue={dayjs(tanggalLahir, dateFormatList[0])}
-                  format={dateFormatList}
-                  onChange={(date) => {
-                    handleChangeDate("tanggalLahir", date);
-                  }}
-                  className="bg-slate-700 text-white border border-slate-500 w-[15rem] p-3 hover:text-slate-800 active:text-slate-800"
-                />
-              </Space>
-            </div>
-          </div>
-          <div className="w-full gap-2 flex justify-between items-start p-2">
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Lokasi Kerja</h4>
-              <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                <DropdownSearch
-                  options={props.dataLokasi}
-                  change={(data) => {
-                    setLokasi(data.text);
-                  }}
-                  name={"Lokasi Kerja"}
-                />
-              </div>
-            </div>
-
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Divisi</h4>
-              <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                <DropdownSearch
-                  options={props.dataDivisi}
-                  change={(data) => {
-                    setDivisi(data.text);
-                  }}
-                  name={"Divisi"}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="w-full gap-6 p-4 flex justify-between items-start ">
-            <div className="w-[50%] flex justify-start gap-6 flex-col">
-              <h4 className="font-semibold text-sm">Tanggal Awal Kontrak</h4>
-              <Space direction="vertical" size={12}>
-                <DatePicker
-                  defaultValue={dayjs(tanggalAwal, dateFormatList[0])}
-                  format={dateFormatList}
-                  onChange={(date) => {
-                    handleChangeDate("startKontrak", date);
-                  }}
-                  className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
-                />
-              </Space>
-            </div>
-            <div className="w-[50%] flex justify-start  gap-6 flex-col">
-              <h4 className="font-semibold text-sm">Tanggal Akhir Kontrak</h4>
-              <Space direction="vertical" size={12}>
-                <DatePicker
-                  defaultValue={dayjs(tanggalAkhir, dateFormatList[0])}
-                  format={dateFormatList}
-                  onChange={(date) => {
-                    handleChangeDate("endKontrak", date);
-                  }}
-                  className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
-                />
-              </Space>
-            </div>
-          </div>
-          <div className="w-full gap-6 p-4 flex justify-between items-start ">
-            <div className="w-[50%] flex justify-start gap-6 flex-col">
-              <h4 className="font-semibold text-sm">Tanggal TMT</h4>
-              <Space direction="vertical" size={12}>
-                <DatePicker
-                  defaultValue={dayjs(tanggalAwal, dateFormatList[0])}
-                  format={dateFormatList}
-                  onChange={(date) => {
-                    handleChangeDate("tanggalMasuk", date);
-                  }}
-                  className="bg-slate-700 text-white border border-slate-500 w-[100%] p-3 hover:text-slate-800 active:text-slate-800"
-                />
-              </Space>
-            </div>
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm"> Pendidikan Terakhir</h4>
-              <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                <DropdownSearch
-                  options={optionPendidikan}
-                  change={(data) => {
-                    setRiwayatPendidikan(data.text);
-                  }}
-                  name={"Pendidikan terakhir"}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="w-full gap-2 flex justify-between items-start p-2">
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Lama Bekerja</h4>
-              <input
-                type="number"
-                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={masakerja}
-                onChange={(e) => {
-                  setMasaKerja(e.target.value);
-                }}
-              />
-            </div>
-
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Nomor Rekening</h4>
-              <input
-                type="number"
-                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={noRekening}
-                onChange={(e) => {
-                  setNoRekening(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="w-full gap-2 flex justify-between items-start p-2">
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Gaji</h4>
-              <input
-                type="number"
-                className="w-full flex p-2 text-sm bg-slate-700 font-normal border-slate-500 border rounded-lg justify-start items-center h-[3rem]"
-                value={gaji}
-                onChange={(e) => {
-                  setGaji(e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-[50%] gap-2 flex flex-col justify-start items-start p-2">
-              <h4 className="font-semibold text-sm">Status Karyawan</h4>
-              <div className="w-full gap-2 flex flex-col font-normal justify-start items-start p-2 border border-slate-500 rounded-xl bg-slate-700">
-                <DropdownSearch
-                  options={optionStatus}
-                  change={(data) => {
-                    setStatus(data.text);
-                  }}
-                  name={"Status Karyawan"}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

@@ -43,6 +43,7 @@ function TableEmployeeDetail(props) {
   const [tanggalBerakhirDokumen, setTanggalBerakhirDokumen] = useState(
     dayjs().locale("id").format("YYYY/MM/DD")
   );
+  const [isLoad, setIsLoad] = useState(false);
 
   const [tanggal, setTanggal] = useState(
     dayjs().locale("id").format("YYYY/MM/DD")
@@ -111,6 +112,8 @@ function TableEmployeeDetail(props) {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoad(true);
+
     const cek = handleCheckEmptyDocumentFields();
     if (cek == false) {
       props.simpanDocument(
@@ -122,6 +125,8 @@ function TableEmployeeDetail(props) {
         statusDokumen,
         fileDokumen
       );
+      setIsLoad(false);
+
       setIsAddData(false);
       setIsEditData(false);
       setData({});
