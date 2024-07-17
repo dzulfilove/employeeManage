@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { db, dbImage } from "../config/firebase";
+import { db, dbImage } from "../../config/firebase";
 import {
   addDoc,
   collection,
@@ -10,11 +10,11 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Swal from "sweetalert2";
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import { generateRandomString } from "../components/features/utils";
-import "../styles/card.css";
-import "../styles/button.css";
-import "../styles/loading.css";
-import DropdownForm from "../components/features/dropdownForm";
+import { generateRandomString } from "../../components/features/utils";
+import "../../styles/card.css";
+import "../../styles/button.css";
+import "../../styles/loading.css";
+import DropdownForm from "../../components/features/dropdownForm";
 import dayjs from "dayjs";
 import { withRouter } from "react-router-dom";
 import { Navigate } from "react-router-dom";
@@ -356,7 +356,7 @@ class FormLamaran extends Component {
             (p, i) =>
               `<b>${i + 1}. ${p.posisiPengalaman}</b>\n   <b>Di ${
                 p.lokasiPengalaman
-              }</b>${p.deskripsiPengalaman}`
+              }</b>. ${p.deskripsiPengalaman}`
           )
           .join("\n");
         const text = `<b>Ada Pelamar ${posisi} Baru</b>\n\n<b>Tanggal:</b> ${this.formatTanggal(

@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { db, dbImage } from "../config/firebase";
+import { db, dbImage } from "../../config/firebase";
 import {
   addDoc,
   collection,
@@ -10,13 +10,13 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Swal from "sweetalert2";
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import { generateRandomString } from "../components/features/utils";
-import "../styles/card.css";
-import "../styles/button.css";
-import "../styles/loading.css";
-import DropdownForm from "../components/features/dropdownForm";
+import { generateRandomString } from "../../components/features/utils";
+import "../../styles/card.css";
+import "../../styles/button.css";
+import "../../styles/loading.css";
+import DropdownForm from "../../components/features/dropdownForm";
 import dayjs from "dayjs";
-import animationData from "../styles/animationSuccess.json";
+import animationData from "../../styles/animationSuccess.json";
 import Lottie from "react-lottie";
 
 class SendedForm extends Component {

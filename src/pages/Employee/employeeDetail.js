@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import swal from "sweetalert2";
 
-import CardDetailEmployee from "../components/employee/cardDetailEmployee";
-import TableEmployeeDetail from "../components/employee/tableEmployeeDetail";
-import withRouter from "../components/features/withRouter";
+import CardDetailEmployee from "../../components/employee/cardDetailEmployee";
+import TableEmployeeDetail from "../../components/employee/tableEmployeeDetail";
+import withRouter from "../../components/features/withRouter";
 import { doc, getDoc, getDocs, collection } from "firebase/firestore";
 import {
   addDoc,
@@ -21,8 +21,8 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage";
-import { db } from "../config/firebase";
-import { generateRandomString } from "../components/features/utils";
+import { db } from "../../config/firebase";
+import { generateRandomString } from "../../components/features/utils";
 class EmployeeDetail extends Component {
   constructor(props) {
     super(props);

@@ -288,6 +288,7 @@ function FormAddEmployee(props) {
         icon: "warning",
         button: "OK",
       });
+      setIsLoad(false);
 
       return true;
     } else {

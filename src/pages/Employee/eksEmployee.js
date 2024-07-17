@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import CardEmployee from "../components/employee/cardEmployee";
-import TableEmployee from "../components/employee/tableEmployee";
-import { db } from "../config/firebase";
+import CardEmployee from "../../components/employee/cardEmployee";
+import TableEmployee from "../../components/employee/tableEmployee";
+import { db } from "../../config/firebase";
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-class Employee extends Component {
+import TableEksEmployee from "../../components/employee/tableEksEmployee";
+import CardEksEmployee from "../../components/employee/cardEksEmployee";
+class EksEmployee extends Component {
   constructor(props) {
     super(props);
     const idPerusahaan = sessionStorage.getItem("refPerusahaan");
@@ -15,16 +17,15 @@ class Employee extends Component {
       dataDivisi: [],
       dataDisplay: [],
       dataKaryawanBaru: [],
-      datakaryawanBerakhir: [],
+      dataKaryawanLama: [],
       dataBerakhir: [],
       employeeDocuments: [],
       totalKaryawan: 0,
       totalDivisi: 0,
       refPerusahaan: idPerusahaan,
       isGetData: false,
-
       totalKaryawanBaru: 0,
-      totalAkanBerakhir: 0,
+      totalKaryawanLama: 0,
       tanggal: dayjs().locale("id").format("YYYY/MM/DD"),
     };
   }
@@ -96,50 +97,36 @@ class Employee extends Component {
       }
 
       const dataKaryawan = employeesData.filter(
-        (item) => item.statusKaryawan != "Karyawan Tidak Aktif"
+        (item) => item.statusKaryawan == "Karyawan Tidak Aktif"
       );
       console.log(employeesData);
       const dataFormat = dataKaryawan.map((data) => ({
         ...data,
-        sisaKontrak: this.sisaMasaKontrak(
-          this.state.tanggal,
-          data.tanggalAkhirKontrak
-        ),
+        // waktuKerja: this.sisaMasaKontrak(
+        //   data.tanggalAwalMasuk,
+        //   data.tanggalBerhentiKontrak
+        // ),
         lamaKerja: this.sisaMasaKontrak(
           data.tanggalAwalMasuk,
-          this.state.tanggal
+          data.tanggalBerhentiKontrak
         ),
       }));
 
-      const dataKontrak = dataFormat.filter(
-        (item) => item.statusKaryawan !== "Karyawan Tetap"
-      );
-      const dataBerakhir = dataKontrak.filter(
-        (data) =>
-          data.sisaKontrak < 180 &&
-          data.sisaKontrak > 0 &&
-          data.statusKaryawan !== "Karyawan Tidak Aktif"
-      );
-      const sudahBerakhir = dataKontrak.filter(
-        (item) =>
-          item.statusKaryawan == "Karyawan Tidak Aktif" || item.sisaKontrak < 0
-      );
-      const dataBaru = dataKontrak.filter(
-        (data) =>
-          data.lamaKerja <= 60 && data.statusKaryawan !== "Karyawan Tidak Aktif"
-      );
+      const dataBaru = dataFormat.filter((data) => data.lamaKerja <= 140);
+      const dataLama = dataFormat.filter((data) => data.lamaKerja > 140);
       console.log(dataFormat, "data Baru Format");
       this.setState({
         dataEmployees: dataFormat,
         dataKaryawanBaru: dataBaru,
-        datakaryawanBerakhir: dataBerakhir,
-        dataBerakhir: sudahBerakhir,
+        dataKaryawanLama: dataLama,
         dataDisplay: dataFormat,
+        totalKaryawanBaru: dataBaru.length,
+        totalKaryawanLama: dataLama.length,
         totalKaryawan: dataKaryawan.length,
         isGetData: true,
-        totalKaryawanBaru: dataBaru.length,
-        totalAkanBerakhir: dataBerakhir.length,
       });
+      console.log(dataBaru, "baru");
+      console.log(dataLama, "lama");
     } catch (error) {
       console.error("Error fetching employees:", error.message);
     }
@@ -176,11 +163,9 @@ class Employee extends Component {
     if (name == "tab1") {
       this.setState({ dataDisplay: this.state.dataEmployees });
     } else if (name == "tab2") {
-      this.setState({ dataDisplay: this.state.datakaryawanBerakhir });
-    } else if (name == "tab3") {
-      this.setState({ dataDisplay: this.state.dataBerakhir });
-    } else {
       this.setState({ dataDisplay: this.state.dataKaryawanBaru });
+    } else {
+      this.setState({ dataDisplay: this.state.dataKaryawanLama });
     }
   };
 
@@ -216,16 +201,16 @@ class Employee extends Component {
         <div className="flex w-full justify-start p-4 items-center text-white text-2xl border-b border-b-teal-500 pb-10">
           Karyawan Perusahaan
         </div>
-        <CardEmployee
+        <CardEksEmployee
           totalKaryawan={this.state.totalKaryawan}
-          totalAkanBerakhir={this.state.totalAkanBerakhir}
           totalKaryawanBaru={this.state.totalKaryawanBaru}
+          totalKaryawanLama={this.state.totalKaryawanLama}
           totalDivisi={this.state.totalDivisi}
         />
         <div className="flex justify-center w-full items-start gap-16 text-md">
-          <TableEmployee
-            data={this.state.dataDisplay}
+          <TableEksEmployee
             getData={this.state.isGetData}
+            data={this.state.dataDisplay}
             changeData={this.handleTab}
             dataDivisi={this.state.dataDivisi}
           />
@@ -235,4 +220,4 @@ class Employee extends Component {
   }
 }
 
-export default Employee;
+export default EksEmployee;

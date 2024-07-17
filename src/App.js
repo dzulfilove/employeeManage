@@ -20,19 +20,23 @@ import "aos/dist/aos.css";
 import "dayjs/locale/id";
 
 import { IoMdExit } from "react-icons/io";
-import Dashboard from "./pages/dashboard";
+
 import { BsPersonLinesFill } from "react-icons/bs";
-import Candidate from "./pages/candidate";
-import Employee from "./pages/employee";
-import ManageCandidate from "./pages/manageCandidate";
-import EmployeeDetail from "./pages/employeeDetail";
-import AddEmployee from "./pages/addEmployee";
-import Auth from "./pages/auth";
-import FormLamaran from "./pages/lamaranKerja";
-import SendedForm from "./pages/sendedForm";
-import CandidateDetail from "./pages/candidateDetail";
-import EndedContract from "./pages/endedContract";
-import EksEmployee from "./pages/eksEmployee";
+import Dashboard from "./pages/Dashboard/dashboard";
+import Candidate from "./pages/Candidate/candidate";
+import CandidateDetail from "./pages/Candidate/candidateDetail";
+import Employee from "./pages/Employee/employee";
+import EmployeeDetail from "./pages/Employee/employeeDetail";
+import EksEmployee from "./pages/Employee/eksEmployee";
+import FormLamaran from "./pages/Candidate/lamaranKerja";
+import EndedContract from "./pages/others/endedContract";
+import ManageCandidate from "./pages/Candidate/manageCandidate";
+import AddEmployee from "./pages/Employee/addEmployee";
+
+import SendedForm from "./pages/others/sendedForm";
+import Auth from "./pages/Auth/auth";
+import MasterDataPosition from "./pages/masterData/masterDataPosition";
+
 const App = () => {
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
   const isLamaran = sessionStorage.getItem("isLamaran");
@@ -46,13 +50,21 @@ const App = () => {
       main: true,
     },
     { name: "Karyawan", link: "employee", icon: BsPersonWorkspace, main: true },
+    {
+      name: "Master Data",
+      link: "masterData",
+      icon: BsPersonWorkspace,
+      main: true,
+    },
   ];
 
   const [open, setOpen] = useState(true);
   const [openKaryawan, setOpenKaryawan] = useState(true);
+  const [openMasterData, setOpenMasterData] = useState(true);
   const [menu, setMenu] = useState("dashboard");
   const [isSubMenu, setIsSubMenu] = useState(false);
   const [isSubMenuKaryawan, setIsSubMenuKaryawan] = useState(false);
+  const [isSubMenuMasterData, setIsSubMenuMasterData] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 700 });
@@ -74,7 +86,7 @@ const App = () => {
               <div
                 className={`bg-slate-800 min-h-screen pl-8 z-[999] ${
                   open ? "w-[17rem]" : "w-[6rem]"
-                } duration-500 text-gray-100 px-4 text-base border-r-2 border-r-slate-600`}
+                } duration-500 text-gray-100 px-4 text-sm border-r-2 border-r-slate-600`}
               >
                 <div className="flex justify-between items-center mt-12 w-full border-b border-b-slate-600 pb-12">
                   <div
@@ -145,7 +157,7 @@ const App = () => {
                                   style={{
                                     transitionDelay: `${1 + 3}00ms`,
                                   }}
-                                  className={`whitespace-pre duration-500 button-content text-base ${
+                                  className={`whitespace-pre duration-500 button-content text-sm ${
                                     !open && "opacity-0 hidden translate-x-28  "
                                   }`}
                                 >
@@ -154,7 +166,7 @@ const App = () => {
                                 <h2
                                   className={`${
                                     open && "hidden"
-                                  } absolute z-[99999] text-base left-48 bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                  } absolute z-[99999] text-sm left-48 bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
                                 >
                                   {menu.name}
                                 </h2>
@@ -162,7 +174,7 @@ const App = () => {
                             </>
                           ) : (
                             <>
-                              {menu.name == "Kandidat" ? (
+                              {menu.name == "Kandidat" && (
                                 <>
                                   <button
                                     onClick={() => setIsSubMenu(!isSubMenu)}
@@ -183,7 +195,7 @@ const App = () => {
                                       style={{
                                         transitionDelay: `${1 + 3}00ms`,
                                       }}
-                                      className={`whitespace-pre duration-500 button-content text-base ${
+                                      className={`whitespace-pre duration-500 button-content text-sm ${
                                         !open &&
                                         "opacity-0 hidden translate-x-28  "
                                       }`}
@@ -193,13 +205,14 @@ const App = () => {
                                     <h2
                                       className={`${
                                         open && "hidden"
-                                      } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                      } absolute z-[99999] left-48 text-sm bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
                                     >
                                       {menu.name}
                                     </h2>
                                   </button>
                                 </>
-                              ) : (
+                              )}
+                              {menu.name == "Karyawan" && (
                                 <>
                                   <button
                                     onClick={() =>
@@ -208,7 +221,7 @@ const App = () => {
                                     className={` ${
                                       menu?.margin && "mt-5"
                                     } z-[9] group flex ${
-                                      open == true
+                                      openKaryawan == true
                                         ? "justify-start w-[10rem] px-4 gap-3.5"
                                         : " p-2 justify-center w-[4rem]"
                                     } items-center  text-lg button  font-medium rounded-md  transition duration-300 ease-in-out`}
@@ -222,8 +235,8 @@ const App = () => {
                                       style={{
                                         transitionDelay: `${1 + 3}00ms`,
                                       }}
-                                      className={`whitespace-pre duration-500 button-content text-base ${
-                                        !open &&
+                                      className={`whitespace-pre duration-500 button-content text-sm ${
+                                        !openKaryawan &&
                                         "opacity-0 hidden translate-x-28  "
                                       }`}
                                     >
@@ -231,8 +244,50 @@ const App = () => {
                                     </h2>
                                     <h2
                                       className={`${
-                                        open && "hidden"
-                                      } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                        openKaryawan && "hidden"
+                                      } absolute z-[99999] left-48 text-sm bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                                    >
+                                      {menu.name}
+                                    </h2>
+                                  </button>
+                                </>
+                              )}
+                              {menu.name == "Master Data" && (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      setIsSubMenuMasterData(
+                                        !isSubMenuMasterData
+                                      )
+                                    }
+                                    className={` ${
+                                      menu?.margin && "mt-5"
+                                    } z-[9] group flex ${
+                                      openMasterData == true
+                                        ? "justify-start w-[10rem] px-4 gap-3.5"
+                                        : " p-2 justify-center w-[4rem]"
+                                    } items-center  text-lg button  font-medium rounded-md  transition duration-300 ease-in-out`}
+                                  >
+                                    <div className="button-content">
+                                      {React.createElement(menu.icon, {
+                                        size: "20",
+                                      })}
+                                    </div>
+                                    <h2
+                                      style={{
+                                        transitionDelay: `${1 + 3}00ms`,
+                                      }}
+                                      className={`whitespace-pre duration-500 button-content text-sm ${
+                                        !openMasterData &&
+                                        "opacity-0 hidden translate-x-28  "
+                                      }`}
+                                    >
+                                      {menu.name}
+                                    </h2>
+                                    <h2
+                                      className={`${
+                                        openMasterData && "hidden"
+                                      } absolute z-[99999] left-48 text-sm bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
                                     >
                                       {menu.name}
                                     </h2>
@@ -245,14 +300,14 @@ const App = () => {
                           {isSubMenu && menu.name == "Kandidat" && open && (
                             <div
                               data-aos="slide-down"
-                              className=" top-full left-0 w-48  shadow-md py-2  rounded text-base overlow-hidden text-base"
+                              className=" top-full left-0 w-48  shadow-md py-2  rounded text-sm overlow-hidden text-sm"
                               onAnimationEnd={() => setIsSubMenu(false)}
                             >
                               <ul>
                                 <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
                                   <Link
                                     to="/all-candidate"
-                                    className=" button-content  text-slate-300 text-base"
+                                    className=" button-content  text-slate-300 text-sm"
                                   >
                                     Semua Kandidat
                                   </Link>
@@ -273,14 +328,14 @@ const App = () => {
                             openKaryawan && (
                               <div
                                 data-aos="slide-down"
-                                className=" top-full left-0 w-48  shadow-md py-2  rounded text-base overlow-hidden text-base"
+                                className=" top-full left-0 w-48  shadow-md py-2  rounded text-sm overlow-hidden text-sm"
                                 onAnimationEnd={() => setIsSubMenu(false)}
                               >
                                 <ul>
                                   <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
                                     <Link
                                       to="/employee"
-                                      className=" button-content  text-slate-300 text-base"
+                                      className=" button-content  text-slate-300 text-sm"
                                     >
                                       Karyawan Aktif
                                     </Link>
@@ -291,6 +346,34 @@ const App = () => {
                                       className=" button-content text-slate-300 "
                                     >
                                       Karyawan Non Aktif
+                                    </Link>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                          {isSubMenuMasterData &&
+                            menu.name == "Master Data" &&
+                            openMasterData && (
+                              <div
+                                data-aos="slide-down"
+                                className=" top-full left-0 w-48  shadow-md py-2  rounded text-sm overlow-hidden text-sm"
+                                onAnimationEnd={() => setIsSubMenu(false)}
+                              >
+                                <ul>
+                                  <li className="  py-2 button  text-slate-300 flex items-center justify-start pl-10 ">
+                                    <Link
+                                      to="/data-position"
+                                      className=" button-content  text-slate-300 text-sm"
+                                    >
+                                      Data Posisi
+                                    </Link>
+                                  </li>
+                                  <li className=" mt-4  py-2 button  text-slate-300 flex items-center justify-start pl-10">
+                                    <Link
+                                      to="/employee-nonaktif"
+                                      className=" button-content text-slate-300 "
+                                    >
+                                      Data Divisi
                                     </Link>
                                   </li>
                                 </ul>
@@ -322,7 +405,7 @@ const App = () => {
                             style={{
                               transitionDelay: `${1 + 3}00ms`,
                             }}
-                            className={`whitespace-pre duration-500 button-content text-base ${
+                            className={`whitespace-pre duration-500 button-content text-sm ${
                               !open && "opacity-0 hidden translate-x-28  "
                             }`}
                           >
@@ -331,7 +414,7 @@ const App = () => {
                           <h2
                             className={`${
                               open && "hidden"
-                            } absolute z-[99999] left-48 text-base bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+                            } absolute z-[99999] left-48 text-sm bg-slate-300 font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
                           >
                             Logout
                           </h2>
@@ -346,7 +429,7 @@ const App = () => {
                         }}
                         className={` ${
                           menu?.margin && "mt-5"
-                        } group flex items-center text-base  gap-3.5 font-medium p-2 hover:bg-blue-600 rounded-md`}
+                        } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-blue-600 rounded-md`}
                       >
                         <div>
                           {React.createElement(MdOutlineDashboard, {
@@ -379,6 +462,10 @@ const App = () => {
                 <div className="h-[100vh] w-[100%]  p-0 m-0">
                   <Routes>
                     <Route path="/" element={<Dashboard />} />
+                    <Route
+                      path="/data-position"
+                      element={<MasterDataPosition />}
+                    />
                     <Route path="/all-candidate" element={<Candidate />} />
                     <Route path="/employee" element={<Employee />} />
                     <Route

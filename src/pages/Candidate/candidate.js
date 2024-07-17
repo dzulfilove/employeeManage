@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import CardCandidate from "../components/candidate/cardCandidate";
-import TableCandidate from "../components/candidate/tableCandidate";
-import { db } from "../config/firebase";
+import CardCandidate from "../../components/candidate/cardCandidate";
+import TableCandidate from "../../components/candidate/tableCandidate";
+import { db } from "../../config/firebase";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
 class Candidate extends Component {

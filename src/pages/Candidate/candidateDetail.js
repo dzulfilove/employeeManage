@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import swal from "sweetalert2";
 
-import withRouter from "../components/features/withRouter";
+import withRouter from "../../components/features/withRouter";
 import { doc, getDoc, getDocs, collection } from "firebase/firestore";
 import {
   addDoc,
@@ -19,9 +19,9 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage";
-import { db } from "../config/firebase";
-import { generateRandomString } from "../components/features/utils";
-import CardDetailCandidate from "../components/candidate/cardDetailCandidate";
+import { db } from "../../config/firebase";
+import { generateRandomString } from "../../components/features/utils";
+import CardDetailCandidate from "../../components/candidate/cardDetailCandidate";
 class CandidateDetail extends Component {
   constructor(props) {
     super(props);

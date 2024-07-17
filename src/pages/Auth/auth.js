@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import "../styles/card.css";
-import { auth } from "../config/firebase";
+import "../../styles/card.css";
+import { auth } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Swal from "sweetalert2";
 
-import { db } from "../config/firebase";
+import { db } from "../../config/firebase";
 import {
   collection,
   deleteDoc,

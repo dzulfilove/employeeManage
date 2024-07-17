@@ -8,11 +8,11 @@ import {
   addDoc,
   writeBatch,
 } from "firebase/firestore";
-import { db, dbImage } from "../config/firebase";
+import { db, dbImage } from "../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import FormAddEmployee from "../components/employee/formAddEmployee";
+import FormAddEmployee from "../../components/employee/formAddEmployee";
 import Swal from "sweetalert2";
-import { generateRandomString } from "../components/features/utils";
+import { generateRandomString } from "../../components/features/utils";
 
 class AddEmployee extends Component {
   constructor(props) {

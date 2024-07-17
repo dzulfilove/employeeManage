@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import CardDashboard from "../components/dashboard/cardDashboard";
-import TableDashboard from "../components/dashboard/tableDashboard";
-import TableDashboardDivision from "../components/dashboard/tableDashboardDivision";
-import { db } from "../config/firebase";
+import CardDashboard from "../../components/dashboard/cardDashboard";
+import TableDashboard from "../../components/dashboard/tableDashboard";
+import TableDashboardDivision from "../../components/dashboard/tableDashboardDivision";
+import { db } from "../../config/firebase";
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
