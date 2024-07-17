@@ -118,6 +118,13 @@ function TablePosition(props) {
     };
     props.submitPosisi(data);
   };
+
+  const deletePosisi = (data) => {
+    props.deletePosisi(data);
+  };
+  const deletePosisiLoker = (data) => {
+    props.deletePosisiLoker(data);
+  };
   const options = props.dataDivisi;
   const currentDataFilter = data.slice(indexOfFirstData, indexOfLastData);
   const currentDataLokerFilter = dataLoker.slice(
@@ -224,8 +231,8 @@ function TablePosition(props) {
         <div
           c
           className={`w-[33%] gap-2 ${
-            addPosisiLoker == true ? "flex" : "hidden"
-          } flex-col justify-start items-start p-2 text-white gap-4 `}
+            addPosisiLoker == true ? "flex " : "hidden"
+          }  flex-col justify-start items-start p-2 text-white gap-4 `}
         >
           <h4 className="font-semibold text-sm">Posisi Kandidat</h4>
           <div className="flex w-full justify-center items-center p-2 border border-slate-500 bg-slate-700 rounded-lg">
@@ -263,9 +270,8 @@ function TablePosition(props) {
               <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
                 <th className="px-4 py-4 font-medium rounded-l-xl">Nama</th>
 
-                <th className="px-4 py-4 font-medium rounded-r-xl">
-                  Jumlah Pelamar
-                </th>
+                <th className="px-4 py-4 font-medium ">Jumlah Pelamar</th>
+                <th className="px-4 py-4 font-medium rounded-r-xl">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -291,6 +297,31 @@ function TablePosition(props) {
                               <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                                 {data.jumlahPelamar}
                               </td>
+                              <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                                <div className="flex w-full justify-between items-center">
+                                  <div className="h-[2.5rem] w-[2.5rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                                    <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
+                                    <button
+                                      className="btnCloud-delete"
+                                      onClick={() => deletePosisiLoker(data)}
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          fill="white"
+                                          fill-rule="evenodd"
+                                          d="M8.106 2.553A1 1 0 0 1 9 2h6a1 1 0 0 1 .894.553L17.618 6H20a1 1 0 1 1 0 2h-1v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8H4a1 1 0 0 1 0-2h2.382zM14.382 4l1 2H8.618l1-2zM11 11a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm4 0a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0z"
+                                          clip-rule="evenodd"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              </td>
                             </tr>
                           ))}
                         </>
@@ -303,6 +334,31 @@ function TablePosition(props) {
                               </td>
                               <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                                 {data.jumlahPelamar}
+                              </td>
+                              <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                                <div className="flex w-full justify-between items-center">
+                                  <div className="h-[2.5rem] w-[2.5rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                                    <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
+                                    <button
+                                      className="btnCloud-delete"
+                                      onClick={() => deletePosisiLoker(data)}
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          fill="white"
+                                          fill-rule="evenodd"
+                                          d="M8.106 2.553A1 1 0 0 1 9 2h6a1 1 0 0 1 .894.553L17.618 6H20a1 1 0 1 1 0 2h-1v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8H4a1 1 0 0 1 0-2h2.382zM14.382 4l1 2H8.618l1-2zM11 11a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm4 0a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0z"
+                                          clip-rule="evenodd"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
                               </td>
                             </tr>
                           ))}
@@ -393,10 +449,8 @@ function TablePosition(props) {
             <thead>
               <tr className="bg-slate-700 text-slate-300 rounded-xl font-normal py-6 w-full">
                 <th className="px-4 py-4 font-medium rounded-l-xl">Nama</th>
-
-                <th className="px-4 py-4 font-medium rounded-r-xl">
-                  Jumlah Karyawan{" "}
-                </th>
+                <th className="px-4 py-4 font-medium ">Jumlah Karyawan </th>
+                <th className="px-4 py-4 font-medium rounded-r-xl">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -422,6 +476,31 @@ function TablePosition(props) {
                               <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                                 {data.jumlahPegawai}
                               </td>
+                              <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                                <div className="flex w-full justify-between items-center">
+                                  <div className="h-[2.5rem] w-[2.5rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                                    <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
+                                    <button
+                                      className="btnCloud-delete"
+                                      onClick={() => deletePosisi(data)}
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          fill="white"
+                                          fill-rule="evenodd"
+                                          d="M8.106 2.553A1 1 0 0 1 9 2h6a1 1 0 0 1 .894.553L17.618 6H20a1 1 0 1 1 0 2h-1v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8H4a1 1 0 0 1 0-2h2.382zM14.382 4l1 2H8.618l1-2zM11 11a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm4 0a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0z"
+                                          clip-rule="evenodd"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              </td>
                             </tr>
                           ))}
                         </>
@@ -434,6 +513,31 @@ function TablePosition(props) {
                               </td>
                               <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
                                 {data.jumlahPegawai}
+                              </td>
+                              <td className="border-b border-blue-slate-300 h-[4rem] max-h-[6rem] px-4 py-6 text-white">
+                                <div className="flex w-full justify-between items-center">
+                                  <div className="h-[2.5rem] w-[2.5rem] hover:border-2 hover:border-teal-500 flex justify-center items-center rounded-full bg-transparent p-1 relative ">
+                                    <div className="h-full w-full justify-center items-center rounded-full bg-white opacity-15 absolute top-0 left-0 "></div>
+                                    <button
+                                      className="btnCloud-delete"
+                                      onClick={() => deletePosisi(data)}
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          fill="white"
+                                          fill-rule="evenodd"
+                                          d="M8.106 2.553A1 1 0 0 1 9 2h6a1 1 0 0 1 .894.553L17.618 6H20a1 1 0 1 1 0 2h-1v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8H4a1 1 0 0 1 0-2h2.382zM14.382 4l1 2H8.618l1-2zM11 11a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm4 0a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0z"
+                                          clip-rule="evenodd"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
                               </td>
                             </tr>
                           ))}

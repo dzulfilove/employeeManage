@@ -4,6 +4,7 @@ import { db } from "../../config/firebase";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -185,6 +186,11 @@ class MasterDataPosition extends Component {
           jumlahPegawai: jumlahPegawai,
         };
       });
+      const dataFilter = posisiDenganJumlahPegawai.filter(
+        (item) => item.jumlahPegawai > 0
+      );
+
+      console.log(dataFilter, "posisi gawai");
       console.log(dataOption, "data Option divisi");
       console.log(data, "posisi Pegawai");
       console.log("posisi baru Pegawai", posisiDenganJumlahPegawai);
@@ -207,6 +213,7 @@ class MasterDataPosition extends Component {
         return;
       }
       const divisions = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
         ...doc.data(),
       }));
 
@@ -219,8 +226,7 @@ class MasterDataPosition extends Component {
           jumlahPelamar: jumlahPelamar,
         };
       });
-      console.log(data, "posisi Loker");
-      console.log("posisi baru loker", posisiDenganJumlahPelamar);
+
       this.setState({
         dataPosisiLoker: posisiDenganJumlahPelamar,
 
@@ -243,47 +249,128 @@ class MasterDataPosition extends Component {
   };
 
   submitPosisiLoker = async (data) => {
-    try {
-      const divisionRef = await addDoc(collection(db, "posisiLoker"), data);
+    if (data.text == "") {
       Swal.fire({
-        title: "Berhasil!",
-        text: "Data Posisi Kandidat Berhasil Ditambahkan",
-        icon: "success",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.getAllPosisiLoker(this.state.candidateList);
-        }
-      });
-    } catch (error) {
-      console.error("Error saving applicant data:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Wih, Error tuch",
+        title: "Gagal",
+        text: "Pilih Nama Posisi Terlebih Dahulu",
         icon: "error",
       });
+    } else {
+      try {
+        const divisionRef = await addDoc(collection(db, "posisiLoker"), data);
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Data Posisi Kandidat Berhasil Ditambahkan",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.getAllPosisiLoker(this.state.candidateList);
+          }
+        });
+      } catch (error) {
+        console.error("Error saving applicant data:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Wih, Error tuch",
+          icon: "error",
+        });
+      }
     }
   };
   submitPosisi = async (data) => {
-    try {
-      const divisionRef = await addDoc(collection(db, "divisions"), data);
+    if (data.namaPosisi == "") {
       Swal.fire({
-        title: "Berhasil!",
-        text: "Data Posisi Berhasil Ditambahkan",
-        icon: "success",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.getAllPosisi(this.state.dataEmployees);
-        }
-      });
-    } catch (error) {
-      console.error("Error saving applicant data:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Wih, Error tuch",
+        title: "Gagal",
+        text: "Tambahkan Nama Posisi Terlebih Dahulu",
         icon: "error",
       });
+    } else {
+      try {
+        const divisionRef = await addDoc(collection(db, "divisions"), data);
+        Swal.fire({
+          title: "Berhasil!",
+          text: "Data Posisi Berhasil Ditambahkan",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.getAllPosisi(this.state.dataEmployees);
+          }
+        });
+      } catch (error) {
+        console.error("Error saving applicant data:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Wih, Error tuch",
+          icon: "error",
+        });
+      }
     }
   };
+
+  handleDeletePosisi = async (data) => {
+    const posisiRef = doc(db, "divisions", data.id);
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Posisi Ini Akan Dihapus Secara Permanen",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // Setelah menghapus subkoleksi, hapus dokumen dari koleksi utama
+          await deleteDoc(posisiRef);
+          console.log(
+            `Dokumen dengan ID ${data} dan subkoleksi 'pengalamanKerja' telah dihapus.`
+          );
+
+          Swal.fire({
+            title: "Berhasil!",
+            text: "Data Posisi Berhasil Dihapus",
+            icon: "success",
+          });
+          this.getAllPosisi(this.state.dataEmployees);
+        } catch (error) {
+          console.error("Error removing document: ", error);
+        }
+      }
+    });
+  };
+
+  handleDeletePosisiLoker = async (data) => {
+    const posisiRef = doc(db, "posisiLoker", data.id);
+
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Posisi Ini Akan Dihapus Secara Permanen",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // Setelah menghapus subkoleksi, hapus dokumen dari koleksi utama
+          await deleteDoc(posisiRef);
+          console.log(
+            `Dokumen dengan ID ${data} dan subkoleksi 'pengalamanKerja' telah dihapus.`
+          );
+
+          Swal.fire({
+            title: "Berhasil!",
+            text: "Data Posisi Berhasil Dihapus",
+            icon: "success",
+          });
+          this.getAllPosisiLoker(this.state.candidateList);
+        } catch (error) {
+          console.error("Error removing document: ", error);
+        }
+      }
+    });
+  };
+
   // Format data
   sisaMasaKontrak = (startDate, endDate) => {
     const start = dayjs(startDate, "YYYY/MM/DD");
@@ -326,6 +413,8 @@ class MasterDataPosition extends Component {
             dataPosisiLoker={this.state.dataPosisiLoker}
             submitPosisiLoker={this.submitPosisiLoker}
             submitPosisi={this.submitPosisi}
+            deletePosisi={this.handleDeletePosisi}
+            deletePosisiLoker={this.handleDeletePosisiLoker}
           />
         </div>
       </div>

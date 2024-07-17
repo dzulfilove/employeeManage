@@ -59,7 +59,7 @@ class FormLamaran extends Component {
 
   getAllDivisions = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "divisions"));
+      const querySnapshot = await getDocs(collection(db, "posisiLoker"));
 
       if (querySnapshot.empty) {
         console.log("Tidak ada dokumen yang ditemukan.");
@@ -71,8 +71,8 @@ class FormLamaran extends Component {
       }));
 
       const dataOption = divisions.map((data) => ({
-        text: data.namaPosisi,
-        value: data.namaPosisi,
+        text: data.text,
+        value: data.value,
       }));
       console.log(dataOption, "data Option divisi");
       this.setState({ divisions: dataOption });
