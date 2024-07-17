@@ -36,6 +36,7 @@ import AddEmployee from "./pages/Employee/addEmployee";
 import SendedForm from "./pages/others/sendedForm";
 import Auth from "./pages/Auth/auth";
 import MasterDataPosition from "./pages/masterData/masterDataPosition";
+import MasterDataDivisi from "./pages/masterData/masterDataDivisi";
 
 const App = () => {
   const isLoggedIn = sessionStorage.getItem("isLoggedIn");
@@ -370,7 +371,7 @@ const App = () => {
                                   </li>
                                   <li className=" mt-4  py-2 button  text-slate-300 flex items-center justify-start pl-10">
                                     <Link
-                                      to="/employee-nonaktif"
+                                      to="/data-division"
                                       className=" button-content text-slate-300 "
                                     >
                                       Data Divisi
@@ -462,6 +463,10 @@ const App = () => {
                 <div className="h-[100vh] w-[100%]  p-0 m-0">
                   <Routes>
                     <Route path="/" element={<Dashboard />} />
+                    <Route
+                      path="/data-division"
+                      element={<MasterDataDivisi />}
+                    />
                     <Route
                       path="/data-position"
                       element={<MasterDataPosition />}
