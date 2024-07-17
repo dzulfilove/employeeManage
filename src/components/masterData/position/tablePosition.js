@@ -225,39 +225,44 @@ function TablePosition(props) {
         className={`w-full ${
           addPosisiLoker == true
             ? "h-[8.4rem] p-4 mb-8 border border-slate-100 "
-            : "h-0 p-0 overflow-hidden"
+            : "h-[0rem] p-0 overflow-hidden"
         } duration-500 flex justify-start items-end rounded-lg  gap-8`}
       >
         <div
-          c
-          className={`w-[33%] gap-2 ${
-            addPosisiLoker == true ? "flex " : "hidden"
-          }  flex-col justify-start items-start p-2 text-white gap-4 `}
-        >
-          <h4 className="font-semibold text-sm">Posisi Kandidat</h4>
-          <div className="flex w-full justify-center items-center p-2 border border-slate-500 bg-slate-700 rounded-lg">
-            <DropdownSearch
-              options={props.optionPosisi}
-              change={(data) => {
-                setPosisi(data.text);
-              }}
-              name={"Posisi"}
-            />
-          </div>
-        </div>
-
-        <button
-          className={`button-add m-3 ${
-            addPosisiLoker == true ? "flex" : "hidden"
+          className={`flex w-full justify-start items-end gap-8 rounded-lg mb-2  ${
+            addPosisiLoker ? "" : "hidden "
           }`}
-          onClick={submitPosisiLoker}
         >
-          Simpan Posisi
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+          <div
+            className={`w-[33%] gap-2 ${
+              addPosisiLoker == true ? "flex " : "hidden"
+            }  flex-col justify-start items-start p-2 text-white gap-4 `}
+          >
+            <h4 className="font-semibold text-sm">Posisi Kandidat</h4>
+            <div className="flex w-full justify-center items-center p-2 border border-slate-500 bg-slate-700 rounded-lg">
+              <DropdownSearch
+                options={props.optionPosisi}
+                change={(data) => {
+                  setPosisi(data.text);
+                }}
+                name={"Posisi"}
+              />
+            </div>
+          </div>
+
+          <button
+            className={`button-add m-3 ${
+              addPosisiLoker == true ? "flex" : "hidden"
+            }`}
+            onClick={submitPosisiLoker}
+          >
+            Simpan Posisi
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
       </div>
       {tab == "tab2" ? (
         <>

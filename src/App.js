@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdOutlineDashboard } from "react-icons/md";
 import { BsPersonWorkspace } from "react-icons/bs";
-
+import { CgDatabase } from "react-icons/cg";
 import { FaRegUser } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -53,7 +53,7 @@ const App = () => {
     {
       name: "Master Data",
       link: "masterData",
-      icon: BsPersonWorkspace,
+      icon: CgDatabase,
       main: true,
     },
   ];
