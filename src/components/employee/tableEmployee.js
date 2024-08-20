@@ -143,6 +143,10 @@ function TableEmployee(props) {
     }
   };
 
+  const handleExport = () => {
+    props.exportData();
+  };
+
   const options = props.dataDivisi;
   const currentDataFilter = data.slice(indexOfFirstData, indexOfLastData);
   console.log(props.data, "dataaa");
@@ -203,7 +207,13 @@ function TableEmployee(props) {
             />
           </div>
         </div>
-
+        <button onClick={handleExport} className="button-add">
+          Export
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
         <Link to="/add-employee" className="button-add">
           Tambah
           <span></span>

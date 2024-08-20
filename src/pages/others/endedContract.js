@@ -125,11 +125,7 @@ const EndedContract = () => {
                 p.posisi
               }\n<b>Divisi :</b>${p.divisi}\n<b>Lokasi Kerja :</b>${
                 p.cabang
-              }\n<b>Tanggal Awal Kontrak : </b> ${formatTanggal(
-                p.tanggalAwalKontrak
-              )}\n<b>Tanggal Akhir Kontrak : </b> ${formatTanggal(
-                p.tanggalAkhirKontrak
-              )} \n<b>Sisa Kontrak : </b> ${sisaMasaKontrak(
+              } \n<b>Sisa Kontrak : </b> ${sisaMasaKontrak(
                 tanggal,
                 p.tanggalAkhirKontrak
               )}\n<b>Status : </b>${p.statusKaryawan}`
@@ -143,11 +139,7 @@ const EndedContract = () => {
                 p.posisi
               }\n<b>Divisi :</b>${p.divisi}\n<b>Lokasi Kerja :</b>${
                 p.cabang
-              }\n<b>Tanggal Awal Kontrak : </b> ${formatTanggal(
-                p.tanggalAwalKontrak
-              )}\n<b>Tanggal Akhir Kontrak : </b> ${formatTanggal(
-                p.tanggalAkhirKontrak
-              )} \n<b>Sisa Kontrak : </b> ${sisaMasaKontrak(
+              } \n<b>Sisa Kontrak : </b> ${sisaMasaKontrak(
                 tanggal,
                 p.tanggalAkhirKontrak
               )}\n<b>Status : </b>${p.statusKaryawan}`
@@ -259,6 +251,12 @@ const EndedContract = () => {
     return selisih;
   }
 
+  const splitArrayInHalf = (array) => {
+    const midpoint = Math.ceil(array.length / 2); // Membulatkan ke atas untuk membagi dengan rata jika array memiliki jumlah elemen ganjil
+    const firstHalf = array.slice(0, midpoint); // Bagian pertama dari array
+    const secondHalf = array.slice(midpoint); // Bagian kedua dari array
+    return [firstHalf, secondHalf];
+  };
   // Fungsi untuk melakukan pengecekan dan pengumpulan data
   function cekDanKumpulkanData(arrayObjek) {
     const hasil = [];

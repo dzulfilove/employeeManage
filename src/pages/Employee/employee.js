@@ -22,7 +22,8 @@ class Employee extends Component {
       totalDivisi: 0,
       refPerusahaan: idPerusahaan,
       isGetData: false,
-
+      dataExport: [],
+      judul: [],
       totalKaryawanBaru: 0,
       totalAkanBerakhir: 0,
       tanggal: dayjs().locale("id").format("YYYY/MM/DD"),
@@ -32,7 +33,7 @@ class Employee extends Component {
   componentDidMount() {
     this.getAllEmployees();
     this.getTimData();
-    this.getEmployeeDocuments();
+    // this.getEmployeeDocuments();
   }
 
   // Get Data
@@ -129,6 +130,8 @@ class Employee extends Component {
           data.lamaKerja <= 60 && data.statusKaryawan !== "Karyawan Tidak Aktif"
       );
       console.log(dataFormat, "data Baru Format");
+
+      this.formatCSVData(dataFormat);
       this.setState({
         dataEmployees: dataFormat,
         dataKaryawanBaru: dataBaru,
@@ -210,6 +213,99 @@ class Employee extends Component {
     return filteredArray;
   }
 
+  formatCSVData = (data) => {
+    const sortedData = data.sort((a, b) => a.lamaKerja - b.lamaKerja);
+    console.log(sortedData, "sort");
+    const dataArrayString = sortedData.map((obj, index) => {
+      return [
+        index + 1,
+        // obj.fotoTerbaru,
+        obj.nama,
+        obj.email,
+        obj.nik.toString(),
+        obj.alamat,
+        obj.tanggalLahir,
+        obj.riwayatPendidikan,
+        ` ${obj.nomorWhatsapp.toString()}`,
+        ` ${obj.kontakLain.toString()}`,
+        obj.noRekening.toString(),
+        obj.tanggalAwalMasuk,
+        obj.tanggalAwalKontrak,
+        obj.tanggalAkhirKontrak,
+        obj.posisi,
+        obj.divisi,
+        obj.cabang,
+        obj.masaKerja,
+        obj.gaji,
+        obj.statusKaryawan,
+      ];
+    });
+    console.log(dataArrayString[0], "array");
+    const cleanedData = dataArrayString.map((row) =>
+      row.map((item) => {
+        // Pastikan hanya memproses string dan bukan tipe data lain
+        return typeof item === "string" ? item.replace(/\n/g, "") : item;
+      })
+    );
+    const propertyNames = [
+      ["Rekap Data Karyawan"],
+      [""],
+
+      [""],
+      [
+        "No",
+        // "Foto",
+        "Nama Pegawai",
+        "Email",
+        "NIK",
+        "Alamat",
+        "Tanggal Lahir",
+        "Riwayat Pendidikan",
+        "Nomor Whatsapp",
+        "Nomor Kontak Lain",
+        "Nomor Rekening",
+        "Tanggal Masuk",
+        "Tanggal Awal Kontrak",
+        "Tanggal Akhir Kontrak",
+        "Posisi",
+        "Divisi",
+        "Lokasi Kerja",
+        "Masa Kerja",
+        "Gaji",
+        "Status",
+      ],
+    ];
+
+    this.setState({ judul: propertyNames, dataExport: cleanedData });
+  };
+
+  convertToCSV = (array) => {
+    return array.map((row) => row.join(";")).join("\n");
+  };
+
+  downloadCSV = (data, fileName) => {
+    const csvData = new Blob([data], { type: "text/csv;charset=utf-8;" });
+    const csvURL = URL.createObjectURL(csvData);
+    const link = document.createElement("a");
+    link.href = csvURL;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  handleExport = () => {
+    console.log(this.state.rekapKehadiran);
+    const { dataExport, judul } = this.state;
+    // Flatten the array for csv
+    const csvContent = this.convertToCSV([...judul, ...dataExport]);
+    this.downloadCSV(csvContent, `Data Rekap Karyawan Perusahaan.csv`);
+  };
+  removeNewLines = (arr) => {
+    return arr.map((innerArray) =>
+      innerArray.map((str) => str.replace(/\n/g, ""))
+    );
+  };
   render() {
     return (
       <div>
@@ -224,6 +320,7 @@ class Employee extends Component {
         />
         <div className="flex justify-center w-full items-start gap-16 text-md">
           <TableEmployee
+            exportData={this.handleExport}
             data={this.state.dataDisplay}
             getData={this.state.isGetData}
             changeData={this.handleTab}
